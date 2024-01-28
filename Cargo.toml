@@ -1,12 +1,16 @@
 [package]
-name = "eframe_template"
+name = "eagle_eyes"
 version = "0.1.0"
-authors = ["Emil Ernerfeldt <emil.ernerfeldt@gmail.com>"]
+authors = ["Bijan Farahani <bijancfarahani@gmail.com>"]
 edition = "2021"
 rust-version = "1.72"
 
 
 [dependencies]
+# Used to create random letters for a round.
+rand = "0.8.5"
+getrandom = { version = "0.2", features = ["js"] }
+
 egui = "0.25.0"
 eframe = { version = "0.25.0", default-features = false, features = [
     "accesskit",     # Make egui comptaible with screen readers. NOTE: adds a lot of dependencies.
@@ -18,6 +22,10 @@ log = "0.4"
 
 # You only need serde if you want app persistence:
 serde = { version = "1", features = ["derive"] }
+
+# Used for image loading.
+egui_extras = { version = "*", features = ["all_loaders"] }
+image = { version = "0.24", features = ["jpeg", "png"] }
 
 # native:
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
@@ -37,11 +45,3 @@ opt-level = 2
 
 
 [patch.crates-io]
-
-# If you want to use the bleeding edge version of egui and eframe:
-# egui = { git = "https://github.com/emilk/egui", branch = "master" }
-# eframe = { git = "https://github.com/emilk/egui", branch = "master" }
-
-# If you fork https://github.com/emilk/egui you can test with:
-# egui = { path = "../egui/crates/egui" }
-# eframe = { path = "../egui/crates/eframe" }
