@@ -20,8 +20,7 @@ fn main() -> eframe::Result<()> {
     eframe::run_native(
         "Eagle Eyes",
         native_options,
-        Box::new(|cc|{
-             Box::new(eagle_eyes::TemplateApp::new(cc))}),
+        Box::new(|cc| Box::new(eagle_eyes::TemplateApp::new(cc))),
     )
 }
 

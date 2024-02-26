@@ -18,45 +18,50 @@ pub mod game_deck {
         return [
             Card {
                 letter: 'E',
-                is_visible: false,
+                is_visible: true,
             },
             Card {
                 letter: 'A',
-                is_visible: false,
+                is_visible: true,
             },
             Card {
                 letter: 'G',
-                is_visible: false,
+                is_visible: true,
             },
             Card {
                 letter: 'L',
-                is_visible: false,
+                is_visible: true,
             },
             Card {
                 letter: 'E',
-                is_visible: false,
+                is_visible: true,
             },
             Card {
                 letter: 'E',
-                is_visible: false,
+                is_visible: true,
             },
             Card {
                 letter: 'Y',
-                is_visible: false,
+                is_visible: true,
             },
             Card {
                 letter: 'E',
-                is_visible: false,
+                is_visible: true,
             },
             Card {
                 letter: 'S',
-                is_visible: false,
+                is_visible: true,
             },
         ];
     }
     pub fn hide_letters(deck: &mut Deck) -> () {
         for card in deck.iter_mut() {
             card.is_visible = false;
+        }
+    }
+    pub fn show_letters(deck: &mut Deck) -> () {
+        for card in deck.iter_mut() {
+            card.is_visible = true;
         }
     }
     pub fn scramble_deck(deck: &mut Deck) -> () {

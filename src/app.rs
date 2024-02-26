@@ -3,6 +3,14 @@ use crate::app::game_deck::game_deck::Deck;
 use egui::Vec2;
 use instant::{Duration, Instant};
 
+#[derive(PartialEq)]
+pub enum GameState {
+    NotStarted,
+    Memorizing,
+    Spelling,
+    Finished,
+}
+
 /// We derive Deserialize/Serialize so we can persist app state on shutdown.
 #[derive(serde::Deserialize, serde::Serialize)]
 #[serde(default)] // if we add new fields, give them default values when deserializing old state
@@ -10,10 +18,11 @@ pub struct TemplateApp {
     #[serde(skip)] // This how you opt-out of serialization of a field
     deck: Deck,
     #[serde(skip)]
-    game_duration: Duration,
+    memorize_duration: Duration,
     #[serde(skip)]
     game_start_time: Instant,
-    is_game_started: bool,
+    #[serde(skip)]
+    game_state: GameState,
 }
 //ui.add(egui::Button::image(egui::Image::new(egui::include_image!("../assets/letters/e.png"))));
 
@@ -21,9 +30,9 @@ impl Default for TemplateApp {
     fn default() -> Self {
         Self {
             deck: game_deck::game_deck::get_scrambled_deck(),
-            game_duration: Duration::new(5, 0),
+            memorize_duration: Duration::new(5, 0),
             game_start_time: Instant::now(),
-            is_game_started: false,
+            game_state: GameState::NotStarted,
         }
     }
 }
@@ -55,17 +64,13 @@ impl TemplateApp {
 
             if ui.add(egui::Button::new("Start Game!")).clicked() {
                 self.game_start_time = Instant::now();
-                self.is_game_started = true;
+                self.game_state = GameState::Memorizing;
             }
         });
     }
 
     fn central_panel(&mut self, ctx: &egui::Context) {
         egui::CentralPanel::default().show(ctx, |ui| {
-            // The central panel the region left after adding TopPanel's and SidePanel's
-
-            ui.separator();
-
             // Spell out EAGLE EYES.
             ui.horizontal_centered(|ui| {
                 let pic_size = Vec2 { x: 250.0, y: 250.0 };
@@ -169,6 +174,101 @@ impl TemplateApp {
             });
         });
     }
+
+    fn memorize_panel(&mut self, ctx: &egui::Context) {
+        egui::CentralPanel::default().show(ctx, |ui| {
+            // Spell out EAGLE EYES.
+            ui.horizontal_centered(|ui| {
+                let pic_size = Vec2 { x: 250.0, y: 250.0 };
+                let e_letter = egui::include_image!("../assets/letters/e.png");
+                let a_letter = egui::include_image!("../assets/letters/a.png");
+                let g_letter = egui::include_image!("../assets/letters/g.png");
+                let l_letter = egui::include_image!("../assets/letters/l.png");
+                let y_letter = egui::include_image!("../assets/letters/y.png");
+                let s_letter = egui::include_image!("../assets/letters/s.png");
+                let blank_image = egui::include_image!("../assets/letters/blank.png");
+
+                for mut card in self.deck.as_mut() {
+                    match card.letter.to_ascii_lowercase() {
+                        'e' => {
+                            if ui
+                                .add(egui::Button::image(
+                                    egui::Image::new(e_letter.clone()).max_size(pic_size),
+                                ))
+                                .clicked()
+                            {
+                                //   card.is_visible = !card.is_visible;
+                            }
+                        }
+                        'a' => {
+                            if ui
+                                .add(egui::Button::image(
+                                    egui::Image::new(a_letter.clone()).max_size(pic_size),
+                                ))
+                                .clicked()
+                            {
+                                //   card.is_visible = !card.is_visible;
+                            }
+                        }
+                        'g' => {
+                            if ui
+                                .add(egui::Button::image(
+                                    egui::Image::new(g_letter.clone()).max_size(pic_size),
+                                ))
+                                .clicked()
+                            {
+                                //   card.is_visible = !card.is_visible;
+                            }
+                        }
+                        'l' => {
+                            if ui
+                                .add(egui::Button::image(
+                                    egui::Image::new(l_letter.clone()).max_size(pic_size),
+                                ))
+                                .clicked()
+                            {
+                                //   card.is_visible = !card.is_visible;
+                            }
+                        }
+                        'y' => {
+                            if ui
+                                .add(egui::Button::image(
+                                    egui::Image::new(y_letter.clone()).max_size(pic_size),
+                                ))
+                                .clicked()
+                            {
+                                //   card.is_visible = !card.is_visible;
+                            }
+                        }
+                        's' => {
+                            if ui
+                                .add(egui::Button::image(
+                                    egui::Image::new(s_letter.clone()).max_size(pic_size),
+                                ))
+                                .clicked()
+                            {
+                                //   card.is_visible = !card.is_visible;
+                            }
+                        }
+                        _ => {
+                            if ui
+                                .add(egui::Button::image(
+                                    egui::Image::new(blank_image.clone()).max_size(pic_size),
+                                ))
+                                .clicked()
+                            {
+                                //  card.is_visible = !card.is_visible;
+                            }
+                        }
+                    };
+                }
+                ui.with_layout(egui::Layout::top_down_justified(egui::Align::LEFT), |ui| {
+                    powered_by_egui_and_eframe(ui);
+                    egui::warn_if_debug_build(ui);
+                });
+            });
+        });
+    }
 }
 
 impl eframe::App for TemplateApp {
@@ -200,10 +300,19 @@ impl eframe::App for TemplateApp {
                 egui::widgets::global_dark_light_mode_buttons(ui);
             });
         });
-        if self.is_game_started == false {
-            self.starting_panel(ctx);
-        } else {
-            self.central_panel(ctx);
+
+        match self.game_state {
+            GameState::NotStarted => self.starting_panel(ctx),
+            GameState::Memorizing => {
+                if self.game_start_time.elapsed() < self.memorize_duration {
+                    self.memorize_panel(ctx)
+                } else {
+                    self.game_state = GameState::Spelling;
+                    game_deck::game_deck::hide_letters(&mut self.deck);
+                }
+            }
+            GameState::Spelling => self.central_panel(ctx),
+            GameState::Finished => {}
         }
     }
 }
