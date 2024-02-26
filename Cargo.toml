@@ -10,8 +10,7 @@ rust-version = "1.72"
 # Used to create random letters for a round.
 rand = "0.8.5"
 getrandom = { version = "0.2", features = ["js"] }
-timer = "0.2.0"
-chrono = "0.4.34"
+instant = { version = "0.1", features = ["wasm-bindgen"] }
 egui = "0.26.0"
 eframe = { version = "0.26.0", default-features = false, features = [
     "accesskit",     # Make egui comptaible with screen readers. NOTE: adds a lot of dependencies.
