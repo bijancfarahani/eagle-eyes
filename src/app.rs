@@ -8,7 +8,8 @@ pub enum GameState {
     NotStarted,
     Memorizing,
     Spelling,
-    Finished,
+    Win,
+    Lose,
 }
 
 /// We derive Deserialize/Serialize so we can persist app state on shutdown.
@@ -17,22 +18,26 @@ pub enum GameState {
 pub struct TemplateApp {
     #[serde(skip)] // This how you opt-out of serialization of a field
     deck: Deck,
+    winning_string: String,
     #[serde(skip)]
     memorize_duration: Duration,
     #[serde(skip)]
     game_start_time: Instant,
     #[serde(skip)]
     game_state: GameState,
+    target_letter_index: usize,
 }
 //ui.add(egui::Button::image(egui::Image::new(egui::include_image!("../assets/letters/e.png"))));
 
 impl Default for TemplateApp {
     fn default() -> Self {
         Self {
-            deck: game_deck::game_deck::get_scrambled_deck(),
+            deck: game_deck::game_deck::initial_deck(),
+            winning_string: String::new(),
             memorize_duration: Duration::new(5, 0),
             game_start_time: Instant::now(),
             game_state: GameState::NotStarted,
+            target_letter_index: 0,
         }
     }
 }
@@ -63,14 +68,24 @@ impl TemplateApp {
             ));
 
             if ui.add(egui::Button::new("Start Game!")).clicked() {
+                // Create the game "phrase" to be constructed by the player.
+                self.deck = game_deck::game_deck::initial_deck();
+                self.winning_string.clear();
+                for card in self.deck {
+                    self.winning_string.push(card.letter);
+                }
+                self.deck = game_deck::game_deck::get_scrambled_deck();
+                self.target_letter_index = 0;
                 self.game_start_time = Instant::now();
                 self.game_state = GameState::Memorizing;
+                println!("winning word is {}", self.winning_string);
             }
         });
     }
 
     fn central_panel(&mut self, ctx: &egui::Context) {
         egui::CentralPanel::default().show(ctx, |ui| {
+            ui.add(egui::Label::new(&self.winning_string));
             // Spell out EAGLE EYES.
             ui.horizontal_centered(|ui| {
                 let pic_size = Vec2 { x: 250.0, y: 250.0 };
@@ -91,6 +106,21 @@ impl TemplateApp {
                             .clicked()
                         {
                             card.is_visible = !card.is_visible;
+                            // Player picked a wrong letter, ending the game.
+                            let target_letter = self
+                                .winning_string
+                                .chars()
+                                .nth(self.target_letter_index)
+                                .unwrap();
+                            if card.letter != target_letter {
+                                self.game_state = GameState::Lose;
+                                return;
+                            } else {
+                                self.target_letter_index += 1;
+                                if self.target_letter_index == self.winning_string.chars().count() {
+                                    self.game_state = GameState::Win;
+                                }
+                            }
                         }
                     } else {
                         match card.letter.to_ascii_lowercase() {
@@ -101,7 +131,7 @@ impl TemplateApp {
                                     ))
                                     .clicked()
                                 {
-                                    card.is_visible = !card.is_visible;
+                                    // card.is_visible = !card.is_visible;
                                 }
                             }
                             'a' => {
@@ -111,7 +141,7 @@ impl TemplateApp {
                                     ))
                                     .clicked()
                                 {
-                                    card.is_visible = !card.is_visible;
+                                    //   card.is_visible = !card.is_visible;
                                 }
                             }
                             'g' => {
@@ -121,7 +151,7 @@ impl TemplateApp {
                                     ))
                                     .clicked()
                                 {
-                                    card.is_visible = !card.is_visible;
+                                    //  card.is_visible = !card.is_visible;
                                 }
                             }
                             'l' => {
@@ -131,7 +161,7 @@ impl TemplateApp {
                                     ))
                                     .clicked()
                                 {
-                                    card.is_visible = !card.is_visible;
+                                    //   card.is_visible = !card.is_visible;
                                 }
                             }
                             'y' => {
@@ -141,7 +171,7 @@ impl TemplateApp {
                                     ))
                                     .clicked()
                                 {
-                                    card.is_visible = !card.is_visible;
+                                    //   card.is_visible = !card.is_visible;
                                 }
                             }
                             's' => {
@@ -151,7 +181,7 @@ impl TemplateApp {
                                     ))
                                     .clicked()
                                 {
-                                    card.is_visible = !card.is_visible;
+                                    //   card.is_visible = !card.is_visible;
                                 }
                             }
                             _ => {
@@ -161,7 +191,7 @@ impl TemplateApp {
                                     ))
                                     .clicked()
                                 {
-                                    card.is_visible = !card.is_visible;
+                                    //  card.is_visible = !card.is_visible;
                                 }
                             }
                         };
@@ -188,7 +218,7 @@ impl TemplateApp {
                 let s_letter = egui::include_image!("../assets/letters/s.png");
                 let blank_image = egui::include_image!("../assets/letters/blank.png");
 
-                for mut card in self.deck.as_mut() {
+                for card in self.deck.as_mut() {
                     match card.letter.to_ascii_lowercase() {
                         'e' => {
                             if ui
@@ -269,6 +299,34 @@ impl TemplateApp {
             });
         });
     }
+
+    fn lose_panel(&mut self, ctx: &egui::Context) {
+        egui::CentralPanel::default().show(ctx, |ui| {
+            ui.heading("You LOSE!");
+            ui.add(egui::github_link_file!(
+                "https://github.com/bijancfarahani/eagle_eyes/master/",
+                "Source code."
+            ));
+
+            if ui.add(egui::Button::new("Start Game!")).clicked() {
+                self.game_state = GameState::NotStarted;
+            }
+        });
+    }
+    fn win_panel(&mut self, ctx: &egui::Context) {
+        egui::CentralPanel::default().show(ctx, |ui| {
+            ui.heading("You WIN!");
+
+            ui.add(egui::github_link_file!(
+                "https://github.com/bijancfarahani/eagle_eyes/master/",
+                "Source code."
+            ));
+
+            if ui.add(egui::Button::new("Start Game!")).clicked() {
+                self.game_state = GameState::NotStarted;
+            }
+        });
+    }
 }
 
 impl eframe::App for TemplateApp {
@@ -307,12 +365,13 @@ impl eframe::App for TemplateApp {
                 if self.game_start_time.elapsed() < self.memorize_duration {
                     self.memorize_panel(ctx)
                 } else {
-                    self.game_state = GameState::Spelling;
                     game_deck::game_deck::hide_letters(&mut self.deck);
+                    self.game_state = GameState::Spelling;
                 }
             }
             GameState::Spelling => self.central_panel(ctx),
-            GameState::Finished => {}
+            GameState::Win => self.win_panel(ctx),
+            GameState::Lose => self.lose_panel(ctx),
         }
     }
 }

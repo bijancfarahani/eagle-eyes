@@ -1,6 +1,8 @@
 pub mod game_deck {
     use rand::seq::SliceRandom;
     use rand::thread_rng;
+    use rand::SeedableRng;
+    use rand_chacha::ChaChaRng;
     #[derive(Copy, Clone)]
     pub struct Card {
         pub letter: char,
@@ -10,7 +12,11 @@ pub mod game_deck {
 
     pub fn get_scrambled_deck() -> Deck {
         let mut deck = initial_deck();
-        deck.shuffle(&mut thread_rng());
+        //deck.shuffle(&mut thread_rng());
+        let seed = [0; 32];
+        let mut rng = ChaChaRng::from_seed(seed);
+
+        deck.shuffle(&mut rng);
         deck
     }
 

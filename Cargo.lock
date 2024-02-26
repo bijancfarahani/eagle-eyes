@@ -883,6 +883,7 @@ dependencies = [
  "instant",
  "log",
  "rand",
+ "rand_chacha",
  "serde",
  "wasm-bindgen-futures",
 ]
