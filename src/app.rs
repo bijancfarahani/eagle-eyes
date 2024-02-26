@@ -63,7 +63,7 @@ impl TemplateApp {
         egui::CentralPanel::default().show(ctx, |ui| {
             ui.heading("Welcome to EAGLE EYES!");
             ui.add(egui::github_link_file!(
-                "https://github.com/bijancfarahani/eagle_eyes/master/",
+                "https://github.com/bijancfarahani/eagle-eyes",
                 "Source code."
             ));
 
