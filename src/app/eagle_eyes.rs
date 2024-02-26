@@ -1,8 +1,6 @@
 pub mod game_deck {
     use rand::seq::SliceRandom;
     use rand::thread_rng;
-    use rand::SeedableRng;
-    use rand_chacha::ChaChaRng;
     #[derive(Copy, Clone)]
     pub struct Card {
         pub letter: char,
@@ -12,16 +10,12 @@ pub mod game_deck {
 
     pub fn get_scrambled_deck() -> Deck {
         let mut deck = initial_deck();
-        //deck.shuffle(&mut thread_rng());
-        let seed = [0; 32];
-        let mut rng = ChaChaRng::from_seed(seed);
-
-        deck.shuffle(&mut rng);
+        deck.shuffle(&mut thread_rng());
         deck
     }
 
     pub fn initial_deck() -> Deck {
-        return [
+        [
             Card {
                 letter: 'E',
                 is_visible: true,
@@ -58,19 +52,11 @@ pub mod game_deck {
                 letter: 'S',
                 is_visible: true,
             },
-        ];
+        ]
     }
-    pub fn hide_letters(deck: &mut Deck) -> () {
+    pub fn hide_letters(deck: &mut Deck) {
         for card in deck.iter_mut() {
             card.is_visible = false;
         }
-    }
-    pub fn show_letters(deck: &mut Deck) -> () {
-        for card in deck.iter_mut() {
-            card.is_visible = true;
-        }
-    }
-    pub fn scramble_deck(deck: &mut Deck) -> () {
-        deck.shuffle(&mut thread_rng());
     }
 }

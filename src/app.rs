@@ -1,5 +1,5 @@
-mod game_deck;
-use crate::app::game_deck::game_deck::Deck;
+mod eagle_eyes;
+use crate::app::eagle_eyes::game_deck::Deck;
 use egui::Vec2;
 use instant::{Duration, Instant};
 
@@ -32,7 +32,7 @@ pub struct TemplateApp {
 impl Default for TemplateApp {
     fn default() -> Self {
         Self {
-            deck: game_deck::game_deck::initial_deck(),
+            deck: eagle_eyes::game_deck::initial_deck(),
             winning_string: String::new(),
             memorize_duration: Duration::new(5, 0),
             game_start_time: Instant::now(),
@@ -63,18 +63,18 @@ impl TemplateApp {
         egui::CentralPanel::default().show(ctx, |ui| {
             ui.heading("Welcome to EAGLE EYES!");
             ui.add(egui::github_link_file!(
-                "https://github.com/bijancfarahani/eagle-eyes",
+                "https://github.com/bijancfarahani/eagle-eyes/tree/master/",
                 "Source code."
             ));
 
             if ui.add(egui::Button::new("Start Game!")).clicked() {
                 // Create the game "phrase" to be constructed by the player.
-                self.deck = game_deck::game_deck::initial_deck();
+                self.deck = eagle_eyes::game_deck::initial_deck();
                 self.winning_string.clear();
                 for card in self.deck {
                     self.winning_string.push(card.letter);
                 }
-                self.deck = game_deck::game_deck::get_scrambled_deck();
+                self.deck = eagle_eyes::game_deck::get_scrambled_deck();
                 self.target_letter_index = 0;
                 self.game_start_time = Instant::now();
                 self.game_state = GameState::Memorizing;
@@ -97,8 +97,8 @@ impl TemplateApp {
                 let s_letter = egui::include_image!("../assets/letters/s.png");
                 let blank_image = egui::include_image!("../assets/letters/blank.png");
 
-                for mut card in self.deck.as_mut() {
-                    if card.is_visible == false {
+                for card in self.deck.as_mut() {
+                    if !card.is_visible {
                         if ui
                             .add(egui::Button::image(
                                 egui::Image::new(blank_image.clone()).max_size(pic_size),
@@ -365,7 +365,7 @@ impl eframe::App for TemplateApp {
                 if self.game_start_time.elapsed() < self.memorize_duration {
                     self.memorize_panel(ctx)
                 } else {
-                    game_deck::game_deck::hide_letters(&mut self.deck);
+                    eagle_eyes::game_deck::hide_letters(&mut self.deck);
                     self.game_state = GameState::Spelling;
                 }
             }
