@@ -149,31 +149,90 @@ impl eframe::App for TemplateApp {
                 let s_letter = egui::include_image!("../assets/letters/s.png");
                 let blank_image = egui::include_image!("../assets/letters/blank.png");
 
-                for card in self.deck {
-                    println!("adding card");
-                    match card.letter.to_ascii_lowercase() {
-                        'e' => ui.add(egui::Button::image(
-                            egui::Image::new(e_letter.clone()).max_size(pic_size),
-                        )),
-                        'a' => ui.add(egui::Button::image(
-                            egui::Image::new(a_letter.clone()).max_size(pic_size),
-                        )),
-                        'g' => ui.add(egui::Button::image(
-                            egui::Image::new(g_letter.clone()).max_size(pic_size),
-                        )),
-                        'l' => ui.add(egui::Button::image(
-                            egui::Image::new(l_letter.clone()).max_size(pic_size),
-                        )),
-                        'y' => ui.add(egui::Button::image(
-                            egui::Image::new(y_letter.clone()).max_size(pic_size),
-                        )),
-                        's' => ui.add(egui::Button::image(
-                            egui::Image::new(s_letter.clone()).max_size(pic_size),
-                        )),
-                        _ => ui.add(egui::Button::image(
-                            egui::Image::new(blank_image.clone()).max_size(pic_size),
-                        )),
-                    };
+                for mut card in self.deck.as_mut() {
+                    if card.is_visible == false {
+                        if ui
+                            .add(egui::Button::image(
+                                egui::Image::new(blank_image.clone()).max_size(pic_size),
+                            ))
+                            .clicked()
+                        {
+                            card.is_visible = !card.is_visible;
+                        }
+                    } else {
+                        match card.letter.to_ascii_lowercase() {
+                            'e' => {
+                                if ui
+                                    .add(egui::Button::image(
+                                        egui::Image::new(e_letter.clone()).max_size(pic_size),
+                                    ))
+                                    .clicked()
+                                {
+                                    card.is_visible = !card.is_visible;
+                                }
+                            }
+                            'a' => {
+                                if ui
+                                    .add(egui::Button::image(
+                                        egui::Image::new(a_letter.clone()).max_size(pic_size),
+                                    ))
+                                    .clicked()
+                                {
+                                    card.is_visible = !card.is_visible;
+                                }
+                            }
+                            'g' => {
+                                if ui
+                                    .add(egui::Button::image(
+                                        egui::Image::new(g_letter.clone()).max_size(pic_size),
+                                    ))
+                                    .clicked()
+                                {
+                                    card.is_visible = !card.is_visible;
+                                }
+                            }
+                            'l' => {
+                                if ui
+                                    .add(egui::Button::image(
+                                        egui::Image::new(l_letter.clone()).max_size(pic_size),
+                                    ))
+                                    .clicked()
+                                {
+                                    card.is_visible = !card.is_visible;
+                                }
+                            }
+                            'y' => {
+                                if ui
+                                    .add(egui::Button::image(
+                                        egui::Image::new(y_letter.clone()).max_size(pic_size),
+                                    ))
+                                    .clicked()
+                                {
+                                    card.is_visible = !card.is_visible;
+                                }
+                            }
+                            's' => {
+                                if ui
+                                    .add(egui::Button::image(
+                                        egui::Image::new(s_letter.clone()).max_size(pic_size),
+                                    ))
+                                    .clicked()
+                                {
+                                    card.is_visible = !card.is_visible;
+                                }
+                            }
+                            _ => {
+                                if ui
+                                    .add(egui::Button::image(
+                                        egui::Image::new(blank_image.clone()).max_size(pic_size),
+                                    ))
+                                    .clicked()
+                                {
+                                    card.is_visible = !card.is_visible;
+                                }
+                            }
+                        };
+                    }
                 }
                 ui.with_layout(egui::Layout::top_down_justified(egui::Align::LEFT), |ui| {
                     powered_by_egui_and_eframe(ui);

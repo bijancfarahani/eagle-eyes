@@ -1,12 +1,10 @@
-
-
 pub mod game_deck {
     use rand::seq::SliceRandom;
-use rand::thread_rng;
+    use rand::thread_rng;
     #[derive(Copy, Clone)]
     pub struct Card {
-       pub letter: char,
-       pub is_visible: bool,
+        pub letter: char,
+        pub is_visible: bool,
     }
     pub type Deck = [Card; 9];
 
@@ -16,8 +14,7 @@ use rand::thread_rng;
         deck
     }
 
-    pub fn initial_deck() -> Deck
-    {
+    pub fn initial_deck() -> Deck {
         return [
             Card {
                 letter: 'E',
@@ -54,7 +51,7 @@ use rand::thread_rng;
             Card {
                 letter: 'S',
                 is_visible: false,
-            }
+            },
         ];
     }
     pub fn hide_letters(deck: &mut Deck) -> () {
@@ -65,5 +62,4 @@ use rand::thread_rng;
     pub fn scramble_deck(deck: &mut Deck) -> () {
         deck.shuffle(&mut thread_rng());
     }
-
 }
