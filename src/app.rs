@@ -1,6 +1,9 @@
 mod eagle_eyes;
+mod leaderboard;
+use std::future::IntoFuture;
+
 use crate::app::eagle_eyes::game_deck::Deck;
-use egui::Vec2;
+use egui::{Label, Vec2};
 use instant::{Duration, Instant};
 
 #[derive(PartialEq)]
@@ -307,6 +310,10 @@ impl TemplateApp {
                 "https://github.com/bijancfarahani/eagle_eyes/master/",
                 "Source code."
             ));
+            if ui.add(egui::Button::new("leaderboard")).clicked() {
+                let lb = leaderboard::leaderboard::get_leaderboard();
+                ui.add(egui::Label::new("fda"));
+            }
 
             if ui.add(egui::Button::new("Start Game!")).clicked() {
                 self.game_state = GameState::NotStarted;
