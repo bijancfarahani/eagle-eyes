@@ -4,3 +4,5 @@ mod eagle_eyes;
 
 mod app;
 pub use app::EagleEyesEguiApp;
+
+mod eagle_eyes;
