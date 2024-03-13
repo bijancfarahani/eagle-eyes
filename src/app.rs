@@ -1,5 +1,4 @@
-mod eagle_eyes;
-use crate::app::eagle_eyes::game_deck::Deck;
+use crate::eagle_eyes::game_deck::Deck;
 use egui::Vec2;
 use instant::{Duration, Instant};
 
