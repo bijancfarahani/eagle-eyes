@@ -15,7 +15,7 @@ pub enum GameState {
 /// We derive Deserialize/Serialize so we can persist app state on shutdown.
 #[derive(serde::Deserialize, serde::Serialize)]
 #[serde(default)] // if we add new fields, give them default values when deserializing old state
-pub struct TemplateApp {
+pub struct EagleEyesEguiApp {
     #[serde(skip)] // This how you opt-out of serialization of a field
     deck: Deck,
     winning_string: String,
@@ -29,7 +29,7 @@ pub struct TemplateApp {
 }
 //ui.add(egui::Button::image(egui::Image::new(egui::include_image!("../assets/letters/e.png"))));
 
-impl Default for TemplateApp {
+impl Default for EagleEyesEguiApp {
     fn default() -> Self {
         Self {
             deck: eagle_eyes::game_deck::initial_deck(),
@@ -42,7 +42,7 @@ impl Default for TemplateApp {
     }
 }
 
-impl TemplateApp {
+impl EagleEyesEguiApp {
     /// Called once before the first frame.
     pub fn new(cc: &eframe::CreationContext<'_>) -> Self {
         // This is also where you can customize the look and feel of egui using
@@ -329,7 +329,7 @@ impl TemplateApp {
     }
 }
 
-impl eframe::App for TemplateApp {
+impl eframe::App for EagleEyesEguiApp {
     /// Called by the frame work to save state before shutdown.
     fn save(&mut self, storage: &mut dyn eframe::Storage) {
         eframe::set_value(storage, eframe::APP_KEY, self);
