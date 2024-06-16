@@ -120,7 +120,9 @@ impl EagleEyesApp {
             // Spell out EAGLE EYES.
             ui.horizontal_centered(|ui| {
                 // Display the remaining time the player has to memorize the sequence.
-                ui.add((egui::Label::new(self.game_state.memorize_time_remaining().to_string())));
+                ui.add(egui::Label::new(
+                    self.game_state.memorize_time_remaining().to_string(),
+                ));
 
                 let pic_size = Vec2 { x: 250.0, y: 250.0 };
                 let e_letter = egui::include_image!("../assets/letters/e.png");
