@@ -3,16 +3,9 @@ use crate::app::eagle_eyes::GameScene;
 use crate::app::eagle_eyes::GameState;
 use egui::Vec2;
 
+#[derive(Default)]
 pub struct EagleEyesApp {
     game_state: GameState,
-}
-
-impl Default for EagleEyesApp {
-    fn default() -> Self {
-        Self {
-            game_state: GameState::default(),
-        }
-    }
 }
 
 impl EagleEyesApp {
