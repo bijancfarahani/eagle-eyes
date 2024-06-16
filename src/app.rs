@@ -30,10 +30,6 @@ impl EagleEyesApp {
     fn starting_panel(&mut self, ctx: &egui::Context) {
         egui::CentralPanel::default().show(ctx, |ui| {
             ui.heading("Welcome to EAGLE EYES!");
-            ui.add(egui::github_link_file!(
-                "https://github.com/bijancfarahani/eagle-eyes/tree/master/",
-                "Source code."
-            ));
 
             if ui.add(egui::Button::new("Start Game!")).clicked() {
                 self.game_state.start_game();
@@ -185,10 +181,6 @@ impl EagleEyesApp {
     fn lose_panel(&mut self, ctx: &egui::Context) {
         egui::CentralPanel::default().show(ctx, |ui| {
             ui.heading("You LOSE!");
-            ui.add(egui::github_link_file!(
-                "https://github.com/bijancfarahani/eagle-eyes/tree/master/",
-                "Source code."
-            ));
 
             if ui.add(egui::Button::new("Start Game!")).clicked() {
                 self.game_state.reset_game();
@@ -198,11 +190,6 @@ impl EagleEyesApp {
     fn win_panel(&mut self, ctx: &egui::Context) {
         egui::CentralPanel::default().show(ctx, |ui| {
             ui.heading("You WIN!");
-
-            ui.add(egui::github_link_file!(
-                "https://github.com/bijancfarahani/eagle-eyes/tree/master/",
-                "Source code."
-            ));
 
             if ui.add(egui::Button::new("Start Game!")).clicked() {
                 self.game_state.reset_game();
@@ -215,7 +202,6 @@ impl eframe::App for EagleEyesApp {
     /// Called each time the UI needs repainting, which may be many times per second.
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         // Put your widgets into a `SidePanel`, `TopBottomPanel`, `CentralPanel`, `Window` or `Area`.
-        // For inspiration and more examples, go to https://emilk.github.io/egui
 
         egui::TopBottomPanel::top("top_panel").show(ctx, |ui| {
             // The top panel is often a good place for a menu bar:
@@ -233,6 +219,10 @@ impl eframe::App for EagleEyesApp {
                 }
 
                 egui::widgets::global_dark_light_mode_buttons(ui);
+                ui.add(egui::github_link_file!(
+                    "https://github.com/bijancfarahani/eagle-eyes/tree/master/",
+                    "Source code"
+                ));
             });
         });
 
