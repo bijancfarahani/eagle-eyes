@@ -11,10 +11,8 @@ mod game_deck {
     }
     pub type Deck = [Card; 9];
 
-    pub fn get_scrambled_deck() -> Deck {
-        let mut deck = solved_deck();
+    pub fn scramble_deck(mut deck: Deck) {
         deck.shuffle(&mut thread_rng());
-        deck
     }
 
     pub fn solved_deck() -> Deck {
@@ -86,7 +84,8 @@ pub struct GameState {
     pub deck: game_deck::Deck,
     win_phrase: String,
     memorize_duration: Duration,
-    game_start_time: Instant,
+    memorize_start: Instant,
+    spelling_start: Instant,
     game_scene: GameScene,
     target_index: usize,
 }
@@ -97,7 +96,8 @@ impl Default for GameState {
             deck: game_deck::solved_deck(),
             win_phrase: String::new(),
             memorize_duration: Duration::new(5, 0),
-            game_start_time: Instant::now(),
+            memorize_start: Instant::now(),
+            spelling_start: Instant::now(),
             game_scene: GameScene::NotStarted,
             target_index: 0,
         }
@@ -119,14 +119,22 @@ impl GameState {
         }
 
         // Scramble the deck and start the clock.
-        self.deck = game_deck::get_scrambled_deck();
-        self.game_start_time = Instant::now();
+        game_deck::scramble_deck(self.deck);
+        self.memorize_start = Instant::now();
         self.game_scene = GameScene::Memorizing;
+    }
+
+    pub fn memorize_time_remaining(&self) -> u64 {
+        (self.memorize_duration - self.memorize_start.elapsed()).as_secs()
+    }
+
+    pub fn elapsed_spelling_time(&self) -> u64 {
+        self.spelling_start.elapsed().as_secs()
     }
 
     pub fn get_current_scene(&mut self) -> GameScene {
         if self.game_scene != GameScene::Memorizing
-            || self.game_start_time.elapsed() < self.memorize_duration
+            || self.memorize_start.elapsed() < self.memorize_duration
         {
             return self.game_scene;
         }
@@ -137,7 +145,7 @@ impl GameState {
         // callback function to check the elapsed time and update the state.)
         game_deck::hide_letters(&mut self.deck);
         self.game_scene = GameScene::Spelling;
-
+        self.spelling_start = Instant::now();
         self.game_scene
     }
 

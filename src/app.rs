@@ -43,6 +43,10 @@ impl EagleEyesApp {
 
     fn spelling_panel(&mut self, ctx: &egui::Context) {
         egui::CentralPanel::default().show(ctx, |ui| {
+            ui.add(egui::Label::new(
+                self.game_state.elapsed_spelling_time().to_string(),
+            ));
+
             // Spell out EAGLE EYES.
             ui.horizontal_centered(|ui| {
                 let pic_size = Vec2 { x: 250.0, y: 250.0 };
@@ -119,6 +123,9 @@ impl EagleEyesApp {
         egui::CentralPanel::default().show(ctx, |ui| {
             // Spell out EAGLE EYES.
             ui.horizontal_centered(|ui| {
+                // Display the remaining time the player has to memorize the sequence.
+                ui.add((egui::Label::new(self.game_state.memorize_time_remaining().to_string())));
+
                 let pic_size = Vec2 { x: 250.0, y: 250.0 };
                 let e_letter = egui::include_image!("../assets/letters/e.png");
                 let a_letter = egui::include_image!("../assets/letters/a.png");
