@@ -3,7 +3,7 @@ name = "eagle_eyes"
 version = "0.1.0"
 authors = ["Bijan Farahani <bijancfarahani@gmail.com>"]
 edition = "2021"
-rust-version = "1.72"
+rust-version = "1.79"
 
 
 [dependencies]
