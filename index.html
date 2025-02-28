@@ -8,34 +8,6 @@
 <body>
 
     <script>
-        class Example extends Phaser.Scene {
-            preload() {
-                this.load.setBaseURL('https://labs.phaser.io');
-
-                this.load.image('sky', 'assets/skies/space3.png');
-                this.load.image('logo', 'assets/sprites/phaser3-logo.png');
-                this.load.image('red', 'assets/particles/red.png');
-            }
-
-            create() {
-                this.add.image(400, 300, 'sky');
-
-                const particles = this.add.particles(0, 0, 'red', {
-                    speed: 100,
-                    scale: { start: 1, end: 0 },
-                    blendMode: 'ADD'
-                });
-
-                const logo = this.physics.add.image(400, 100, 'logo');
-
-                logo.setVelocity(100, 200);
-                logo.setBounce(1, 1);
-                logo.setCollideWorldBounds(true);
-
-                particles.startFollow(logo);
-            }
-        }
-
         class EagleEyes extends Phaser.Scene {
             preload() {
                 this.load.setBaseURL("assets/");
@@ -46,76 +18,53 @@
                 this.load.image('l_card', 'cards/l.png');
                 this.load.image('y_card', 'cards/y.png');
                 this.load.image('s_card', 'cards/s.png');
-
             }
 
             create() {
-                var animationConfig = {
-                    key: "cardflip",
 
-                    frames: [
-                        {
-                            key: 'e_card',
-                            frame: 0,
-                            duration: 1000
-                        },
-                        {
-                            key: 'back_card',
-                            frame: 0,
-                            duration: 1000
+                const DECK_STRING = 'eagleeyes';
+                for (var letter_index = 0; letter_index < DECK_STRING.length; ++letter_index) {
+                    const letter = DECK_STRING[letter_index];
+                    const card_key = letter + '_card';
+
+                    var animationConfig = {
+                        // Note: There are warnings for duplicates for 'e' (as expected).
+                        key: "cardflip" + card_key,
+
+                        frames: [
+                            {
+                                key: card_key,
+                                frame: 0,
+                                duration: 1000
+                            },
+                            {
+                                key: 'back_card',
+                                frame: 0,
+                                duration: 1000
+                            }
+                        ]
+                    };
+                    this.anims.create(animationConfig);
+
+                    const card_sprite = this.add.sprite(250 + (letter_index * 300), 300, card_key);
+                    card_sprite.setInteractive().on(
+                        "pointerdown",
+                        function (pointer, localX, localY, event) {
+                            // ...
+                            console.log('clicked: ' + localX + ', ' + localY);
+                            card_sprite.play("cardflip" + card_key);
                         }
-                    ],
-
-                    sortFrames: true,
-                    defaultTextureKey: null,
-                    skipMissedFrames: true,
-                    randomFrame: false,
-
-                    // time
-                    delay: 0,
-                    duration: null,
-                    frameRate: null,
-                    timeScale: 1,
-
-                    // repeat
-                    repeat: 0, // set to (-1) to repeat forever
-                    repeatDelay: 0,
-                    yoyo: false,
-
-                    // visible
-                    showBeforeDelay: false,
-                    showOnStart: false,
-                    hideOnComplete: false,
-                };
-
-                this.anims.create(animationConfig);
-
-
-
-                const sprite = this.add.sprite(400, 300, 'a_card');
-                sprite.setInteractive().on(
-                    "pointerdown",
-                    function (pointer, localX, localY, event) {
-                        // ...
-                        console.log('clicked: ' + localX + ', ' + localY);
-                        sprite.play("cardflip");
-                    }
-                );
+                    );
+                }
             }
 
         }
 
         const config = {
             type: Phaser.AUTO,
-            width: 800,
-            height: 600,
+            width: 1280,
+            height: 720,
             scene: EagleEyes,
-            physics: {
-                default: 'arcade',
-                arcade: {
-                    gravity: { y: 200 }
-                }
-            }
         };
 
         const game = new Phaser.Game(config);
