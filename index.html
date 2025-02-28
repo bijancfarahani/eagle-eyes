@@ -43,20 +43,21 @@
                 const answer_chars = answer.split("");
                 answer_chars.sort(() => 0.5 - Math.random());
                 const scrambled = answer_chars.join("");
+                this.game.scrambled = scrambled;
                 for (var letter_index = 0; letter_index < scrambled.length; ++letter_index) {
                     const letter = scrambled[letter_index];
                     const card_key = letter + '_card';
 
-                    const card_sprite = this.add.sprite(250 + (letter_index * 300), 300, card_key);
+                    var card_sprite = this.add.sprite(250 + (letter_index * 300), 300, card_key);
+                    card_sprite.setScale(0.5);
                 }
 
                 function on_memorization_timer_expire() {
-                    console.log(this);
                     this.scene.start("cardSelection");
                 }
 
                 var timer = this.time.addEvent({
-                    delay: 1 * 1000, // ms
+                    delay: 5 * 1000, // ms
                     callback: on_memorization_timer_expire,
                     //args: [],
                     callbackScope: this,
@@ -81,21 +82,22 @@
             create() {
                 class CardSprite extends Phaser.GameObjects.Sprite {
                     constructor(scene, x, y, texture, frame) {
-                        super(scene, x, y, texture, frame);
+                        super(scene, x, y, 'back_card', frame);
                         scene.add.existing(this);
                         this.card_key = texture;
+                        this.setScale(0.5);
                         this.animationConfig = {
                             // Note: There are warnings for duplicates for 'e' (as expected).
                             key: "cardflip" + this.card_key,
 
                             frames: [
                                 {
-                                    key: this.card_key,
+                                    key: 'back_card',
                                     frame: 0,
                                     duration: 1000
                                 },
                                 {
-                                    key: 'back_card',
+                                    key: this.card_key,
                                     frame: 0,
                                     duration: 1000
                                 }
@@ -108,13 +110,12 @@
                     flipCard(pointer, localX, localY, event) {
                         console.log('clicked: ' + this.card_key);
                         this.play("cardflip" + this.card_key);
+                        this.removeInteractive();
                     }
                 }
 
-
-                const DECK_STRING = 'eagleeyes';
-                for (var letter_index = 0; letter_index < DECK_STRING.length; ++letter_index) {
-                    const letter = DECK_STRING[letter_index];
+                for (var letter_index = 0; letter_index < this.game.scrambled.length; ++letter_index) {
+                    const letter = this.game.scrambled[letter_index];
                     const card_key = letter + '_card';
 
                     const card_sprite = new CardSprite(this, 250 + (letter_index * 300), 300, card_key);
