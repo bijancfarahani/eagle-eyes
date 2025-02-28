@@ -45,33 +45,41 @@
                     const letter = DECK_STRING[letter_index];
                     const card_key = letter + '_card';
 
-                    var animationConfig = {
-                        // Note: There are warnings for duplicates for 'e' (as expected).
-                        key: "cardflip" + card_key,
 
-                        frames: [
-                            {
-                                key: card_key,
-                                frame: 0,
-                                duration: 1000
-                            },
-                            {
-                                key: 'back_card',
-                                frame: 0,
-                                duration: 1000
-                            }
-                        ]
-                    };
-                    this.anims.create(animationConfig);
+                    //this.anims.create(animationConfig);
+                    class CardSprite extends Phaser.GameObjects.Sprite {
+                        animationConfig = {
+                            // Note: There are warnings for duplicates for 'e' (as expected).
+                            key: "cardflip" + card_key,
 
-                    const card_sprite = this.add.sprite(250 + (letter_index * 300), 300, card_key);
-                    card_sprite.setInteractive().on(
-                        "pointerdown",
-                        function (pointer, localX, localY, event) {
-                            // ...
-                            console.log('clicked: ' + localX + ', ' + localY);
-                            card_sprite.play("cardflip" + card_key);
+                            frames: [
+                                {
+                                    key: card_key,
+                                    frame: 0,
+                                    duration: 1000
+                                },
+                                {
+                                    key: 'back_card',
+                                    frame: 0,
+                                    duration: 1000
+                                }
+                            ]
+                        };
+                        constructor(scene, x, y, texture, frame) {
+                            super(scene, x, y, texture, frame);
+                            scene.add.existing(this);
+                            scene.anims.create(this.animationConfig);
                         }
+
+                        flipCard(pointer, localX, localY, event) {
+                            console.log('clicked: ' + localX + ', ' + localY);
+                            this.play("cardflip" + card_key);
+                        }
+                    }
+
+                    const card_sprite = new CardSprite(this, 250 + (letter_index * 300), 300, card_key);
+                    card_sprite.setInteractive().on(
+                        "pointerdown", card_sprite.flipCard
                     );
                 }
             }
