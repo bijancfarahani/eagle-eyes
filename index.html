@@ -47,8 +47,17 @@
                 for (var letter_index = 0; letter_index < scrambled.length; ++letter_index) {
                     const letter = scrambled[letter_index];
                     const card_key = letter + '_card';
+                    var y_coordinate = 200;
+                    var x_offset = letter_index;
+                    if (letter_index >= scrambled.length / 2) {
+                        y_coordinate = 500;
+                        x_offset = scrambled.length - letter_index - 1;
+                    }
 
-                    var card_sprite = this.add.sprite(250 + (letter_index * 300), 300, card_key);
+                    // var card_sprite = this.add.sprite(250 + (letter_index * 300), 300, card_key);
+
+                    var x_coordinate = 200 + (x_offset * 300);
+                    var card_sprite = this.add.sprite(x_coordinate, y_coordinate, card_key);
                     card_sprite.setScale(0.5);
                 }
 
@@ -113,12 +122,21 @@
                         this.removeInteractive();
                     }
                 }
-
+                console.log(this.game.scrambled.length);
                 for (var letter_index = 0; letter_index < this.game.scrambled.length; ++letter_index) {
                     const letter = this.game.scrambled[letter_index];
                     const card_key = letter + '_card';
 
-                    const card_sprite = new CardSprite(this, 250 + (letter_index * 300), 300, card_key);
+                    var y_coordinate = 200;
+                    var x_offset = letter_index;
+                    if (letter_index >= this.game.scrambled.length / 2) {
+                        y_coordinate = 500;
+                        x_offset = this.game.scrambled.length - letter_index - 1;
+                    }
+
+                    var x_coordinate = 200 + (x_offset * 300);
+
+                    const card_sprite = new CardSprite(this, x_coordinate, y_coordinate, card_key);
                     card_sprite.setInteractive().on(
                         "pointerdown", card_sprite.flipCard
                     );
@@ -128,7 +146,7 @@
 
         const config = {
             type: Phaser.AUTO,
-            width: 1280,
+            width: 1500,
             height: 720,
             scene: [
                 new EagleEyesTitle("title"),
