@@ -7,7 +7,7 @@ import { WinScene} from './scenes/win'
 
 export const GameConfig: Phaser.Types.Core.GameConfig = {
   title: 'Eagle Eyes',
-  url: 'https://github.com/digitsensitive/phaser3-typescript',
+  url: 'https://github.com/bijancfarahani/eagle-eyes',
   version: '0.0.1',
   width: 1280,
   height: 720,
