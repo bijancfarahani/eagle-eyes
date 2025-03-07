@@ -1,28 +1,37 @@
 export class SelectionScene extends Phaser.Scene {
+   answer: string;
    scrambled: string;
+   target_index: number;
 
    // Typescript needs an explicit key otherwise two scenes end up having the same (default) name.
    constructor() {
       super({
         key: 'SelectionScene'
       });
+      this.target_index = 0;
     }
 
-   init(data: { scrambled: string; })
+   init(data: { answer: string, scrambled: string; })
    {
+      this.answer = data.answer;
       this.scrambled = data.scrambled;
+      console.log('scrambled: ' + this.scrambled);
    }
 
    create() {
+
+      this.events.on('onCardFlip', this.onCardFlip, this);
       class CardSprite extends Phaser.GameObjects.Sprite {
          card_key: string;
          animationConfig: {
             // Note: There are warnings for duplicates for 'e' (as expected).
             key: string; frames: { key: any; frame: number; duration: number; }[];
          };
+         event_emitter: Phaser.Events.EventEmitter;
          constructor(scene: Phaser.Scene, x: number, y: number, texture: string, frame: string | number) {
              super(scene, x, y, 'back_card', frame);
              scene.add.existing(this);
+             this.event_emitter = scene.events;
              this.card_key = texture;
              this.setScale(0.5);
              this.animationConfig = {
@@ -47,8 +56,8 @@ export class SelectionScene extends Phaser.Scene {
          }
 
          flipCard() {
-             console.log('clicked: ' + this.card_key);
              this.play("cardflip" + this.card_key);
+             this.event_emitter.emit('onCardFlip', this.card_key[0]);
              this.removeInteractive();
          }
      }
@@ -72,5 +81,20 @@ export class SelectionScene extends Phaser.Scene {
              "pointerdown", card_sprite.flipCard
          );
      }
+   }
+   onCardFlip(letter: string) {
+      // The player selected the wrong card.
+      const target_letter = this.answer[this.target_index];
+      if(letter != target_letter)
+      {
+         this.scene.start("LoseScene");
+      }
+
+      // The player correctly selected the next letter.
+      ++this.target_index;
+      if(this.target_index == this.answer.length)
+      {
+         this.scene.start("WinScene");
+      }
    }
 }

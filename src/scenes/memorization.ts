@@ -38,7 +38,7 @@ export class MemorizationScene extends Phaser.Scene {
        // Proceed to the card selection scene and pass along the
        // scrambled letters.
        function on_memorization_timer_expire() {
-           this.scene.start("SelectionScene", {scrambled: scrambled});
+           this.scene.start("SelectionScene", {answer: answer, scrambled: scrambled});
        }
 
        var timer = this.time.addEvent({
