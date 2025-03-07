@@ -9,23 +9,13 @@ export class MemorizationScene extends Phaser.Scene {
       });
     }
 
-   preload() {
-       this.load.setBaseURL("./assets/");
-       this.load.image('back_card', 'cards/back.png');
-       this.load.image('e_card', 'cards/e.png');
-       this.load.image('a_card', 'cards/a.png');
-       this.load.image('g_card', 'cards/g.png');
-       this.load.image('l_card', 'cards/l.png');
-       this.load.image('y_card', 'cards/y.png');
-       this.load.image('s_card', 'cards/s.png');
-   }
-
    create() {
+      // 1) Scramble all the letters in the answer string.
        const answer = 'eagleeyes';
        const answer_chars = answer.split("");
        answer_chars.sort(() => 0.5 - Math.random());
        const scrambled = answer_chars.join("");
-       //this.game.scrambled = scrambled;
+      // 2) Draw the cards face-up on the game board for the player to remember.
        for (var letter_index = 0; letter_index < scrambled.length; ++letter_index) {
            const letter = scrambled[letter_index];
            const card_key = letter + '_card';
@@ -43,6 +33,8 @@ export class MemorizationScene extends Phaser.Scene {
            card_sprite.setScale(0.5);
        }
 
+       // 3) Launch a timer for memorizing and move onto the next
+       // stage in the game on its expiration.
        // Proceed to the card selection scene and pass along the
        // scrambled letters.
        function on_memorization_timer_expire() {
