@@ -58,12 +58,14 @@ export class SelectionScene extends Phaser.Scene {
 
          var y_coordinate = 200;
          var x_offset = letter_index;
+         var left_alignment = 150;
          if (letter_index >= this.scrambled.length / 2) {
              y_coordinate = 500;
              x_offset = this.scrambled.length - letter_index - 1;
+             left_alignment = 250;
          }
 
-         var x_coordinate = 200 + (x_offset * 300);
+         var x_coordinate = left_alignment + (x_offset * 250);
 
          const card_sprite = new CardSprite(this, x_coordinate, y_coordinate, card_key, null);
          card_sprite.setInteractive().on(
