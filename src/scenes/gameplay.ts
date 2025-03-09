@@ -5,9 +5,9 @@ import { GameMode } from "../constants";
 export class GameplayScene extends Phaser.Scene {
    target_index: number;
    gameMode: GameMode;
-   timeText: any;
+   timeText: Phaser.GameObjects.Text;
    isPlayerMemorizing: boolean;
-
+   startTime: number;
 
    // Typescript needs an explicit key otherwise two scenes end up having the same (default) name.
    constructor() {
@@ -44,34 +44,38 @@ export class GameplayScene extends Phaser.Scene {
       this.showCards();
 
       switch (this.gameMode) {
-         case GameMode.Classic:
-            {
-               var timer = this.time.addEvent({
-                  delay: EagleEyesConfig.memorizationTime * 1000, // ms
-                  callback: this.closeCards,
-                  callbackScope: this,
-                  loop: false,
-               });
-               break;
-            }
-         case GameMode.Modern:
-            {
-               this.isPlayerMemorizing = true;
-               this.timeText = this.add.text(0, 0, "Time Spent Memorizing: 0", {
-                  fontSize: "48px",
-                  fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif',
-               });
-               break;
-            }
+         case GameMode.Classic: {
+            var timer = this.time.addEvent({
+               delay: EagleEyesConfig.memorizationTime * 1000, // ms
+               callback: this.closeCards,
+               callbackScope: this,
+               loop: false,
+            });
+            break;
+         }
+         case GameMode.Modern: {
+            this.isPlayerMemorizing = true;
+            this.startTime = this.time.now;
+            this.timeText = this.add.text(0, 0, "Time Spent Memorizing: 0", {
+               fontSize: "48px",
+               fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
+            });
+            this.input.once("pointerdown", () => {
+               this.isPlayerMemorizing = false;
+               this.closeCards();
+            });
+            break;
+         }
       }
-
    }
    update(time: number, _delta: number): void {
-      if (this.gameMode != GameMode.Modern || !this.isPlayerMemorizing) { return; }
-      var gameRuntime = time * 0.001; //Converted to Seconds
-      this.timeText.setText("Time Spent Memorizing: " + Math.round(gameRuntime) + " seconds");
-      this.input.on('pointerdown', () => { this.isPlayerMemorizing = false; this.closeCards(); });
-
+      if (this.gameMode != GameMode.Modern || !this.isPlayerMemorizing) {
+         return;
+      }
+      var gameRuntime = (time - this.startTime) * 0.001;
+      this.timeText.setText(
+         "Time Spent Memorizing: " + Math.round(gameRuntime) + " seconds",
+      );
    }
 
    createCards() {

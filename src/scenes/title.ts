@@ -21,20 +21,22 @@ export class TitleScene extends Phaser.Scene {
    create() {
       this.add.text(0, 0, "Welcome to Eagle Eyes!", {
          fontSize: "48px",
-         fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif',
+         fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
       });
-      const startClassicMode = this.add.text(400, 400, "Classic Mode", {
-         fontSize: "70px",
-         fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif',
-      })
+      const startClassicMode = this.add
+         .text(400, 400, "Classic Mode", {
+            fontSize: "70px",
+            fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
+         })
          .setInteractive()
-         .on('pointerdown', () => this.startGame(GameMode.Classic));
-      const startModernMode = this.add.text(1000, 400, "Modern Mode", {
-         fontSize: "70px",
-         fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif',
-      })
+         .on("pointerdown", () => this.startGame(GameMode.Classic));
+      const startModernMode = this.add
+         .text(1000, 400, "Modern Mode", {
+            fontSize: "70px",
+            fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
+         })
          .setInteractive()
-         .on('pointerdown', () => this.startGame(GameMode.Modern));
+         .on("pointerdown", () => this.startGame(GameMode.Modern));
    }
    startGame(gameMode: GameMode) {
       this.scene.start("GameplayScene", { gameMode: gameMode });

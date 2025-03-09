@@ -8,7 +8,7 @@ export class WinScene extends Phaser.Scene {
    create() {
       this.add.text(0, 0, "You won!!!", {
          fontSize: "48px",
-         fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif',
+         fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
       });
       const card_sprite = this.add.sprite(400, 400, "card_back");
       card_sprite.setInteractive().on(
