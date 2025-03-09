@@ -98,14 +98,6 @@ export class SelectionScene extends Phaser.Scene {
    onCardFlip(letter: string) {
       // The player selected the wrong card.
       const target_letter = this.answer[this.target_index];
-      console.log(
-         "target_index:" +
-            this.target_index +
-            ", target_letter: " +
-            target_letter +
-            ", clicked letter: " +
-            letter,
-      );
       if (letter != target_letter) {
          this.scene.start("LoseScene");
       }

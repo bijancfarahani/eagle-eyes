@@ -10,6 +10,11 @@ export const GameConfig: Phaser.Types.Core.GameConfig = {
    version: "0.0.1",
    width: 1280,
    height: 720,
+   scale: {
+      width: 1280,
+      height: 720,
+   },
+   canvasStyle: `display: block; width: 100%; height: 100%;`,
    type: Phaser.AUTO,
    parent: "game",
    scene: [TitleScene, MemorizationScene, SelectionScene, LoseScene, WinScene],

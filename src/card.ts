@@ -10,6 +10,7 @@ class Card extends Phaser.GameObjects.Sprite {
       this.scene = scene;
       this.letter = letter;
       this.setOrigin(0.5, 0.5);
+      this.setScale(0.5);
       this.scene.add.existing(this);
    }
 
@@ -18,11 +19,9 @@ class Card extends Phaser.GameObjects.Sprite {
       this.positionY = y;
       this.delay = delay;
       this.setPosition(-this.width, -this.height);
-      this.setScale(0.5);
    }
 
    move() {
-      console.log('Start of move():' + this.letter);
       this.scene.tweens.add({
          targets: this,
          x: this.positionX,
@@ -61,7 +60,6 @@ class Card extends Phaser.GameObjects.Sprite {
    }
 
    showCard() {
-      console.log('Start of showCard:' + this.letter);
       const texture = this.isOpened ? `card_${this.letter}` : "card_back";
       this.setTexture(texture);
       this.scene.tweens.add({

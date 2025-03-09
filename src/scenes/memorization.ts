@@ -49,24 +49,22 @@ export class MemorizationScene extends Phaser.Scene {
    showCards() {
       // why tf does this not work?
       this.cards.forEach((card) => {
-         //  card.move();
+         card.move();
       });
       // why tf does this work ?
-      this.cards[0].move();
-      this.cards[1].move();
-      this.cards[2].move();
-      this.cards[3].move();
-      this.cards[4].move();
-      this.cards[5].move();
-      this.cards[6].move();
-      this.cards[7].move();
-      this.cards[8].move();
+      // this.cards[0].move();
+      // this.cards[1].move();
+      // this.cards[2].move();
+      // this.cards[3].move();
+      // this.cards[4].move();
+      // this.cards[5].move();
+      // this.cards[6].move();
+      // this.cards[7].move();
+      // this.cards[8].move();
 
    }
    start() {
-      console.log('Calling initCards()');
       this.initCards();
-      console.log('Calling showCards()');
       this.showCards();
       this.cards.forEach((card) => {
          //card.closeCard();
@@ -75,10 +73,7 @@ export class MemorizationScene extends Phaser.Scene {
 
    createCards() {
       for (const letter of EagleEyesConfig.answer) {
-         for (let i = 0; i < ROWS; i++) {
-            console.log("Creating card with letter: " + letter);
-            this.cards.push(new Card(this, letter));
-         }
+         this.cards.push(new Card(this, letter));
       }
    }
 
