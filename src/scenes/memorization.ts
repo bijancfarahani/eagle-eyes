@@ -16,7 +16,9 @@ export class MemorizationScene extends Phaser.Scene {
       const positions = [];
 
       const offsetX =
-         (+this.sys.game.config.width - cardWidth * COLS) / 2 + cardWidth / 2;
+         [(+this.sys.game.config.width - cardWidth * COLS[0]) / 2 + cardWidth / 2,
+         (+this.sys.game.config.width - cardWidth * COLS[1]) / 2 + cardWidth / 2
+         ];
 
       const offsetY =
          (+this.sys.game.config.height - cardHeight * ROWS) / 2 +
@@ -25,9 +27,9 @@ export class MemorizationScene extends Phaser.Scene {
       let id = 0;
 
       for (let r = 0; r < ROWS; r++) {
-         for (let c = 0; c < COLS; c++) {
+         for (let c = 0; c < COLS[r]; c++) {
             positions.push({
-               x: offsetX + c * cardWidth,
+               x: offsetX[r] + c * cardWidth,
 
                y: offsetY + r * cardHeight,
 
@@ -47,22 +49,11 @@ export class MemorizationScene extends Phaser.Scene {
       this.start();
    }
    showCards() {
-      // why tf does this not work?
       this.cards.forEach((card) => {
          card.move();
       });
-      // why tf does this work ?
-      // this.cards[0].move();
-      // this.cards[1].move();
-      // this.cards[2].move();
-      // this.cards[3].move();
-      // this.cards[4].move();
-      // this.cards[5].move();
-      // this.cards[6].move();
-      // this.cards[7].move();
-      // this.cards[8].move();
-
    }
+
    start() {
       this.initCards();
       this.showCards();

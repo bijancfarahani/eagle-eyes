@@ -8,13 +8,12 @@ export const GameConfig: Phaser.Types.Core.GameConfig = {
    title: "Eagle Eyes",
    url: "https://github.com/bijancfarahani/eagle-eyes",
    version: "0.0.1",
-   width: 1280,
-   height: 720,
+   width: window.innerWidth,
+   height: window.innerHeight,
    scale: {
-      width: 1280,
-      height: 720,
+      mode: Phaser.Scale.FIT,
+      autoCenter: Phaser.Scale.CENTER_BOTH
    },
-   canvasStyle: `display: block; width: 100%; height: 100%;`,
    type: Phaser.AUTO,
    parent: "game",
    scene: [TitleScene, MemorizationScene, SelectionScene, LoseScene, WinScene],

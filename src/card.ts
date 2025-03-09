@@ -9,8 +9,8 @@ class Card extends Phaser.GameObjects.Sprite {
       super(scene, 0, 0, "card_back");
       this.scene = scene;
       this.letter = letter;
+      //this.setScale(0.5);
       this.setOrigin(0.5, 0.5);
-      this.setScale(0.5);
       this.scene.add.existing(this);
    }
 
