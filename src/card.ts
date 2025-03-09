@@ -1,3 +1,5 @@
+import { CARD_PADDING, CARD_SIZE, COLS, ROWS } from "./constants";
+
 class Card extends Phaser.GameObjects.Sprite {
    isOpened: boolean = true;
    letter: string;
@@ -70,5 +72,38 @@ class Card extends Phaser.GameObjects.Sprite {
       });
    }
 }
-
 export default Card;
+
+export function getCardsPosition(
+   gameConfig: Phaser.Core.Config,
+): { x: number; y: number; delay: number }[] {
+   const cardWidth = CARD_SIZE + CARD_PADDING;
+   const cardHeight = CARD_SIZE + CARD_PADDING;
+
+   const positions = [];
+
+   const offsetX = [
+      (+gameConfig.width - cardWidth * COLS[0]) / 2 + cardWidth / 2,
+      (+gameConfig.width - cardWidth * COLS[1]) / 2 + cardWidth / 2,
+   ];
+
+   const offsetY =
+      (+gameConfig.height - cardHeight * ROWS) / 2 + cardHeight / 2;
+
+   let id = 0;
+
+   for (let r = 0; r < ROWS; r++) {
+      for (let c = 0; c < COLS[r]; c++) {
+         positions.push({
+            x: offsetX[r] + c * cardWidth,
+
+            y: offsetY + r * cardHeight,
+
+            delay: ++id * 100,
+         });
+      }
+   }
+
+   Phaser.Utils.Array.Shuffle(positions);
+   return positions;
+}

@@ -24,7 +24,7 @@ export class TitleScene extends Phaser.Scene {
       card_sprite.setInteractive().on(
          "pointerdown",
          function () {
-            this.scene.start("MemorizationScene");
+            this.scene.start("GameplayScene");
          },
          this,
       );

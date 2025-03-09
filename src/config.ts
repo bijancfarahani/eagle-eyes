@@ -1,6 +1,5 @@
 import { TitleScene } from "./scenes/title";
-import { MemorizationScene } from "./scenes/memorization";
-import { SelectionScene } from "./scenes/selection";
+import { GameplayScene } from "./scenes/gameplay";
 import { LoseScene } from "./scenes/lose";
 import { WinScene } from "./scenes/win";
 
@@ -16,7 +15,7 @@ export const GameConfig: Phaser.Types.Core.GameConfig = {
    },
    type: Phaser.AUTO,
    parent: "game",
-   scene: [TitleScene, MemorizationScene, SelectionScene, LoseScene, WinScene],
+   scene: [TitleScene, GameplayScene, LoseScene, WinScene],
    backgroundColor: "#0",
    render: { pixelArt: false, antialias: true },
 };

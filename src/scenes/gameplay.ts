@@ -1,48 +1,13 @@
-import Card from "../card";
+import Card, { getCardsPosition } from "../card";
 import { EagleEyesConfig } from "../config";
-import { CARD_SIZE, CARD_PADDING, COLS, ROWS } from "../constants";
 
-export class MemorizationScene extends Phaser.Scene {
+export class GameplayScene extends Phaser.Scene {
    target_index: number;
    // Typescript needs an explicit key otherwise two scenes end up having the same (default) name.
    constructor() {
       super({
-         key: "MemorizationScene",
+         key: "GameplayScene",
       });
-   }
-   getCardsPosition(): { x: number; y: number; delay: number }[] {
-      const cardWidth = CARD_SIZE + CARD_PADDING;
-      const cardHeight = CARD_SIZE + CARD_PADDING;
-
-      const positions = [];
-
-      const offsetX = [
-         (+this.sys.game.config.width - cardWidth * COLS[0]) / 2 +
-         cardWidth / 2,
-         (+this.sys.game.config.width - cardWidth * COLS[1]) / 2 +
-         cardWidth / 2,
-      ];
-
-      const offsetY =
-         (+this.sys.game.config.height - cardHeight * ROWS) / 2 +
-         cardHeight / 2;
-
-      let id = 0;
-
-      for (let r = 0; r < ROWS; r++) {
-         for (let c = 0; c < COLS[r]; c++) {
-            positions.push({
-               x: offsetX[r] + c * cardWidth,
-
-               y: offsetY + r * cardHeight,
-
-               delay: ++id * 100,
-            });
-         }
-      }
-
-      Phaser.Utils.Array.Shuffle(positions);
-      return positions;
    }
 
    cards: Card[] = [];
@@ -80,6 +45,7 @@ export class MemorizationScene extends Phaser.Scene {
    }
 
    createCards() {
+      // Clear out cards from previous game attempts.
       this.cards = [];
       for (const letter of EagleEyesConfig.answer) {
          this.cards.push(new Card(this, letter));
@@ -88,7 +54,7 @@ export class MemorizationScene extends Phaser.Scene {
    }
 
    initCards() {
-      const positions = this.getCardsPosition();
+      const positions = getCardsPosition(this.sys.game.config);
 
       this.cards.forEach((card) => {
          const position = positions.pop();
