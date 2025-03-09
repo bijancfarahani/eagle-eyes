@@ -18,9 +18,9 @@ export class MemorizationScene extends Phaser.Scene {
 
       const offsetX = [
          (+this.sys.game.config.width - cardWidth * COLS[0]) / 2 +
-            cardWidth / 2,
+         cardWidth / 2,
          (+this.sys.game.config.width - cardWidth * COLS[1]) / 2 +
-            cardWidth / 2,
+         cardWidth / 2,
       ];
 
       const offsetY =
@@ -51,6 +51,7 @@ export class MemorizationScene extends Phaser.Scene {
       this.createCards();
       this.start();
    }
+
    showCards() {
       this.cards.forEach((card) => {
          card.move();
@@ -79,6 +80,7 @@ export class MemorizationScene extends Phaser.Scene {
    }
 
    createCards() {
+      this.cards = [];
       for (const letter of EagleEyesConfig.answer) {
          this.cards.push(new Card(this, letter));
       }
@@ -95,10 +97,7 @@ export class MemorizationScene extends Phaser.Scene {
    }
 
    onCardClicked(pointer: { x: number; y: number }, card: Card) {
-      // The first condition checks if the clicked card (card) is already open (card.isOpened). If so, the function returns false to prevent any further actions.
-      console.log(
-         "in onCardClicked: " + card.letter + ", isOpened: " + card.isOpened,
-      );
+      // NO-OP if the player tries to flip a card they already flipped.
       if (card.isOpened) {
          return false;
       }
@@ -113,56 +112,5 @@ export class MemorizationScene extends Phaser.Scene {
       if (this.target_index == EagleEyesConfig.answer.length) {
          this.scene.start("WinScene");
       }
-   }
-
-   create_old() {
-      // 1) Scramble all the letters in the answer string.
-      const answer = "eagleeyes";
-      const answer_chars = answer.split("");
-      answer_chars.sort(() => 0.5 - Math.random());
-      const scrambled = answer_chars.join("");
-      // 2) Draw the cards face-up on the game board for the player to remember.
-      for (
-         var letter_index = 0;
-         letter_index < scrambled.length;
-         ++letter_index
-      ) {
-         const letter = scrambled[letter_index];
-         const card_key = letter + "_card";
-         var y_coordinate = 200;
-         var x_offset = letter_index;
-         var left_alignment = 150;
-         if (letter_index >= scrambled.length / 2) {
-            y_coordinate = 500;
-            x_offset = scrambled.length - letter_index - 1;
-            left_alignment = 250;
-         }
-
-         var x_coordinate = left_alignment + x_offset * 250;
-         var card_sprite = this.add.sprite(
-            x_coordinate,
-            y_coordinate,
-            card_key,
-         );
-         card_sprite.setScale(0.5);
-      }
-
-      // 3) Launch a timer for memorizing and move onto the next
-      // stage in the game on its expiration.
-      // Proceed to the card selection scene and pass along the
-      // scrambled letters.
-      function on_memorization_timer_expire() {
-         this.scene.start("SelectionScene", {
-            answer: answer,
-            scrambled: scrambled,
-         });
-      }
-
-      var timer = this.time.addEvent({
-         delay: EagleEyesConfig.memorizationTime * 1000, // ms
-         callback: on_memorization_timer_expire,
-         callbackScope: this,
-         loop: false,
-      });
    }
 }
