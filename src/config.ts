@@ -12,7 +12,7 @@ export const GameConfig: Phaser.Types.Core.GameConfig = {
    height: window.innerHeight,
    scale: {
       mode: Phaser.Scale.FIT,
-      autoCenter: Phaser.Scale.CENTER_BOTH
+      autoCenter: Phaser.Scale.CENTER_BOTH,
    },
    type: Phaser.AUTO,
    parent: "game",

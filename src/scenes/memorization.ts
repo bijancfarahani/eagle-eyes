@@ -16,10 +16,12 @@ export class MemorizationScene extends Phaser.Scene {
 
       const positions = [];
 
-      const offsetX =
-         [(+this.sys.game.config.width - cardWidth * COLS[0]) / 2 + cardWidth / 2,
-         (+this.sys.game.config.width - cardWidth * COLS[1]) / 2 + cardWidth / 2
-         ];
+      const offsetX = [
+         (+this.sys.game.config.width - cardWidth * COLS[0]) / 2 +
+            cardWidth / 2,
+         (+this.sys.game.config.width - cardWidth * COLS[1]) / 2 +
+            cardWidth / 2,
+      ];
 
       const offsetY =
          (+this.sys.game.config.height - cardHeight * ROWS) / 2 +
@@ -80,7 +82,7 @@ export class MemorizationScene extends Phaser.Scene {
       for (const letter of EagleEyesConfig.answer) {
          this.cards.push(new Card(this, letter));
       }
-      this.input.on('gameobjectdown', this.onCardClicked, this);
+      this.input.on("gameobjectdown", this.onCardClicked, this);
    }
 
    initCards() {
@@ -92,10 +94,11 @@ export class MemorizationScene extends Phaser.Scene {
       });
    }
 
-
    onCardClicked(pointer: { x: number; y: number }, card: Card) {
       // The first condition checks if the clicked card (card) is already open (card.isOpened). If so, the function returns false to prevent any further actions.
-      console.log('in onCardClicked: ' + card.letter + ", isOpened: " + card.isOpened);
+      console.log(
+         "in onCardClicked: " + card.letter + ", isOpened: " + card.isOpened,
+      );
       if (card.isOpened) {
          return false;
       }
@@ -111,8 +114,6 @@ export class MemorizationScene extends Phaser.Scene {
          this.scene.start("WinScene");
       }
    }
-
-
 
    create_old() {
       // 1) Scramble all the letters in the answer string.
