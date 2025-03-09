@@ -1,8 +1,14 @@
 import Card, { getCardsPosition } from "../card";
 import { EagleEyesConfig } from "../config";
+import { GameMode } from "../constants";
 
 export class GameplayScene extends Phaser.Scene {
    target_index: number;
+   gameMode: GameMode;
+   timeText: any;
+   isPlayerMemorizing: boolean;
+
+
    // Typescript needs an explicit key otherwise two scenes end up having the same (default) name.
    constructor() {
       super({
@@ -11,6 +17,10 @@ export class GameplayScene extends Phaser.Scene {
    }
 
    cards: Card[] = [];
+
+   init(data: { gameMode: GameMode }) {
+      this.gameMode = data.gameMode;
+   }
 
    create() {
       this.createCards();
@@ -32,16 +42,36 @@ export class GameplayScene extends Phaser.Scene {
       this.target_index = 0;
       this.initCards();
       this.showCards();
-      function on_memorization_timer_expire() {
-         this.closeCards();
+
+      switch (this.gameMode) {
+         case GameMode.Classic:
+            {
+               var timer = this.time.addEvent({
+                  delay: EagleEyesConfig.memorizationTime * 1000, // ms
+                  callback: this.closeCards,
+                  callbackScope: this,
+                  loop: false,
+               });
+               break;
+            }
+         case GameMode.Modern:
+            {
+               this.isPlayerMemorizing = true;
+               this.timeText = this.add.text(0, 0, "Time Spent Memorizing: 0", {
+                  fontSize: "48px",
+                  fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif',
+               });
+               break;
+            }
       }
 
-      var timer = this.time.addEvent({
-         delay: EagleEyesConfig.memorizationTime * 1000, // ms
-         callback: on_memorization_timer_expire,
-         callbackScope: this,
-         loop: false,
-      });
+   }
+   update(time: number, _delta: number): void {
+      if (this.gameMode != GameMode.Modern || !this.isPlayerMemorizing) { return; }
+      var gameRuntime = time * 0.001; //Converted to Seconds
+      this.timeText.setText("Time Spent Memorizing: " + Math.round(gameRuntime) + " seconds");
+      this.input.on('pointerdown', () => { this.isPlayerMemorizing = false; this.closeCards(); });
+
    }
 
    createCards() {

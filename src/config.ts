@@ -7,8 +7,6 @@ export const GameConfig: Phaser.Types.Core.GameConfig = {
    title: "Eagle Eyes",
    url: "https://github.com/bijancfarahani/eagle-eyes",
    version: "0.0.1",
-   // width: window.innerWidth,
-   //height: window.innerHeight,
    width: 2560,
    height: 1440,
 

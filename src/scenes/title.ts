@@ -1,4 +1,7 @@
+import { GameMode } from "../constants";
+
 export class TitleScene extends Phaser.Scene {
+   gameMode: GameMode;
    constructor() {
       super({
          key: "TitleScene",
@@ -20,13 +23,20 @@ export class TitleScene extends Phaser.Scene {
          fontSize: "48px",
          fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif',
       });
-      const card_sprite = this.add.sprite(400, 400, "card_back");
-      card_sprite.setInteractive().on(
-         "pointerdown",
-         function () {
-            this.scene.start("GameplayScene");
-         },
-         this,
-      );
+      const startClassicMode = this.add.text(400, 400, "Classic Mode", {
+         fontSize: "70px",
+         fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif',
+      })
+         .setInteractive()
+         .on('pointerdown', () => this.startGame(GameMode.Classic));
+      const startModernMode = this.add.text(1000, 400, "Modern Mode", {
+         fontSize: "70px",
+         fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif',
+      })
+         .setInteractive()
+         .on('pointerdown', () => this.startGame(GameMode.Modern));
+   }
+   startGame(gameMode: GameMode) {
+      this.scene.start("GameplayScene", { gameMode: gameMode });
    }
 }
