@@ -3,6 +3,7 @@ import { EagleEyesConfig } from "../config";
 import { CARD_SIZE, CARD_PADDING, COLS, ROWS } from "../constants";
 
 export class MemorizationScene extends Phaser.Scene {
+   target_index: number;
    // Typescript needs an explicit key otherwise two scenes end up having the same (default) name.
    constructor() {
       super({
@@ -53,12 +54,25 @@ export class MemorizationScene extends Phaser.Scene {
          card.move();
       });
    }
-
+   closeCards() {
+      this.cards.forEach((card) => {
+         card.closeCard();
+         card.setInteractive();
+      });
+   }
    start() {
+      this.target_index = 0;
       this.initCards();
       this.showCards();
-      this.cards.forEach((card) => {
-         //card.closeCard();
+      function on_memorization_timer_expire() {
+         this.closeCards();
+      }
+
+      var timer = this.time.addEvent({
+         delay: EagleEyesConfig.memorizationTime * 1000, // ms
+         callback: on_memorization_timer_expire,
+         callbackScope: this,
+         loop: false,
       });
    }
 
@@ -66,6 +80,7 @@ export class MemorizationScene extends Phaser.Scene {
       for (const letter of EagleEyesConfig.answer) {
          this.cards.push(new Card(this, letter));
       }
+      this.input.on('gameobjectdown', this.onCardClicked, this);
    }
 
    initCards() {
@@ -76,6 +91,28 @@ export class MemorizationScene extends Phaser.Scene {
          card.init(position?.x, position?.y, position?.delay);
       });
    }
+
+
+   onCardClicked(pointer: { x: number; y: number }, card: Card) {
+      // The first condition checks if the clicked card (card) is already open (card.isOpened). If so, the function returns false to prevent any further actions.
+      console.log('in onCardClicked: ' + card.letter + ", isOpened: " + card.isOpened);
+      if (card.isOpened) {
+         return false;
+      }
+      card.openCard();
+      const target_letter = EagleEyesConfig.answer[this.target_index];
+      if (card.letter != target_letter) {
+         this.scene.start("LoseScene");
+      }
+
+      // The player correctly selected the next letter.
+      ++this.target_index;
+      if (this.target_index == EagleEyesConfig.answer.length) {
+         this.scene.start("WinScene");
+      }
+   }
+
+
 
    create_old() {
       // 1) Scramble all the letters in the answer string.
