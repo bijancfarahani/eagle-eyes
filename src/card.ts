@@ -1,24 +1,76 @@
-export function getCardsPosition(): { x: number; y: number }[] {
-   const cardWidth = 196 + 5;
-   const cardHeight = 306 + 5;
-   const COLS = 2;
-   const ROWS = 5;
-   const positions = [];
-   const offsetX =
-      (+this.sys.game.config.width - cardWidth * COLS) / 2 + cardWidth / 2;
-   const offsetY =
-      (+this.sys.game.config.height - cardHeight * ROWS) / 2 + cardHeight / 2;
+class Card extends Phaser.GameObjects.Sprite {
+   isOpened: boolean = true;
+   letter: string;
+   positionX = 0;
+   positionY = 0;
+   delay = 0;
 
-   let id = 0;
-   for (let r = 0; r < ROWS; r++) {
-      for (let c = 0; c < COLS; c++) {
-         positions.push({
-            x: offsetX + c * cardWidth,
-            y: offsetY + r * cardHeight,
-            delay: ++id * 100,
-         });
+   constructor(scene: Phaser.Scene, letter: string) {
+      super(scene, 0, 0, "card_back");
+      this.scene = scene;
+      this.letter = letter;
+      this.setOrigin(0.5, 0.5);
+      this.scene.add.existing(this);
+   }
+
+   init(x: number, y: number, delay: number) {
+      this.positionX = x;
+      this.positionY = y;
+      this.delay = delay;
+      this.setPosition(-this.width, -this.height);
+      this.setScale(0.5);
+   }
+
+   move() {
+      console.log('Start of move():' + this.letter);
+      this.scene.tweens.add({
+         targets: this,
+         x: this.positionX,
+         y: this.positionY,
+         ease: "Linear",
+         delay: this.delay,
+         duration: 250,
+         onComplete: () => {
+            this.showCard();
+         },
+      });
+   }
+
+   openCard() {
+      this.isOpened = true;
+      this.flipCard();
+   }
+
+   closeCard() {
+      if (this.isOpened) {
+         this.isOpened = false;
+         this.flipCard();
       }
    }
-   Phaser.Utils.Array.Shuffle(positions);
-   return positions;
+
+   flipCard() {
+      this.scene.tweens.add({
+         targets: this,
+         scaleX: 0,
+         ease: "Linear",
+         duration: 150,
+         onComplete: () => {
+            this.showCard();
+         },
+      });
+   }
+
+   showCard() {
+      console.log('Start of showCard:' + this.letter);
+      const texture = this.isOpened ? `card_${this.letter}` : "card_back";
+      this.setTexture(texture);
+      this.scene.tweens.add({
+         targets: this,
+         scaleX: 1,
+         ease: "Linear",
+         duration: 150,
+      });
+   }
 }
+
+export default Card;

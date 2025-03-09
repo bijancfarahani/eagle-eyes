@@ -10,7 +10,7 @@ export class WinScene extends Phaser.Scene {
          fontSize: "48px",
          fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif',
       });
-      const card_sprite = this.add.sprite(400, 400, "back_card");
+      const card_sprite = this.add.sprite(400, 400, "card_back");
       card_sprite.setInteractive().on(
          "pointerdown",
          function () {

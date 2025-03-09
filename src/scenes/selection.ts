@@ -34,7 +34,7 @@ export class SelectionScene extends Phaser.Scene {
             texture: string,
             frame: string | number,
          ) {
-            super(scene, x, y, "back_card", frame);
+            super(scene, x, y, "card_back", frame);
             scene.add.existing(this);
             this.event_emitter = scene.events;
             this.card_key = texture;
@@ -45,7 +45,7 @@ export class SelectionScene extends Phaser.Scene {
 
                frames: [
                   {
-                     key: "back_card",
+                     key: "card_back",
                      frame: 0,
                      duration: 1000,
                   },
@@ -100,11 +100,11 @@ export class SelectionScene extends Phaser.Scene {
       const target_letter = this.answer[this.target_index];
       console.log(
          "target_index:" +
-         this.target_index +
-         ", target_letter: " +
-         target_letter +
-         ", clicked letter: " +
-         letter,
+            this.target_index +
+            ", target_letter: " +
+            target_letter +
+            ", clicked letter: " +
+            letter,
       );
       if (letter != target_letter) {
          this.scene.start("LoseScene");

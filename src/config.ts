@@ -20,4 +20,5 @@ export const GameConfig: Phaser.Types.Core.GameConfig = {
 export const EagleEyesConfig = {
    // Number of seconds players have to memorize the scrambled letters.
    memorizationTime: 5,
+   answer: "eagleeyes",
 };
