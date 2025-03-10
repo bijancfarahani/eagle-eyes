@@ -14,6 +14,7 @@ export class GameplayScene extends Phaser.Scene {
    // These are only used for Modern mode.
    timeText: Phaser.GameObjects.Text;
    isPlayerMemorizing: boolean;
+   memorizationRuntime: number;
 
    // Typescript needs an explicit key otherwise two scenes end up having the same (default) name.
    constructor() {
@@ -46,6 +47,7 @@ export class GameplayScene extends Phaser.Scene {
 
    start() {
       this.target_index = 0;
+      this.memorizationRuntime = 0;
       this.initCards();
       this.showCards();
 
@@ -79,11 +81,8 @@ export class GameplayScene extends Phaser.Scene {
       if (this.gameMode != GameMode.Modern || !this.isPlayerMemorizing) {
          return;
       }
-      var memorizationRuntime = (time - this.time.startTime) * 0.001;
-      this.timeText.setText(
-         "Time Spent Memorizing: " +
-            Math.round(memorizationRuntime) +
-            " seconds",
+      this.memorizationRuntime = time - this.time.startTime;
+      this.timeText.setText(`Memorization Time: ${Math.floor(this.memorizationRuntime / 1000)}`,
       );
    }
 
@@ -114,14 +113,18 @@ export class GameplayScene extends Phaser.Scene {
       if (card.isOpened) {
          return false;
       }
+      // Reveal the selected card.
       card.openCard();
       const target_letter = EagleEyesConfig.answer[this.target_index];
+
+      // The player flipped over the wrong letter and lost the game.
       if (card.letter != target_letter) {
          this.scene.start("LoseScene");
       }
 
       // The player correctly selected the next letter.
       ++this.target_index;
+      // The last card was flipped and the player won the game.
       if (this.target_index == EagleEyesConfig.answer.length) {
          this.scene.start("WinScene");
       }
