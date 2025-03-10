@@ -11,6 +11,10 @@ export class GameplayScene extends Phaser.Scene {
    // The index into the answer string of the next correct letter to choose by flipping a card.
    target_index: number;
 
+   // Timer for the length of time the player can look and memorization the cards before they are
+   // turned face down.
+   classicModeTimer: Phaser.Time.TimerEvent;
+
    // These are only used for Modern mode.
    timeText: Phaser.GameObjects.Text;
    isPlayerMemorizing: boolean;
@@ -53,12 +57,21 @@ export class GameplayScene extends Phaser.Scene {
 
       switch (this.gameMode) {
          case GameMode.Classic: {
-            var timer = this.time.addEvent({
+            this.classicModeTimer = this.time.addEvent({
                delay: EagleEyesConfig.memorizationTime * 1000, // ms
                callback: this.closeCards,
                callbackScope: this,
                loop: false,
             });
+            this.timeText = this.add.text(
+               0,
+               0,
+               `Time Remaining: ${this.classicModeTimer.getRemainingSeconds()}`,
+               {
+                  fontSize: "48px",
+                  fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
+               },
+            );
             break;
          }
          case GameMode.Modern: {
@@ -76,14 +89,26 @@ export class GameplayScene extends Phaser.Scene {
       }
    }
 
-   // Update the stopwatch display.
+   // Update the memorization time remaining or elapsed display.
    update(time: number, _delta: number): void {
-      if (this.gameMode != GameMode.Modern || !this.isPlayerMemorizing) {
-         return;
+      switch (this.gameMode) {
+         case GameMode.Classic: {
+            this.timeText.setText(
+               `Time Remaining: ${Math.floor(this.classicModeTimer.getRemainingSeconds())}`,
+            );
+            break;
+         }
+         case GameMode.Modern: {
+            if (!this.isPlayerMemorizing) {
+               return;
+            }
+            this.memorizationRuntime = time - this.time.startTime;
+            this.timeText.setText(
+               `Memorization Time: ${Math.floor(this.memorizationRuntime / 1000)}`,
+            );
+            break;
+         }
       }
-      this.memorizationRuntime = time - this.time.startTime;
-      this.timeText.setText(`Memorization Time: ${Math.floor(this.memorizationRuntime / 1000)}`,
-      );
    }
 
    createCards() {
