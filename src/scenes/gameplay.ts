@@ -11,13 +11,15 @@ export class GameplayScene extends Phaser.Scene {
    // The index into the answer string of the next correct letter to choose by flipping a card.
    target_index: number;
 
+   // Flag for when the player is spending time memorizing the card positions.
+   isPlayerMemorizing: boolean;
+
    // Timer for the length of time the player can look and memorization the cards before they are
    // turned face down.
    classicModeTimer: Phaser.Time.TimerEvent;
 
    // These are only used for Modern mode.
    timeText: Phaser.GameObjects.Text;
-   isPlayerMemorizing: boolean;
    memorizationRuntime: number;
 
    // Typescript needs an explicit key otherwise two scenes end up having the same (default) name.
@@ -43,6 +45,7 @@ export class GameplayScene extends Phaser.Scene {
    }
 
    closeCards() {
+      this.isPlayerMemorizing = false;
       this.cards.forEach((card) => {
          card.closeCard();
          card.setInteractive();
@@ -52,6 +55,7 @@ export class GameplayScene extends Phaser.Scene {
    start() {
       this.target_index = 0;
       this.memorizationRuntime = 0;
+      this.isPlayerMemorizing = true;
       this.initCards();
       this.showCards();
 
@@ -75,13 +79,11 @@ export class GameplayScene extends Phaser.Scene {
             break;
          }
          case GameMode.Modern: {
-            this.isPlayerMemorizing = true;
             this.timeText = this.add.text(0, 0, "Time Spent Memorizing: 0", {
                fontSize: "48px",
                fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
             });
             this.input.once("pointerdown", () => {
-               this.isPlayerMemorizing = false;
                this.closeCards();
             });
             break;
@@ -91,6 +93,9 @@ export class GameplayScene extends Phaser.Scene {
 
    // Update the memorization time remaining or elapsed display.
    update(time: number, _delta: number): void {
+      if (!this.isPlayerMemorizing) {
+         return;
+      }
       switch (this.gameMode) {
          case GameMode.Classic: {
             this.timeText.setText(
@@ -99,9 +104,6 @@ export class GameplayScene extends Phaser.Scene {
             break;
          }
          case GameMode.Modern: {
-            if (!this.isPlayerMemorizing) {
-               return;
-            }
             this.memorizationRuntime = time - this.time.startTime;
             this.timeText.setText(
                `Memorization Time: ${Math.floor(this.memorizationRuntime / 1000)}`,
