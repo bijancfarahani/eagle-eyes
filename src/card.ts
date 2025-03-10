@@ -75,7 +75,8 @@ class Card extends Phaser.GameObjects.Sprite {
 export default Card;
 
 export function getCardsPosition(
-   gameConfig: Phaser.Core.Config,
+   gameWidth: number,
+   gameHeight: number,
 ): { x: number; y: number; delay: number }[] {
    const cardWidth = CARD_SIZE + CARD_PADDING;
    const cardHeight = CARD_SIZE + CARD_PADDING;
@@ -83,12 +84,11 @@ export function getCardsPosition(
    const positions = [];
 
    const offsetX = [
-      (+gameConfig.width - cardWidth * COLS[0]) / 2 + cardWidth / 2,
-      (+gameConfig.width - cardWidth * COLS[1]) / 2 + cardWidth / 2,
+      (gameWidth - cardWidth * COLS[0]) / 2 + cardWidth / 2,
+      (gameWidth - cardWidth * COLS[1]) / 2 + cardWidth / 2,
    ];
 
-   const offsetY =
-      (+gameConfig.height - cardHeight * ROWS) / 2 + cardHeight / 2;
+   const offsetY = (gameHeight - cardHeight * ROWS) / 2 + cardHeight / 2;
 
    let id = 0;
 

@@ -3,11 +3,17 @@ import { EagleEyesConfig } from "../config";
 import { GameMode } from "../constants";
 
 export class GameplayScene extends Phaser.Scene {
-   target_index: number;
    gameMode: GameMode;
+
+   // Array of the deck of cards.
+   cards: Card[] = [];
+
+   // The index into the answer string of the next correct letter to choose by flipping a card.
+   target_index: number;
+
+   // These are only used for Modern mode.
    timeText: Phaser.GameObjects.Text;
    isPlayerMemorizing: boolean;
-   startTime: number;
 
    // Typescript needs an explicit key otherwise two scenes end up having the same (default) name.
    constructor() {
@@ -15,8 +21,6 @@ export class GameplayScene extends Phaser.Scene {
          key: "GameplayScene",
       });
    }
-
-   cards: Card[] = [];
 
    init(data: { gameMode: GameMode }) {
       this.gameMode = data.gameMode;
@@ -32,12 +36,14 @@ export class GameplayScene extends Phaser.Scene {
          card.move();
       });
    }
+
    closeCards() {
       this.cards.forEach((card) => {
          card.closeCard();
          card.setInteractive();
       });
    }
+
    start() {
       this.target_index = 0;
       this.initCards();
@@ -55,7 +61,6 @@ export class GameplayScene extends Phaser.Scene {
          }
          case GameMode.Modern: {
             this.isPlayerMemorizing = true;
-            this.startTime = this.time.now;
             this.timeText = this.add.text(0, 0, "Time Spent Memorizing: 0", {
                fontSize: "48px",
                fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
@@ -68,19 +73,24 @@ export class GameplayScene extends Phaser.Scene {
          }
       }
    }
+
+   // Update the stopwatch display.
    update(time: number, _delta: number): void {
       if (this.gameMode != GameMode.Modern || !this.isPlayerMemorizing) {
          return;
       }
-      var gameRuntime = (time - this.startTime) * 0.001;
+      var memorizationRuntime = (time - this.time.startTime) * 0.001;
       this.timeText.setText(
-         "Time Spent Memorizing: " + Math.round(gameRuntime) + " seconds",
+         "Time Spent Memorizing: " +
+            Math.round(memorizationRuntime) +
+            " seconds",
       );
    }
 
    createCards() {
       // Clear out cards from previous game attempts.
       this.cards = [];
+
       for (const letter of EagleEyesConfig.answer) {
          this.cards.push(new Card(this, letter));
       }
@@ -88,7 +98,10 @@ export class GameplayScene extends Phaser.Scene {
    }
 
    initCards() {
-      const positions = getCardsPosition(this.sys.game.config);
+      const positions = getCardsPosition(
+         +this.sys.game.config.width,
+         +this.sys.game.config.height,
+      );
 
       this.cards.forEach((card) => {
          const position = positions.pop();
