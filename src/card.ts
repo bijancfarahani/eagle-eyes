@@ -1,6 +1,6 @@
 import { CARD_PADDING, CARD_SIZE, COLS, ROWS } from "./constants";
 
-class Card extends Phaser.GameObjects.Sprite {
+export class Card extends Phaser.GameObjects.Sprite {
    isOpened: boolean = true;
    letter: string;
    positionX = 0;
@@ -72,7 +72,17 @@ class Card extends Phaser.GameObjects.Sprite {
       });
    }
 }
-export default Card;
+
+export class Deck {
+   constructor() {
+      this.cards = [];
+   }
+
+   scrambled(): string {
+      return this.cards.map((card) => card.letter).join("");
+   }
+   cards: Card[];
+}
 
 export function getCardsPosition(
    gameWidth: number,

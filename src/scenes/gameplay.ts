@@ -1,4 +1,4 @@
-import Card, { getCardsPosition } from "../card";
+import { Deck, Card, getCardsPosition } from "../card";
 import { EagleEyesConfig } from "../config";
 import { GameMode } from "../constants";
 
@@ -6,7 +6,7 @@ export class GameplayScene extends Phaser.Scene {
    gameMode: GameMode;
 
    // Array of the deck of cards.
-   cards: Card[] = [];
+   deck: Deck;
 
    // The index into the answer string of the next correct letter to choose by flipping a card.
    target_index: number;
@@ -28,6 +28,7 @@ export class GameplayScene extends Phaser.Scene {
       super({
          key: "GameplayScene",
       });
+      this.deck = new Deck();
    }
 
    init(data: { gameMode: GameMode, answer: string }) {
@@ -41,14 +42,14 @@ export class GameplayScene extends Phaser.Scene {
    }
 
    showCards() {
-      this.cards.forEach((card) => {
+      this.deck.cards.forEach((card) => {
          card.move();
       });
    }
 
    closeCards() {
       this.isPlayerMemorizing = false;
-      this.cards.forEach((card) => {
+      this.deck.cards.forEach((card) => {
          card.closeCard();
          card.setInteractive();
       });
@@ -117,10 +118,10 @@ export class GameplayScene extends Phaser.Scene {
 
    createCards() {
       // Clear out cards from previous game attempts.
-      this.cards = [];
+      this.deck.cards = [];
 
       for (const letter of this.answer) {
-         this.cards.push(new Card(this, letter));
+         this.deck.cards.push(new Card(this, letter));
       }
       this.input.on("gameobjectdown", this.onCardClicked, this);
    }
@@ -131,7 +132,7 @@ export class GameplayScene extends Phaser.Scene {
          +this.sys.game.config.height,
       );
 
-      this.cards.forEach((card) => {
+      this.deck.cards.forEach((card) => {
          const position = positions.pop();
          card.init(position?.x, position?.y, position?.delay);
       });
@@ -156,7 +157,7 @@ export class GameplayScene extends Phaser.Scene {
       // The last card was flipped and the player won the game.
       if (this.target_index == this.answer.length) {
          this.scene.start("WinScene", {
-            gameMode: this.gameMode, answer: this.answer, scrambled: () => { this.cards.scrambled(); }, memorizationTime: this.memorizationRuntime
+            gameMode: this.gameMode, answer: this.answer, scrambled: () => { this.deck.scrambled(); }, memorizationTime: this.memorizationRuntime
          });
       }
    }
