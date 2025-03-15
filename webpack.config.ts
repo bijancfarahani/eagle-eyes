@@ -31,6 +31,9 @@ const config: webpack.Configuration = {
    resolve: {
       extensions: [".ts", ".js"],
    },
+   performance: {
+      maxAssetSize: 1000000
+   },
    plugins: [
       new CopyWebpackPlugin({
          patterns: [
