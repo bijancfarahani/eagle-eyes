@@ -74,6 +74,9 @@ export class Card extends Phaser.GameObjects.Sprite {
 }
 
 export class Deck {
+   shuffleDeck() {
+      Phaser.Utils.Array.Shuffle(this.cards);
+   }
    constructor() {
       this.cards = [];
    }
@@ -114,6 +117,6 @@ export function getCardsPosition(
       }
    }
 
-   Phaser.Utils.Array.Shuffle(positions);
+   //Phaser.Utils.Array.Shuffle(positions);
    return positions;
 }

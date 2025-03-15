@@ -131,11 +131,14 @@ export class GameplayScene extends Phaser.Scene {
          +this.sys.game.config.width,
          +this.sys.game.config.height,
       );
-
-      this.deck.cards.forEach((card) => {
-         const position = positions.pop();
-         card.init(position?.x, position?.y, position?.delay);
-      });
+      this.deck.shuffleDeck();
+      this.deck.cards
+         .slice()
+         .reverse()
+         .forEach((card) => {
+            const position = positions.pop();
+            card.init(position?.x, position?.y, position?.delay);
+         });
    }
 
    onCardClicked(pointer: { x: number; y: number }, card: Card) {

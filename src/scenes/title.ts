@@ -62,23 +62,18 @@ export class TitleScene extends Phaser.Scene {
       const { data, error } = await supabase
          .from("Modern Mode Leaderboard")
          .select();
-      console.log(data);
-      console.log(error);
    }
 
    async addToLeaderboard() {
       const player_name = "test_player_name";
       const player_rank = 1;
-      const { error } = await supabase
-         .from("Modern Mode Leaderboard")
-         .insert({
-            created_at: new Date(Date.now()).toISOString(),
-            memorization_time: 10,
-            player_name: player_name,
-            rank: player_rank,
-            scrambled: "scrambled"
-         });
-      console.log(error);
+      const { error } = await supabase.from("Modern Mode Leaderboard").insert({
+         created_at: new Date(Date.now()).toISOString(),
+         memorization_time: 10,
+         player_name: player_name,
+         rank: player_rank,
+         scrambled: "scrambled",
+      });
    }
    startGame(gameMode: GameMode) {
       this.scene.start("GameplayScene", {

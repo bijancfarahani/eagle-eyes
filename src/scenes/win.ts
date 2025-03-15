@@ -52,9 +52,7 @@ export class WinScene extends Phaser.Scene {
                fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
             })
             .setInteractive()
-            .on("pointerdown", () =>
-               this.addToLeaderboard(),
-            );
+            .on("pointerdown", () => this.addToLeaderboard());
          const startModernMode = this.add
             .text(1000, 400, "View Leaderboard", {
                fontSize: "70px",
@@ -67,15 +65,13 @@ export class WinScene extends Phaser.Scene {
    async addToLeaderboard() {
       const player_name = "test_player_name";
       const player_rank = computePlayerRank();
-      const { error } = await supabase
-         .from("Modern Mode Leaderboard")
-         .insert({
-            created_at: new Date(Date.now()).toISOString(),
-            memorization_time: this.memorizationTime,
-            player_name: player_name,
-            rank: player_rank,
-            scrambled: this.scrambled
-         });
+      const { error } = await supabase.from("Modern Mode Leaderboard").insert({
+         created_at: new Date(Date.now()).toISOString(),
+         memorization_time: this.memorizationTime,
+         player_name: player_name,
+         rank: player_rank,
+         scrambled: this.scrambled,
+      });
    }
    viewLeaderboard() {
       throw new Error("Method not implemented.");
@@ -84,4 +80,3 @@ export class WinScene extends Phaser.Scene {
 function computePlayerRank() {
    return 1;
 }
-
