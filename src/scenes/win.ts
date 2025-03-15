@@ -1,5 +1,13 @@
-import { create } from "domain";
 import { GameMode } from "../constants";
+import { createClient } from "@supabase/supabase-js";
+import { Database } from "../database.types";
+
+// Create a single supabase client for interacting with your database
+const supabase = createClient<Database>(
+   "https://pjaythugyatlthozuark.supabase.co",
+   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBqYXl0aHVneWF0bHRob3p1YXJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMTcwODIsImV4cCI6MjA1NzU5MzA4Mn0.nCE72HK3tQGCQj3HmY0g_WQEv7HSnZ3amIBdat0fOJM",
+);
+//const supabase = createClient<Database>(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY)
 
 export class WinScene extends Phaser.Scene {
    gameMode: GameMode;
@@ -12,7 +20,12 @@ export class WinScene extends Phaser.Scene {
       });
    }
 
-   init(data: { gameMode: GameMode, answer: string, scrambled: string, memorizationTime: number }) {
+   init(data: {
+      gameMode: GameMode;
+      answer: string;
+      scrambled: string;
+      memorizationTime: number;
+   }) {
       this.gameMode = data.gameMode;
       this.answer = data.answer;
       this.scrambled = data.scrambled;
@@ -39,7 +52,9 @@ export class WinScene extends Phaser.Scene {
                fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
             })
             .setInteractive()
-            .on("pointerdown", () => this.addToLeaderboard(this.scrambled, this.memorizationTime));
+            .on("pointerdown", () =>
+               this.addToLeaderboard(),
+            );
          const startModernMode = this.add
             .text(1000, 400, "View Leaderboard", {
                fontSize: "70px",
@@ -49,10 +64,24 @@ export class WinScene extends Phaser.Scene {
             .on("pointerdown", () => this.viewLeaderboard());
       }
    }
-   addToLeaderboard(scrambled: string, memorizationTime: number) {
-      throw new Error("Method not implemented.");
+   async addToLeaderboard() {
+      const player_name = "test_player_name";
+      const player_rank = computePlayerRank();
+      const { error } = await supabase
+         .from("Modern Mode Leaderboard")
+         .insert({
+            created_at: new Date(Date.now()).toISOString(),
+            memorization_time: this.memorizationTime,
+            player_name: player_name,
+            rank: player_rank,
+            scrambled: this.scrambled
+         });
    }
    viewLeaderboard() {
       throw new Error("Method not implemented.");
    }
 }
+function computePlayerRank() {
+   return 1;
+}
+

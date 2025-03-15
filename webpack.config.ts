@@ -32,7 +32,7 @@ const config: webpack.Configuration = {
       extensions: [".ts", ".js"],
    },
    performance: {
-      maxAssetSize: 1000000
+      maxAssetSize: 1000000,
    },
    plugins: [
       new CopyWebpackPlugin({

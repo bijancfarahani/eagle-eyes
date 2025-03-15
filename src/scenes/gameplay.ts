@@ -31,7 +31,7 @@ export class GameplayScene extends Phaser.Scene {
       this.deck = new Deck();
    }
 
-   init(data: { gameMode: GameMode, answer: string }) {
+   init(data: { gameMode: GameMode; answer: string }) {
       this.gameMode = data.gameMode;
       this.answer = data.answer;
    }
@@ -157,7 +157,12 @@ export class GameplayScene extends Phaser.Scene {
       // The last card was flipped and the player won the game.
       if (this.target_index == this.answer.length) {
          this.scene.start("WinScene", {
-            gameMode: this.gameMode, answer: this.answer, scrambled: () => { this.deck.scrambled(); }, memorizationTime: this.memorizationRuntime
+            gameMode: this.gameMode,
+            answer: this.answer,
+            scrambled: () => {
+               this.deck.scrambled();
+            },
+            memorizationTime: this.memorizationRuntime,
          });
       }
    }
