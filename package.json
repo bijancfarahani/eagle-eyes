@@ -3,6 +3,8 @@
    "version": "0.0.1",
    "description": "Eagle Eyes is an easy-to-learn, quick to play party game!",
    "scripts": {
+      "build": "webpack",
+      "deploy": "gh-pages -d dist",
       "build-dev": "webpack --mode development",
       "build-prod": "webpack --mode production",
       "serve-dev": "webpack --mode development && webpack serve --mode development",
