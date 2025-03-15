@@ -47,7 +47,7 @@ export class WinScene extends Phaser.Scene {
       );
       if (this.gameMode == GameMode.Modern) {
          const startClassicMode = this.add
-            .text(400, 400, "Add to Leaderboard!", {
+            .text(400, 1000, "Add to Leaderboard!", {
                fontSize: "70px",
                fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
             })

@@ -156,12 +156,11 @@ export class GameplayScene extends Phaser.Scene {
       ++this.target_index;
       // The last card was flipped and the player won the game.
       if (this.target_index == this.answer.length) {
+         const scrambled = this.deck.scrambled();
          this.scene.start("WinScene", {
             gameMode: this.gameMode,
             answer: this.answer,
-            scrambled: () => {
-               this.deck.scrambled();
-            },
+            scrambled: scrambled,
             memorizationTime: this.memorizationRuntime,
          });
       }
