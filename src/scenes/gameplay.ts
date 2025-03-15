@@ -21,6 +21,7 @@ export class GameplayScene extends Phaser.Scene {
    // These are only used for Modern mode.
    timeText: Phaser.GameObjects.Text;
    memorizationRuntime: number;
+   answer: string;
 
    // Typescript needs an explicit key otherwise two scenes end up having the same (default) name.
    constructor() {
@@ -29,8 +30,9 @@ export class GameplayScene extends Phaser.Scene {
       });
    }
 
-   init(data: { gameMode: GameMode }) {
+   init(data: { gameMode: GameMode, answer: string }) {
       this.gameMode = data.gameMode;
+      this.answer = data.answer;
    }
 
    create() {
@@ -117,7 +119,7 @@ export class GameplayScene extends Phaser.Scene {
       // Clear out cards from previous game attempts.
       this.cards = [];
 
-      for (const letter of EagleEyesConfig.answer) {
+      for (const letter of this.answer) {
          this.cards.push(new Card(this, letter));
       }
       this.input.on("gameobjectdown", this.onCardClicked, this);
@@ -142,7 +144,7 @@ export class GameplayScene extends Phaser.Scene {
       }
       // Reveal the selected card.
       card.openCard();
-      const target_letter = EagleEyesConfig.answer[this.target_index];
+      const target_letter = this.answer[this.target_index];
 
       // The player flipped over the wrong letter and lost the game.
       if (card.letter != target_letter) {
@@ -152,8 +154,10 @@ export class GameplayScene extends Phaser.Scene {
       // The player correctly selected the next letter.
       ++this.target_index;
       // The last card was flipped and the player won the game.
-      if (this.target_index == EagleEyesConfig.answer.length) {
-         this.scene.start("WinScene");
+      if (this.target_index == this.answer.length) {
+         this.scene.start("WinScene", {
+            gameMode: this.gameMode, answer: this.answer, scrambled: () => { this.cards.scrambled(); }, memorizationTime: this.memorizationRuntime
+         });
       }
    }
 }

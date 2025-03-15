@@ -1,3 +1,4 @@
+import { EagleEyesConfig } from "../config";
 import { GameMode } from "../constants";
 
 export class TitleScene extends Phaser.Scene {
@@ -39,6 +40,6 @@ export class TitleScene extends Phaser.Scene {
          .on("pointerdown", () => this.startGame(GameMode.Modern));
    }
    startGame(gameMode: GameMode) {
-      this.scene.start("GameplayScene", { gameMode: gameMode });
+      this.scene.start("GameplayScene", { gameMode: gameMode, answer: EagleEyesConfig.answer });
    }
 }

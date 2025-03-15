@@ -37,6 +37,7 @@
       "webpack-dev-server": "5.0.2"
    },
    "dependencies": {
+      "@supabase/supabase-js": "^2.49.1",
       "phaser": "3.80.1"
    },
    "author": "Bijan Farahani <bijancfarahani@gmail.com>",
