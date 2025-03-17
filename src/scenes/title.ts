@@ -1,11 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { EagleEyesConfig } from "../config";
 import { GameMode } from "../constants";
-import { Database } from "../database.types";
-const supabase = createClient<Database>(
-   "https://pjaythugyatlthozuark.supabase.co",
-   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBqYXl0aHVneWF0bHRob3p1YXJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMTcwODIsImV4cCI6MjA1NzU5MzA4Mn0.nCE72HK3tQGCQj3HmY0g_WQEv7HSnZ3amIBdat0fOJM",
-);
+import supabase from "../supabase";
 export class TitleScene extends Phaser.Scene {
    gameMode: GameMode;
    constructor() {
@@ -61,17 +57,17 @@ export class TitleScene extends Phaser.Scene {
    async viewLeaderboard() {
       const { data, error } = await supabase
          .from("Modern Mode Leaderboard")
-         .select();
+         .select()
+         .order("memorization_time");
+      console.log(data);
    }
 
    async addToLeaderboard() {
       const player_name = "test_player_name";
-      const player_rank = 1;
       const { error } = await supabase.from("Modern Mode Leaderboard").insert({
          created_at: new Date(Date.now()).toISOString(),
          memorization_time: 10,
          player_name: player_name,
-         rank: player_rank,
          scrambled: "scrambled",
       });
    }

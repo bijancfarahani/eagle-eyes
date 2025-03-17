@@ -64,19 +64,21 @@ export class WinScene extends Phaser.Scene {
    }
    async addToLeaderboard() {
       const player_name = "test_player_name";
-      const player_rank = computePlayerRank();
+      console.log("Adding to leaderboard:" + this.memorizationTime);
       const { error } = await supabase.from("Modern Mode Leaderboard").insert({
          created_at: new Date(Date.now()).toISOString(),
          memorization_time: this.memorizationTime,
          player_name: player_name,
-         rank: player_rank,
          scrambled: this.scrambled,
       });
+      if (error) { }
    }
-   viewLeaderboard() {
-      throw new Error("Method not implemented.");
+   async viewLeaderboard() {
+      const { data, error } = await supabase
+         .from("Modern Mode Leaderboard")
+         .select()
+         .order("memorization_time");
+      if (error) { }
+      console.log(data);
    }
-}
-function computePlayerRank() {
-   return 1;
 }
