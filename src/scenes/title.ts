@@ -1,4 +1,3 @@
-import { createClient } from "@supabase/supabase-js";
 import { EagleEyesConfig } from "../config";
 import { GameMode } from "../constants";
 import supabase from "../supabase";
@@ -59,7 +58,23 @@ export class TitleScene extends Phaser.Scene {
          .from("Modern Mode Leaderboard")
          .select()
          .order("memorization_time");
-      console.log(data);
+      if (error) {
+         console.log(`Error: ${error}`);
+         return;
+      }
+
+      this.add
+         .text(0, 800, "Leaderboard", {
+            fontSize: "70px",
+            fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
+         });
+      for (let rank = 0; rank < Math.min(10, data.length); rank++) {
+         this.add
+            .text(0, 1000 + (rank * 100), `Rank: #${rank}, Player: ${data[rank].player_name}, Memorization Time: ${data[rank].memorization_time / 1000}, Date: ${data[rank].created_at}`, {
+               fontSize: "50px",
+               fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
+            });
+      }
    }
 
    async addToLeaderboard() {
