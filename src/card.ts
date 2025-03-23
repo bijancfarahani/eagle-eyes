@@ -101,7 +101,7 @@ export function getCardsPosition(
       (gameWidth - cardWidth * COLS[1]) / 2 + cardWidth / 2,
    ];
 
-   const offsetY = (gameHeight - cardHeight * ROWS) / 2 + cardHeight / 2;
+   const offsetY = 100 + (gameHeight - cardHeight * ROWS) / 2 + cardHeight / 2;
 
    let id = 0;
 
@@ -116,7 +116,30 @@ export function getCardsPosition(
          });
       }
    }
+   return positions;
+}
 
-   //Phaser.Utils.Array.Shuffle(positions);
+
+
+export function getAnswerCardsPosition(
+   gameWidth: number,
+   gameHeight: number,
+   answer: string
+): { x: number; y: number; }[] {
+   const cardWidth = (CARD_SIZE + CARD_PADDING) / 2;
+   const cardHeight = (CARD_SIZE + CARD_PADDING) / 2;
+
+   const positions = [];
+
+   const offsetX = (gameWidth - cardWidth * answer.length) / 2 + cardWidth / 2;
+   const offsetY = 200;
+   for (let r = 0; r < 1; r++) {
+      for (let c = 0; c < 9; c++) {
+         positions.push({
+            x: offsetX + c * cardWidth,
+            y: offsetY,// + r * cardHeight,
+         });
+      }
+   }
    return positions;
 }

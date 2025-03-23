@@ -1,4 +1,4 @@
-import { Deck, Card, getCardsPosition } from "../card";
+import { Deck, Card, getCardsPosition, getAnswerCardsPosition } from "../card";
 import { EagleEyesConfig } from "../config";
 import { GameMode } from "../constants";
 
@@ -22,6 +22,7 @@ export class GameplayScene extends Phaser.Scene {
    timeText: Phaser.GameObjects.Text;
    memorizationRuntime: number;
    answer: string;
+   guideCards: Phaser.GameObjects.Image[];
 
    // Typescript needs an explicit key otherwise two scenes end up having the same (default) name.
    constructor() {
@@ -53,6 +54,7 @@ export class GameplayScene extends Phaser.Scene {
          card.closeCard();
          card.setInteractive();
       });
+      this.drawCardGuide();
    }
 
    start() {
@@ -156,7 +158,12 @@ export class GameplayScene extends Phaser.Scene {
       }
 
       // The player correctly selected the next letter.
+      this.guideCards[this.target_index].setScale(0.5);
+      this.guideCards[this.target_index].setTint(0x00d11c);
       ++this.target_index;
+      this.guideCards[this.target_index].setScale(0.6);
+      this.guideCards[this.target_index].setAlpha(1);
+      this.guideCards[this.target_index].setTint(0xf5bb40);
       // The last card was flipped and the player won the game.
       if (this.target_index == this.answer.length) {
          const scrambled = this.deck.scrambled();
@@ -167,5 +174,26 @@ export class GameplayScene extends Phaser.Scene {
             memorizationTime: this.memorizationRuntime,
          });
       }
+   }
+
+   drawCardGuide() {
+      const positions = getAnswerCardsPosition(
+         +this.sys.game.config.width,
+         +this.sys.game.config.height,
+         this.answer
+      );
+      this.guideCards = [];
+      for (var letter_index = 0; letter_index < this.answer.length; ++letter_index) {
+         var card = this.add.image(
+            positions[letter_index].x,
+            positions[letter_index].y,
+            `card_${this.answer[letter_index]}`);
+         card.setScale(0.5);
+         card.setAlpha(0.3);
+         this.guideCards.push(card);
+      }
+      this.guideCards[0].setAlpha(1);
+      this.guideCards[0].setScale(0.6);
+      this.guideCards[0].setTint(0xf5bb40);
    }
 }
