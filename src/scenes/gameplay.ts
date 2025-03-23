@@ -179,9 +179,7 @@ export class GameplayScene extends Phaser.Scene {
    drawCardGuide() {
       const positions = getAnswerCardsPosition(
          +this.sys.game.config.width,
-         +this.sys.game.config.height,
-         this.answer
-      );
+         this.answer);
       this.guideCards = [];
       for (var letter_index = 0; letter_index < this.answer.length; ++letter_index) {
          var card = this.add.image(
@@ -192,6 +190,7 @@ export class GameplayScene extends Phaser.Scene {
          card.setAlpha(0.3);
          this.guideCards.push(card);
       }
+      // Set the first target card.
       this.guideCards[0].setAlpha(1);
       this.guideCards[0].setScale(0.6);
       this.guideCards[0].setTint(0xf5bb40);

@@ -123,23 +123,18 @@ export function getCardsPosition(
 
 export function getAnswerCardsPosition(
    gameWidth: number,
-   gameHeight: number,
    answer: string
 ): { x: number; y: number; }[] {
-   const cardWidth = (CARD_SIZE + CARD_PADDING) / 2;
-   const cardHeight = (CARD_SIZE + CARD_PADDING) / 2;
-
-   const positions = [];
-
+   const cardWidth = (CARD_SIZE + CARD_PADDING) / 2 + 50;
    const offsetX = (gameWidth - cardWidth * answer.length) / 2 + cardWidth / 2;
    const offsetY = 200;
-   for (let r = 0; r < 1; r++) {
-      for (let c = 0; c < 9; c++) {
-         positions.push({
-            x: offsetX + c * cardWidth,
-            y: offsetY,// + r * cardHeight,
-         });
-      }
+
+   const positions = [];
+   for (let c = 0; c < answer.length; c++) {
+      positions.push({
+         x: offsetX + c * cardWidth,
+         y: offsetY,
+      });
    }
    return positions;
 }
