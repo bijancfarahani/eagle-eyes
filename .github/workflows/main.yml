@@ -24,8 +24,8 @@ jobs:
 
     - name: Build with Webpack
       run: |
-        npm ci
-        npx webpack
+        yarn install --frozen-lockfile
+        yarn build-prod
 
     - name: Upload generated files as artifact
       uses: actions/upload-pages-artifact@v3

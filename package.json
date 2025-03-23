@@ -1,5 +1,6 @@
 {
    "name": "eagle-eyes",
+   "type": "module",
    "version": "0.0.1",
    "description": "Eagle Eyes is a quick, easy-to-learn memorization game!",
    "scripts": {
