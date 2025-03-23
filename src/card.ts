@@ -68,7 +68,7 @@ export class Card extends Phaser.GameObjects.Sprite {
          targets: this,
          scaleX: 1,
          ease: "Linear",
-         duration: 150,
+         duration: 130,
       });
    }
 }
@@ -101,7 +101,7 @@ export function getCardsPosition(
       (gameWidth - cardWidth * COLS[1]) / 2 + cardWidth / 2,
    ];
 
-   const offsetY = 100 + (gameHeight - cardHeight * ROWS) / 2 + cardHeight / 2;
+   const offsetY = 150 + (gameHeight - cardHeight * ROWS) / 2 + cardHeight / 2;
 
    let id = 0;
 

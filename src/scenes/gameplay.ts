@@ -1,6 +1,6 @@
 import { Deck, Card, getCardsPosition, getAnswerCardsPosition } from "../card";
 import { EagleEyesConfig } from "../config";
-import { GameMode } from "../constants";
+import { ACTIVE_GUIDE_CARD_COLOR, FOUND_GUIDE_CARD_COLOR, GameMode } from "../constants";
 
 export class GameplayScene extends Phaser.Scene {
    gameMode: GameMode;
@@ -158,12 +158,8 @@ export class GameplayScene extends Phaser.Scene {
       }
 
       // The player correctly selected the next letter.
-      this.guideCards[this.target_index].setScale(0.5);
-      this.guideCards[this.target_index].setTint(0x00d11c);
+      setFoundGuideCard(this.guideCards[this.target_index]);
       ++this.target_index;
-      this.guideCards[this.target_index].setScale(0.6);
-      this.guideCards[this.target_index].setAlpha(1);
-      this.guideCards[this.target_index].setTint(0xf5bb40);
       // The last card was flipped and the player won the game.
       if (this.target_index == this.answer.length) {
          const scrambled = this.deck.scrambled();
@@ -173,6 +169,13 @@ export class GameplayScene extends Phaser.Scene {
             scrambled: scrambled,
             memorizationTime: this.memorizationRuntime,
          });
+      }
+      else { setActiveGuideCard(this.guideCards[this.target_index]); }
+
+
+      function setFoundGuideCard(card: Phaser.GameObjects.Image) {
+         card.setScale(0.5);
+         card.setTint(FOUND_GUIDE_CARD_COLOR);
       }
    }
 
@@ -190,9 +193,12 @@ export class GameplayScene extends Phaser.Scene {
          card.setAlpha(0.3);
          this.guideCards.push(card);
       }
-      // Set the first target card.
-      this.guideCards[0].setAlpha(1);
-      this.guideCards[0].setScale(0.6);
-      this.guideCards[0].setTint(0xf5bb40);
+      // Detail the first target card.
+      setActiveGuideCard(this.guideCards[0]);
    }
+}
+function setActiveGuideCard(card: Phaser.GameObjects.Image) {
+   card.setAlpha(1);
+   card.setScale(0.6);
+   card.setTint(ACTIVE_GUIDE_CARD_COLOR);
 }

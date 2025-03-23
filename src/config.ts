@@ -18,7 +18,7 @@ export const GameConfig: Phaser.Types.Core.GameConfig = {
    parent: "game",
    scene: [TitleScene, GameplayScene, LoseScene, WinScene],
    backgroundColor: "#0",
-   render: { pixelArt: false, antialias: true },
+   render: { pixelArt: true, antialias: false },
 };
 
 export const EagleEyesConfig = {

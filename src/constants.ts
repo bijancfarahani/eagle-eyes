@@ -8,3 +8,6 @@ export enum GameMode {
    Classic,
    Modern,
 }
+
+export const FOUND_GUIDE_CARD_COLOR = 0x00d11c;
+export const ACTIVE_GUIDE_CARD_COLOR = 0xf5bb40;

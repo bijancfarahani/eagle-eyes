@@ -38,20 +38,20 @@ export class TitleScene extends Phaser.Scene {
          })
          .setInteractive()
          .on("pointerdown", () => this.startGame(GameMode.Modern));
-      const viewLeaderboard = this.add
-         .text(1000, 700, "View Leaderboard", {
-            fontSize: "70px",
-            fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
-         })
-         .setInteractive()
-         .on("pointerdown", () => this.viewLeaderboard());
-      const addLeaderboard = this.add
-         .text(400, 700, "Add Leaderboard", {
-            fontSize: "70px",
-            fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
-         })
-         .setInteractive()
-         .on("pointerdown", () => this.addToLeaderboard());
+      /* const viewLeaderboard = this.add
+          .text(1000, 700, "View Leaderboard", {
+             fontSize: "70px",
+             fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
+          })
+          .setInteractive()
+          .on("pointerdown", () => this.viewLeaderboard());
+          const addLeaderboard = this.add
+             .text(400, 700, "Add Leaderboard", {
+                fontSize: "70px",
+                fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
+             })
+             .setInteractive()
+             .on("pointerdown", () => this.addToLeaderboard());*/
    }
    async viewLeaderboard() {
       const { data, error } = await supabase
