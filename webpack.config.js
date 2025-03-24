@@ -1,54 +1,56 @@
-import path from "path";
-import webpack from "webpack";
-import "webpack-dev-server";
+// @ts-check
 
-import CopyWebpackPlugin from "copy-webpack-plugin";
-import HtmlWebpackPlugin from "html-webpack-plugin";
-import { fileURLToPath } from "url";
+import path from "path"
+import "webpack-dev-server"
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const config: webpack.Configuration = {
+import CopyWebpackPlugin from "copy-webpack-plugin"
+import HtmlWebpackPlugin from "html-webpack-plugin"
+import { fileURLToPath } from "url"
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+/** @type {import('webpack').Configuration} */
+const config = {
    context: path.resolve(__dirname, "src"),
    entry: "./game.ts",
    output: {
       path: path.resolve(__dirname, "dist"),
       filename: "[name].[chunkhash].js",
       chunkFilename: "[name].[chunkhash].js",
-      clean: true,
+      clean: true
    },
    module: {
       rules: [
          {
             test: /\.ts$/,
             include: path.resolve(__dirname, "src"),
-            loader: "ts-loader",
-         },
-      ],
+            loader: "ts-loader"
+         }
+      ]
    },
    devServer: {
-      static: path.join(__dirname, "dist"),
+      static: path.join(__dirname, "dist")
    },
    resolve: {
-      extensions: [".ts", ".js"],
+      extensions: [".ts", ".js"]
    },
    performance: {
-      maxAssetSize: 1000000,
+      maxAssetSize: 1000000
    },
    plugins: [
       new CopyWebpackPlugin({
          patterns: [
             {
                from: "assets",
-               to: "assets",
-            },
-         ],
+               to: "assets"
+            }
+         ]
       }),
       new HtmlWebpackPlugin({
          template: path.resolve(__dirname, "src/index.html"),
          title: "Eagle Eyes",
-         inject: "head",
-      }),
-   ],
-};
+         inject: "head"
+      })
+   ]
+}
 
-export default config;
+export default config
