@@ -28,9 +28,10 @@ jobs:
         yarn build-prod
 
     - name: Upload generated files as artifact
+      id: deployment
       uses: actions/upload-pages-artifact@v3
       with:
-        path: docs/
+        path: build_outputs_folder/
 
   deploy:
     needs: build
@@ -41,7 +42,7 @@ jobs:
 
     environment:
       name: github-pages
-      url: $
+      url: ${{ steps.deployment.outputs.page_url }}
 
     runs-on: ubuntu-latest
     steps:
