@@ -45,22 +45,22 @@ export class WinScene extends Phaser.Scene {
          },
          this,
       );
-      if (this.gameMode == GameMode.Modern) {
-         const startClassicMode = this.add
-            .text(400, 1000, "Add to Leaderboard!", {
-               fontSize: "70px",
-               fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
-            })
-            .setInteractive()
-            .on("pointerdown", () => this.addToLeaderboard());
-         const startModernMode = this.add
-            .text(1000, 400, "View Leaderboard", {
-               fontSize: "70px",
-               fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
-            })
-            .setInteractive()
-            .on("pointerdown", () => this.viewLeaderboard());
-      }
+      /* if (this.gameMode == GameMode.Modern) {
+          const startClassicMode = this.add
+             .text(400, 1000, "Add to Leaderboard!", {
+                fontSize: "70px",
+                fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
+             })
+             .setInteractive()
+             .on("pointerdown", () => this.addToLeaderboard());
+          const startModernMode = this.add
+             .text(1000, 400, "View Leaderboard", {
+                fontSize: "70px",
+                fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
+             })
+             .setInteractive()
+             .on("pointerdown", () => this.viewLeaderboard());
+       }*/
    }
    async addToLeaderboard() {
       const player_name = "test_player_name";
