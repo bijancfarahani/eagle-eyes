@@ -9,9 +9,6 @@ on:
 
 jobs:
   build:
-    permissions:
-      contents: read
-
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
@@ -28,9 +25,10 @@ jobs:
         yarn build-prod
 
     - name: Upload generated files as artifact
+      id: deployment
       uses: actions/upload-pages-artifact@v3
       with:
-        path: docs/
+        path: dist/
 
   deploy:
     needs: build
@@ -41,7 +39,7 @@ jobs:
 
     environment:
       name: github-pages
-      url: $
+      url: ${{ steps.deployment.outputs.page_url }}
 
     runs-on: ubuntu-latest
     steps:
