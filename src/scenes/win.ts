@@ -1,13 +1,5 @@
 import { GameMode } from "../constants";
-import { createClient } from "@supabase/supabase-js";
-import { Database } from "../database.types";
-
-// Create a single supabase client for interacting with your database
-const supabase = createClient<Database>(
-   "https://pjaythugyatlthozuark.supabase.co",
-   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBqYXl0aHVneWF0bHRob3p1YXJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMTcwODIsImV4cCI6MjA1NzU5MzA4Mn0.nCE72HK3tQGCQj3HmY0g_WQEv7HSnZ3amIBdat0fOJM",
-);
-//const supabase = createClient<Database>(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY)
+import Nakama from "../nakama";
 
 export class WinScene extends Phaser.Scene {
    gameMode: GameMode;
@@ -65,20 +57,20 @@ export class WinScene extends Phaser.Scene {
    async addToLeaderboard() {
       const player_name = "test_player_name";
       console.log("Adding to leaderboard:" + this.memorizationTime);
-      const { error } = await supabase.from("Modern Mode Leaderboard").insert({
-         created_at: new Date(Date.now()).toISOString(),
-         memorization_time: this.memorizationTime,
-         player_name: player_name,
-         scrambled: this.scrambled,
-      });
-      if (error) { }
+      // const { error } = await supabase.from("Modern Mode Leaderboard").insert({
+      //    created_at: new Date(Date.now()).toISOString(),
+      //    memorization_time: this.memorizationTime,
+      //    player_name: player_name,
+      //    scrambled: this.scrambled,
+      // });
+      // if (error) { }
    }
    async viewLeaderboard() {
-      const { data, error } = await supabase
-         .from("Modern Mode Leaderboard")
-         .select()
-         .order("memorization_time");
-      if (error) { }
-      console.log(data);
+      // const { data, error } = await supabase
+      //    .from("Modern Mode Leaderboard")
+      //    .select()
+      //    .order("memorization_time");
+      // if (error) { }
+      // console.log(data);
    }
 }

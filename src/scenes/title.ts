@@ -1,6 +1,6 @@
 import { EagleEyesConfig } from "../config";
 import { GameMode } from "../constants";
-import supabase from "../supabase";
+import Nakama from "../nakama";
 export class TitleScene extends Phaser.Scene {
    gameMode: GameMode;
    constructor() {
@@ -10,6 +10,7 @@ export class TitleScene extends Phaser.Scene {
    }
 
    preload() {
+
       this.load.setBaseURL("./assets/");
       this.load.image("card_back", "cards/back.png");
       this.load.image("card_e", "cards/e.png");
@@ -20,6 +21,9 @@ export class TitleScene extends Phaser.Scene {
       this.load.image("card_s", "cards/s.png");
    }
    create() {
+      Nakama.authenticate();
+
+
       this.add.text(0, 0, "Welcome to Eagle Eyes!", {
          fontSize: "48px",
          fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
@@ -38,7 +42,7 @@ export class TitleScene extends Phaser.Scene {
          })
          .setInteractive()
          .on("pointerdown", () => this.startGame(GameMode.Modern));
-      /* const viewLeaderboard = this.add
+       const viewLeaderboard = this.add
           .text(1000, 700, "View Leaderboard", {
              fontSize: "70px",
              fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
@@ -51,10 +55,19 @@ export class TitleScene extends Phaser.Scene {
                 fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
              })
              .setInteractive()
-             .on("pointerdown", () => this.addToLeaderboard());*/
+             .on("pointerdown", () => this.addToLeaderboard());
    }
    async viewLeaderboard() {
-      const { data, error } = await supabase
+      var limit = 20;
+      var leaderboardName = "weekly_imposter_wins";
+
+
+    //  const result = await client.listLeaderboardRecords(session, leaderboardName, ownerIds: null, expiry: null, limit, cursor: null);
+
+   //   result.records.forEach(fuction(record){
+   //       console.log("%o:%o", record.owner.id, record.score);
+   //   });
+           /* const { data, error } = await supabase
          .from("Modern Mode Leaderboard")
          .select()
          .order("memorization_time");
@@ -62,6 +75,7 @@ export class TitleScene extends Phaser.Scene {
          console.log(`Error: ${error}`);
          return;
       }
+
 
       this.add
          .text(0, 800, "Leaderboard", {
@@ -74,17 +88,22 @@ export class TitleScene extends Phaser.Scene {
                fontSize: "50px",
                fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
             });
-      }
+      }*/
    }
 
    async addToLeaderboard() {
-      const player_name = "test_player_name";
-      const { error } = await supabase.from("Modern Mode Leaderboard").insert({
-         created_at: new Date(Date.now()).toISOString(),
-         memorization_time: 10,
-         player_name: player_name,
-         scrambled: "scrambled",
-      });
+      var leaderboardId = "weekly_imposter_wins";
+var submission = {score: 100};
+//var record = await client.writeLeaderboardRecord(session, leaderboardId, submission);
+//console.log("New record username %o and score %o", record.username, record.score);
+
+      // const player_name = "test_player_name";
+      // const { error } = await supabase.from("Modern Mode Leaderboard").insert({
+      //    created_at: new Date(Date.now()).toISOString(),
+      //    memorization_time: 10,
+      //    player_name: player_name,
+      //    scrambled: "scrambled",
+      // });
    }
    startGame(gameMode: GameMode) {
       this.scene.start("GameplayScene", {
