@@ -58,9 +58,10 @@ export class TitleScene extends Phaser.Scene {
              .on("pointerdown", () => this.addToLeaderboard());
    }
    async viewLeaderboard() {
+      console.log('view leaderboard');
       var limit = 20;
       var leaderboardName = "weekly_imposter_wins";
-
+      Nakama.viewLeaderboard();
 
     //  const result = await client.listLeaderboardRecords(session, leaderboardName, ownerIds: null, expiry: null, limit, cursor: null);
 
@@ -92,8 +93,7 @@ export class TitleScene extends Phaser.Scene {
    }
 
    async addToLeaderboard() {
-      var leaderboardId = "weekly_imposter_wins";
-var submission = {score: 100};
+    Nakama.addToLeaderboard();
 //var record = await client.writeLeaderboardRecord(session, leaderboardId, submission);
 //console.log("New record username %o and score %o", record.username, record.score);
 

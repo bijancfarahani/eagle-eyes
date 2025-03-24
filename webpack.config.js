@@ -28,7 +28,16 @@ const config = {
       ]
    },
    devServer: {
-      static: path.join(__dirname, "dist")
+      static: path.join(__dirname, "dist"),
+      proxy:[
+         {
+            context: ['/nakama'],
+            target: "http://localhost:7350",
+            pathRewrite: {'^/nakama': ''},
+            secure: false,
+            changeOrigin: true,
+         }
+      ]
    },
    resolve: {
       extensions: [".ts", ".js"]

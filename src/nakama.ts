@@ -15,24 +15,35 @@ class Nakama {
 
     async authenticate() {
         const useSSL = false;
-        this.client = new Client("defaultkey", "localhost", "7350", true);
-
+        this.client = new Client("defaultkey", "localhost", "7350", false);
         let deviceId = localStorage.getItem("deviceId");
         if (!deviceId) {
             deviceId = uuidv4();
             localStorage.setItem("deviceId", deviceId);
         }
+        console.log("DEVICE ID: " + deviceId);
 
         this.session = await this.client.authenticateDevice(deviceId, true);
         localStorage.setItem("user_id", this.session.user_id);
 
-        const trace = false;
-        this.socket = this.client.createSocket(this.useSSL, trace);
-        await this.socket.connect(this.session);
 
-    }   useSSL(useSSL: any, trace: boolean): any {
-      throw new Error("Method not implemented.");
+
+    }
+    async viewLeaderboard(): Promise<any>{
+        var leaderboardId = "weekly_leaderboard";
+        var result = this.client.listLeaderboardRecords(this.session, leaderboardId);
+       // if(result.records == null) {return;}
+        result.records.forEach(function(record){
+            console.log("record username %o and score %o", record.username, record.score);
+        })
+    }
+    async addToLeaderboard(): Promise<any>{
+        var leaderboardId = "weekly_leaderboard";
+        var submission = {score: 202};
+        var result = this.client.writeLeaderboardRecord(this.session, leaderboardId, submission);
+        console.log("record username %o and score %o", result.username, result.score);
+    }
    }
-}
+
 export default new Nakama()
 
