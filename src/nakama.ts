@@ -6,6 +6,7 @@ class Nakama {
     session: any;
     socket: any;
     matchID: any;
+
     constructor() {
         this.client
         this.session
@@ -29,24 +30,20 @@ class Nakama {
 
 
     }
+
     async viewLeaderboard(): Promise<any>{
         return this.client.listLeaderboardRecords(this.session, "modern_mode");
     }
-    async addToLeaderboard(): Promise<any>{
+
+    async addToLeaderboard(score: number, subscore: number, username: string, scrambled: string){
         try {
-            var payload = { score: 205, subscore:50, username: "test user"};
-            var response = await this.client.rpc(this.session, "LeaderboardRecordWrite", payload);
-            console.log("leaderboard add success equipped successfully", response);
+            var payload = { score: score, subscore: subscore, username: username, scrambled: scrambled};
+            var response = await this.client.rpc(this.session, "leaderboard_record_write_id", payload);
+            console.log("leaderboard add success", response);
         }
         catch (error) {
             console.log("Error: %o", error.message);
         }
-
-
-
-       // return this.client.writeLeaderboardRecord(this.session, leaderboardId, submission);
     }
-   }
-
+}
 export default new Nakama()
-

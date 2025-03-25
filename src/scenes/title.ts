@@ -67,57 +67,18 @@ export class TitleScene extends Phaser.Scene {
          fontSize: "70px",
          fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
       });
-   for (let rank = 0; rank < Math.min(10, result.records.length); rank++) {
-      this.add
-         .text(0, 1000 + (rank * 100), `Rank: #${rank}, Player: ${result.records[rank].player_name}, Memorization Time: ${result.records[rank].memorization_time / 1000}, Date: ${result.records[rank].created_at}`, {
-            fontSize: "50px",
-            fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
-         });
-   }
-    //  const result = await client.listLeaderboardRecords(session, leaderboardName, ownerIds: null, expiry: null, limit, cursor: null);
-
-   //   result.records.forEach(fuction(record){
-   //       console.log("%o:%o", record.owner.id, record.score);
-   //   });
-           /* const { data, error } = await supabase
-         .from("Modern Mode Leaderboard")
-         .select()
-         .order("memorization_time");
-      if (error) {
-         console.log(`Error: ${error}`);
-         return;
-      }
-
-
-      this.add
-         .text(0, 800, "Leaderboard", {
-            fontSize: "70px",
-            fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
-         });
-      for (let rank = 0; rank < Math.min(10, data.length); rank++) {
+      console.log(result.records);
+      for (let index = 0; index < Math.min(10, result.records.length); index++) {
          this.add
-            .text(0, 1000 + (rank * 100), `Rank: #${rank}, Player: ${data[rank].player_name}, Memorization Time: ${data[rank].memorization_time / 1000}, Date: ${data[rank].created_at}`, {
+            .text(0, 1000 + (index * 100), `Rank: #${result.records[index].rank},Player: ${result.records[index].username}, Memorization Time: ${result.records[index].score / 1000}`, {
                fontSize: "50px",
                fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
             });
-      }*/
+      }
    }
 
    async addToLeaderboard() {
-   var result = Nakama.addToLeaderboard();
-   console.log(result);
-//   console.log("record username %o and score %o", result.record.username, result.score);
-
-//var record = await client.writeLeaderboardRecord(session, leaderboardId, submission);
-//console.log("New record username %o and score %o", record.username, record.score);
-
-      // const player_name = "test_player_name";
-      // const { error } = await supabase.from("Modern Mode Leaderboard").insert({
-      //    created_at: new Date(Date.now()).toISOString(),
-      //    memorization_time: 10,
-      //    player_name: player_name,
-      //    scrambled: "scrambled",
-      // });
+      Nakama.addToLeaderboard(91, 10, "title scene2", "eagleeyes");
    }
    startGame(gameMode: GameMode) {
       this.scene.start("GameplayScene", {

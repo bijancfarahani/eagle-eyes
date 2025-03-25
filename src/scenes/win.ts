@@ -37,7 +37,7 @@ export class WinScene extends Phaser.Scene {
          },
          this,
       );
-      /* if (this.gameMode == GameMode.Modern) {
+       if (this.gameMode == GameMode.Modern) {
           const startClassicMode = this.add
              .text(400, 1000, "Add to Leaderboard!", {
                 fontSize: "70px",
@@ -52,25 +52,31 @@ export class WinScene extends Phaser.Scene {
              })
              .setInteractive()
              .on("pointerdown", () => this.viewLeaderboard());
-       }*/
+       }
    }
    async addToLeaderboard() {
       const player_name = "test_player_name";
       console.log("Adding to leaderboard:" + this.memorizationTime);
-      // const { error } = await supabase.from("Modern Mode Leaderboard").insert({
-      //    created_at: new Date(Date.now()).toISOString(),
-      //    memorization_time: this.memorizationTime,
-      //    player_name: player_name,
-      //    scrambled: this.scrambled,
-      // });
-      // if (error) { }
+      Nakama.addToLeaderboard(this.memorizationTime, 0, "Ray", this.scrambled);
+
    }
    async viewLeaderboard() {
-      // const { data, error } = await supabase
-      //    .from("Modern Mode Leaderboard")
-      //    .select()
-      //    .order("memorization_time");
-      // if (error) { }
-      // console.log(data);
+  console.log('view leaderboard');
+      const result = await Nakama.viewLeaderboard();
+      console.log(result);
+
+      this.add
+      .text(0, 800, "Leaderboard", {
+         fontSize: "70px",
+         fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
+      });
+      console.log(result.records);
+      for (let index = 0; index < Math.min(10, result.records.length); index++) {
+         this.add
+            .text(0, 1000 + (index * 100), `Rank: #${result.records[index].rank},Player: ${result.records[index].username}, Memorization Time: ${result.records[index].score / 1000}`, {
+               fontSize: "50px",
+               fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
+            });
+      }
    }
 }
