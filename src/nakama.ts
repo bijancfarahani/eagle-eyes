@@ -15,7 +15,7 @@ class Nakama {
 
     async authenticate() {
         const useSSL = false;
-        this.client = new Client("defaultkey", "localhost", "7350", false);
+        this.client = new Client("defaultkey", "192.168.68.64", "7350", false);
         let deviceId = localStorage.getItem("deviceId");
         if (!deviceId) {
             deviceId = uuidv4();
@@ -30,18 +30,21 @@ class Nakama {
 
     }
     async viewLeaderboard(): Promise<any>{
-        var leaderboardId = "weekly_leaderboard";
-        var result = this.client.listLeaderboardRecords(this.session, leaderboardId);
-       // if(result.records == null) {return;}
-        result.records.forEach(function(record){
-            console.log("record username %o and score %o", record.username, record.score);
-        })
+        return this.client.listLeaderboardRecords(this.session, "modern_mode");
     }
     async addToLeaderboard(): Promise<any>{
-        var leaderboardId = "weekly_leaderboard";
-        var submission = {score: 202};
-        var result = this.client.writeLeaderboardRecord(this.session, leaderboardId, submission);
-        console.log("record username %o and score %o", result.username, result.score);
+        try {
+            var payload = { score: 205, subscore:50, username: "test user"};
+            var response = await this.client.rpc(this.session, "LeaderboardRecordWrite", payload);
+            console.log("leaderboard add success equipped successfully", response);
+        }
+        catch (error) {
+            console.log("Error: %o", error.message);
+        }
+
+
+
+       // return this.client.writeLeaderboardRecord(this.session, leaderboardId, submission);
     }
    }
 

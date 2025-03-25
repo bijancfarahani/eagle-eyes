@@ -59,10 +59,21 @@ export class TitleScene extends Phaser.Scene {
    }
    async viewLeaderboard() {
       console.log('view leaderboard');
-      var limit = 20;
-      var leaderboardName = "weekly_imposter_wins";
-      Nakama.viewLeaderboard();
+      const result = await Nakama.viewLeaderboard();
+      console.log(result);
 
+      this.add
+      .text(0, 800, "Leaderboard", {
+         fontSize: "70px",
+         fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
+      });
+   for (let rank = 0; rank < Math.min(10, result.records.length); rank++) {
+      this.add
+         .text(0, 1000 + (rank * 100), `Rank: #${rank}, Player: ${result.records[rank].player_name}, Memorization Time: ${result.records[rank].memorization_time / 1000}, Date: ${result.records[rank].created_at}`, {
+            fontSize: "50px",
+            fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
+         });
+   }
     //  const result = await client.listLeaderboardRecords(session, leaderboardName, ownerIds: null, expiry: null, limit, cursor: null);
 
    //   result.records.forEach(fuction(record){
@@ -93,7 +104,10 @@ export class TitleScene extends Phaser.Scene {
    }
 
    async addToLeaderboard() {
-    Nakama.addToLeaderboard();
+   var result = Nakama.addToLeaderboard();
+   console.log(result);
+//   console.log("record username %o and score %o", result.record.username, result.score);
+
 //var record = await client.writeLeaderboardRecord(session, leaderboardId, submission);
 //console.log("New record username %o and score %o", record.username, record.score);
 
