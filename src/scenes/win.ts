@@ -37,49 +37,57 @@ export class WinScene extends Phaser.Scene {
          },
          this,
       );
-       if (this.gameMode == GameMode.Modern) {
-          const startClassicMode = this.add
-             .text(400, 1000, "Add to Leaderboard!", {
-                fontSize: "70px",
-                fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
-             })
-             .setInteractive()
-             .on("pointerdown", () => this.addToLeaderboard());
-          const startModernMode = this.add
-             .text(1000, 400, "View Leaderboard", {
-                fontSize: "70px",
-                fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
-             })
-             .setInteractive()
-             .on("pointerdown", () => this.viewLeaderboard());
-       }
+      if (this.gameMode == GameMode.Modern) {
+         const startClassicMode = this.add
+            .text(400, 1000, "Add to Leaderboard!", {
+               fontSize: "70px",
+               fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
+            })
+            .setInteractive()
+            .on("pointerdown", () => this.addToLeaderboard());
+         const startModernMode = this.add
+            .text(1000, 400, "View Leaderboard", {
+               fontSize: "70px",
+               fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
+            })
+            .setInteractive()
+            .on("pointerdown", () => this.viewLeaderboard());
+      }
    }
    async addToLeaderboard() {
       const player_name = "bj";
 
       const numStr = String(this.memorizationTime);
-      const [integerPart, decimalPart] = numStr.split('.');
-      const [integer, decimal] = [parseInt(integerPart, 10), parseInt(decimalPart || '0', 10)];
+      const [integerPart, decimalPart] = numStr.split(".");
+      const [integer, decimal] = [
+         parseInt(integerPart, 10),
+         parseInt(decimalPart || "0", 10),
+      ];
 
       Nakama.addToLeaderboard(integer, decimal, player_name, this.scrambled);
    }
 
    async viewLeaderboard() {
       const result = await Nakama.viewLeaderboard();
-      console.log(result);
 
-      this.add
-      .text(0, 800, "Leaderboard", {
+      this.add.text(0, 800, "Leaderboard", {
          fontSize: "70px",
          fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
       });
-      console.log(result.records);
-      for (let index = 0; index < Math.min(10, result.records.length); index++) {
-         this.add
-            .text(0, 1000 + (index * 100), `Rank: #${result.records[index].rank},Player: ${result.records[index].username}, Memorization Time: ${result.records[index].score / 1000}`, {
+      for (
+         let index = 0;
+         index < Math.min(10, result.records.length);
+         index++
+      ) {
+         this.add.text(
+            0,
+            1000 + index * 100,
+            `Rank: #${result.records[index].rank},Player: ${result.records[index].username}, Memorization Time: ${result.records[index].score / 1000}`,
+            {
                fontSize: "50px",
                fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
-            });
+            },
+         );
       }
    }
 }

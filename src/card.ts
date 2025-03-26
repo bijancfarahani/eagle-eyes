@@ -118,12 +118,10 @@ export function getCardsPosition(
    return positions;
 }
 
-
-
 export function getAnswerCardsPosition(
    gameWidth: number,
-   answer: string
-): { x: number; y: number; }[] {
+   answer: string,
+): { x: number; y: number }[] {
    const cardWidth = (CARD_SIZE + CARD_PADDING) / 2 + 50;
    const offsetX = (gameWidth - cardWidth * answer.length) / 2 + cardWidth / 2;
    const offsetY = 200;

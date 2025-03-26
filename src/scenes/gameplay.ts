@@ -1,6 +1,10 @@
 import { Deck, Card, getCardsPosition, getAnswerCardsPosition } from "../card";
 import { EagleEyesConfig } from "../config";
-import { ACTIVE_GUIDE_CARD_COLOR, FOUND_GUIDE_CARD_COLOR, GameMode } from "../constants";
+import {
+   ACTIVE_GUIDE_CARD_COLOR,
+   FOUND_GUIDE_CARD_COLOR,
+   GameMode,
+} from "../constants";
 
 export class GameplayScene extends Phaser.Scene {
    gameMode: GameMode;
@@ -78,7 +82,8 @@ export class GameplayScene extends Phaser.Scene {
                `Time Remaining: ${this.classicModeTimer.getRemainingSeconds()}`,
                {
                   fontSize: "48px",
-                  fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
+                  fontFamily:
+                     "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
                },
             );
             break;
@@ -169,9 +174,9 @@ export class GameplayScene extends Phaser.Scene {
             scrambled: scrambled,
             memorizationTime: this.memorizationRuntime,
          });
+      } else {
+         setActiveGuideCard(this.guideCards[this.target_index]);
       }
-      else { setActiveGuideCard(this.guideCards[this.target_index]); }
-
 
       function setFoundGuideCard(card: Phaser.GameObjects.Image) {
          card.setScale(0.5);
@@ -182,13 +187,19 @@ export class GameplayScene extends Phaser.Scene {
    drawCardGuide() {
       const positions = getAnswerCardsPosition(
          +this.sys.game.config.width,
-         this.answer);
+         this.answer,
+      );
       this.guideCards = [];
-      for (var letter_index = 0; letter_index < this.answer.length; ++letter_index) {
+      for (
+         var letter_index = 0;
+         letter_index < this.answer.length;
+         ++letter_index
+      ) {
          var card = this.add.image(
             positions[letter_index].x,
             positions[letter_index].y,
-            `card_${this.answer[letter_index]}`);
+            `card_${this.answer[letter_index]}`,
+         );
          card.setScale(0.5);
          card.setAlpha(0.3);
          this.guideCards.push(card);
