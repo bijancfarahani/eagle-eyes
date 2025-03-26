@@ -58,6 +58,7 @@ export class GameplayScene extends Phaser.Scene {
          card.closeCard();
          card.setInteractive();
       });
+      this.timeText.setVisible(false);
       this.drawCardGuide();
    }
 
@@ -78,10 +79,10 @@ export class GameplayScene extends Phaser.Scene {
             });
             this.timeText = this.add.text(
                0,
-               0,
-               `Time Remaining: ${this.classicModeTimer.getRemainingSeconds()}`,
+               30,
+               `Time Remaining: ${this.classicModeTimer.getRemainingSeconds() + 1}`,
                {
-                  fontSize: "48px",
+                  fontSize: "200px",
                   fontFamily:
                      "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
                },
@@ -89,8 +90,8 @@ export class GameplayScene extends Phaser.Scene {
             break;
          }
          case GameMode.Modern: {
-            this.timeText = this.add.text(0, 0, "Time Spent Memorizing: 0", {
-               fontSize: "48px",
+            this.timeText = this.add.text(0, 30, "Time Spent Memorizing: 0", {
+               fontSize: "150px",
                fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
             });
             this.input.once("pointerdown", () => {
@@ -106,21 +107,28 @@ export class GameplayScene extends Phaser.Scene {
       if (!this.isPlayerMemorizing) {
          return;
       }
+      this.updateClock(time);
+
+   }
+   updateClock(time: number) {
+var modeTimer: number;
+var timerText: string;
       switch (this.gameMode) {
          case GameMode.Classic: {
-            this.timeText.setText(
-               `Time Remaining: ${Math.floor(this.classicModeTimer.getRemainingSeconds())}`,
-            );
+            timerText = "Time Remaining";
+            modeTimer = Math.floor(this.classicModeTimer.getRemainingSeconds() + 1);
             break;
          }
          case GameMode.Modern: {
+            timerText = "Memorization Time";
             this.memorizationRuntime = time - this.time.startTime;
-            this.timeText.setText(
-               `Memorization Time: ${Math.floor(this.memorizationRuntime / 1000)}`,
-            );
+            modeTimer = Math.floor(this.memorizationRuntime / 1000);
             break;
          }
       }
+      this.timeText.setText(
+         `${timerText}: ${modeTimer}`,
+      );
    }
 
    createCards() {

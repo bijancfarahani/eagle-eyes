@@ -6,6 +6,7 @@ export class WinScene extends Phaser.Scene {
    answer: string;
    scrambled: string;
    memorizationTime: number;
+
    constructor() {
       super({
          key: "WinScene",
