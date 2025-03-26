@@ -22,64 +22,54 @@ export class TitleScene extends Phaser.Scene {
    }
    create() {
       Nakama.authenticate();
+      this.drawButtons();
+   }
 
-
-      this.add.text(0, 0, "Welcome to Eagle Eyes!", {
-         fontSize: "48px",
-         fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
+   drawButtons() {
+      this.add.text(+this.sys.game.config.width / 2 - 600, +this.sys.game.config.height/100, "Eagle Eyes", {
+         fontSize: "296px",
+         fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
       });
       const startClassicMode = this.add
-         .text(400, 400, "Classic Mode", {
-            fontSize: "70px",
-            fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
+         .text(+this.sys.game.config.width / 3 + 570, +this.sys.game.config.height / 4, "Classic Mode", {
+            fontSize: "150px",
+            fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
          })
          .setInteractive()
          .on("pointerdown", () => this.startGame(GameMode.Classic));
       const startModernMode = this.add
-         .text(1000, 400, "Modern Mode", {
-            fontSize: "70px",
-            fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
+         .text(+this.sys.game.config.width / 3 + 660, +this.sys.game.config.height / 3 + 50, "Modern Mode", {
+            fontSize: "150px",
+            fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
          })
          .setInteractive()
          .on("pointerdown", () => this.startGame(GameMode.Modern));
        const viewLeaderboard = this.add
-          .text(1000, 700, "View Leaderboard", {
-             fontSize: "70px",
-             fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
+          .text(1060, 750, "View Leaderboard", {
+             fontSize: "150px",
+             fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
           })
           .setInteractive()
           .on("pointerdown", () => this.viewLeaderboard());
-          const addLeaderboard = this.add
-             .text(400, 700, "Add Leaderboard", {
-                fontSize: "70px",
-                fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
-             })
-             .setInteractive()
-             .on("pointerdown", () => this.addToLeaderboard());
    }
    async viewLeaderboard() {
-      console.log('view leaderboard');
       const result = await Nakama.viewLeaderboard();
-      console.log(result);
 
       this.add
-      .text(0, 800, "Leaderboard", {
+      .text(0, 900, "Leaderboard", {
          fontSize: "70px",
-         fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
+         fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
       });
-      console.log(result.records);
       for (let index = 0; index < Math.min(10, result.records.length); index++) {
+         const record = result.records[index];
          this.add
-            .text(0, 1000 + (index * 100), `Rank: #${result.records[index].rank},Player: ${result.records[index].username}, Memorization Time: ${result.records[index].score / 1000}`, {
+            .text(0, 1000 + (index * 100), `Rank: #${record.rank},Player: ${record.username}, Memorization Time: ${record.score / 1000}, Scramble: ${record.metadata.scrambled}`, {
                fontSize: "50px",
-               fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
+               fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
             });
       }
    }
 
-   async addToLeaderboard() {
-      Nakama.addToLeaderboard(91, 10, "title scene2", "eagleeyes");
-   }
    startGame(gameMode: GameMode) {
       this.scene.start("GameplayScene", {
          gameMode: gameMode,

@@ -27,7 +27,7 @@ export class WinScene extends Phaser.Scene {
    create() {
       this.add.text(0, 0, "You won!!!", {
          fontSize: "48px",
-         fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
+         fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
       });
       const card_sprite = this.add.sprite(400, 400, "card_back");
       card_sprite.setInteractive().on(
@@ -41,41 +41,44 @@ export class WinScene extends Phaser.Scene {
           const startClassicMode = this.add
              .text(400, 1000, "Add to Leaderboard!", {
                 fontSize: "70px",
-                fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
+                fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
              })
              .setInteractive()
              .on("pointerdown", () => this.addToLeaderboard());
           const startModernMode = this.add
              .text(1000, 400, "View Leaderboard", {
                 fontSize: "70px",
-                fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
+                fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
              })
              .setInteractive()
              .on("pointerdown", () => this.viewLeaderboard());
        }
    }
    async addToLeaderboard() {
-      const player_name = "test_player_name";
-      console.log("Adding to leaderboard:" + this.memorizationTime);
-      Nakama.addToLeaderboard(this.memorizationTime, 0, "Ray", this.scrambled);
+      const player_name = "bj";
 
+      const numStr = String(this.memorizationTime);
+      const [integerPart, decimalPart] = numStr.split('.');
+      const [integer, decimal] = [parseInt(integerPart, 10), parseInt(decimalPart || '0', 10)];
+
+      Nakama.addToLeaderboard(integer, decimal, player_name, this.scrambled);
    }
+
    async viewLeaderboard() {
-  console.log('view leaderboard');
       const result = await Nakama.viewLeaderboard();
       console.log(result);
 
       this.add
       .text(0, 800, "Leaderboard", {
          fontSize: "70px",
-         fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
+         fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
       });
       console.log(result.records);
       for (let index = 0; index < Math.min(10, result.records.length); index++) {
          this.add
             .text(0, 1000 + (index * 100), `Rank: #${result.records[index].rank},Player: ${result.records[index].username}, Memorization Time: ${result.records[index].score / 1000}`, {
                fontSize: "50px",
-               fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
+               fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
             });
       }
    }

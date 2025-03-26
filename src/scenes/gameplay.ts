@@ -78,7 +78,7 @@ export class GameplayScene extends Phaser.Scene {
                `Time Remaining: ${this.classicModeTimer.getRemainingSeconds()}`,
                {
                   fontSize: "48px",
-                  fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
+                  fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
                },
             );
             break;
@@ -86,7 +86,7 @@ export class GameplayScene extends Phaser.Scene {
          case GameMode.Modern: {
             this.timeText = this.add.text(0, 0, "Time Spent Memorizing: 0", {
                fontSize: "48px",
-               fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
+               fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
             });
             this.input.once("pointerdown", () => {
                this.closeCards();

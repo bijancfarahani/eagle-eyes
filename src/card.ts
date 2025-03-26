@@ -5,14 +5,13 @@ export class Card extends Phaser.GameObjects.Sprite {
    letter: string;
    positionX = 0;
    positionY = 0;
+   // Cards flying to the bottom right have longer animations.
    delay = 0;
 
    constructor(scene: Phaser.Scene, letter: string) {
       super(scene, 0, 0, "card_back");
       this.scene = scene;
       this.letter = letter;
-      //this.setScale(0.5);
-      this.setOrigin(0.5, 0.5);
       this.scene.add.existing(this);
    }
 

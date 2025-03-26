@@ -6,6 +6,7 @@ import "webpack-dev-server"
 import CopyWebpackPlugin from "copy-webpack-plugin"
 import HtmlWebpackPlugin from "html-webpack-plugin"
 import { fileURLToPath } from "url"
+import { EnvironmentPlugin } from "webpack"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 /** @type {import('webpack').Configuration} */
