@@ -4,6 +4,7 @@ import {
    ACTIVE_GUIDE_CARD_COLOR,
    FOUND_GUIDE_CARD_COLOR,
    GameMode,
+   LOSING_CARD_COLOR,
 } from "../constants";
 
 export class GameplayScene extends Phaser.Scene {
@@ -108,15 +109,16 @@ export class GameplayScene extends Phaser.Scene {
          return;
       }
       this.updateClock(time);
-
    }
    updateClock(time: number) {
-var modeTimer: number;
-var timerText: string;
+      var modeTimer: number;
+      var timerText: string;
       switch (this.gameMode) {
          case GameMode.Classic: {
             timerText = "Time Remaining";
-            modeTimer = Math.floor(this.classicModeTimer.getRemainingSeconds() + 1);
+            modeTimer = Math.floor(
+               this.classicModeTimer.getRemainingSeconds() + 1,
+            );
             break;
          }
          case GameMode.Modern: {
@@ -126,9 +128,7 @@ var timerText: string;
             break;
          }
       }
-      this.timeText.setText(
-         `${timerText}: ${modeTimer}`,
-      );
+      this.timeText.setText(`${timerText}: ${modeTimer}`);
    }
 
    createCards() {
@@ -167,10 +167,14 @@ var timerText: string;
 
       // The player flipped over the wrong letter and lost the game.
       if (card.letter != target_letter) {
-         this.scene.start("LoseScene");
+         card.setTint(LOSING_CARD_COLOR);
+         this.guideCards[this.target_index].setTint(LOSING_CARD_COLOR);
+         this.onPlayerLoss();
+         return;
       }
 
       // The player correctly selected the next letter.
+      card.setTint(FOUND_GUIDE_CARD_COLOR);
       setFoundGuideCard(this.guideCards[this.target_index]);
       ++this.target_index;
       // The last card was flipped and the player won the game.
@@ -190,6 +194,42 @@ var timerText: string;
          card.setScale(0.5);
          card.setTint(FOUND_GUIDE_CARD_COLOR);
       }
+   }
+   onPlayerLoss() {
+      this.input.off("gameobjectdown", this.onCardClicked, this);
+      this.deck.cards.forEach((card) => {
+         card.disableInteractive();
+         card.openCard();
+         card.setAlpha(0.3);
+      });
+
+      const replayGame = this.add
+         .text(
+            +this.sys.game.config.width / 3 + 680,
+            +this.sys.game.config.height / 3 + 50,
+            "Replay Game",
+            {
+               fontSize: "150px",
+               fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
+            },
+         )
+         .setInteractive()
+         .on("pointerdown", () => this.scene.restart());
+
+      const goToTitleScene = this.add
+         .text(
+            +this.sys.game.config.width / 3 + 600,
+            +this.sys.game.config.height / 3 + 250,
+            "Title Screen",
+            {
+               fontSize: "150px",
+               fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
+            },
+         )
+         .setInteractive()
+         .on("pointerdown", () => {
+            this.scene.start("TitleScene");
+         });
    }
 
    drawCardGuide() {
@@ -216,8 +256,8 @@ var timerText: string;
       setActiveGuideCard(this.guideCards[0]);
    }
 }
-function setActiveGuideCard(card: Phaser.GameObjects.Image) {
-   card.setAlpha(1);
-   card.setScale(0.6);
-   card.setTint(ACTIVE_GUIDE_CARD_COLOR);
+function setActiveGuideCard(cardImage: Phaser.GameObjects.Image) {
+   cardImage.setAlpha(1);
+   cardImage.setScale(0.6);
+   cardImage.setTint(ACTIVE_GUIDE_CARD_COLOR);
 }

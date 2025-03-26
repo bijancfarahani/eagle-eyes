@@ -82,7 +82,6 @@ export class WinScene extends Phaser.Scene {
       ) {
          this.add.text(
             0,
-            1000 + index * 100,
             `Rank: #${result.records[index].rank},Player: ${result.records[index].username}, Memorization Time: ${result.records[index].score / 1000}`,
             {
                fontSize: "50px",
