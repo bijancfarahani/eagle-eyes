@@ -205,9 +205,9 @@ export class GameplayScene extends Phaser.Scene {
 
       const replayGame = this.add
          .text(
-            +this.sys.game.config.width / 3 + 680,
+            +this.sys.game.config.width / 3 + 1150,
             +this.sys.game.config.height / 3 + 50,
-            "Replay Game",
+            "Replay",
             {
                fontSize: "150px",
                fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
