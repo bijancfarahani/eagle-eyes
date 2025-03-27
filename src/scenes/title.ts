@@ -87,7 +87,6 @@ export class TitleScene extends Phaser.Scene {
          fontSize: "70px",
          fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
       });
-      console.log("before loop");
       for (let index = 0; index < Math.min(5, result.records.length); index++) {
          const record = result.records[index];
          this.add.text(
