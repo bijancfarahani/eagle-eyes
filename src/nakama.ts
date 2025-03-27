@@ -15,13 +15,32 @@ class Nakama {
          deviceId = uuidv4();
          localStorage.setItem("deviceId", deviceId);
       }
-
-      this.session = await this.client.authenticateDevice(deviceId, true);
-      localStorage.setItem("user_id", this.session.user_id);
+      try {
+         this.session = await this.client.authenticateDevice(deviceId, true);
+         localStorage.setItem("user_id", this.session.user_id);
+         console.log("Successfully authenticated user.");
+      } catch (err) {
+         console.log(
+            "Error authenticating device: %o:%o",
+            err.statusCode,
+            err.message,
+         );
+      }
    }
 
    async viewLeaderboard(): Promise<any> {
-      return this.client.listLeaderboardRecords(this.session, LEADERBOARD_ID);
+      if (this.session == null) {
+         return;
+      }
+      try {
+         this.client.listLeaderboardRecords(this.session, LEADERBOARD_ID);
+      } catch (err) {
+         console.log(
+            "Error fetching leaderboard: %o:%o",
+            err.statusCode,
+            err.message,
+         );
+      }
    }
 
    async addToLeaderboard(
@@ -44,7 +63,7 @@ class Nakama {
          );
          return response;
       } catch (error) {
-         console.log("Error: %o", error.message);
+         console.log("Error adding to leaderboard: %o", error.message);
       }
    }
 }

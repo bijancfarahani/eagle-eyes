@@ -68,7 +68,13 @@ export class TitleScene extends Phaser.Scene {
    }
    async viewLeaderboard() {
       const result = await Nakama.viewLeaderboard();
-
+      if (result == null) {
+         this.add.text(0, 900, "Unable to fetch leaderboard ", {
+            fontSize: "70px",
+            fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
+         });
+         return;
+      }
       this.add.text(0, 900, "Leaderboard", {
          fontSize: "70px",
          fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
