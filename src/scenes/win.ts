@@ -9,6 +9,9 @@ export class WinScene extends Phaser.Scene {
    playerNameInput: Phaser.GameObjects.Text;
    addToLeaderboardButton: Phaser.GameObjects.Text;
 
+   nearbyLeaderboard: Phaser.GameObjects.Text;
+   topFiveLeaderboard: Phaser.GameObjects.Text;
+
    constructor() {
       super({
          key: "WinScene",
@@ -86,17 +89,29 @@ export class WinScene extends Phaser.Scene {
          .disableInteractive()
          .setVisible(false)
          .on("pointerdown", () => this.addToLeaderboard());
-      /*this.add
-         .text(800, 400, "View Leaderboard", {
+
+      this.topFiveLeaderboard = this.add
+         .text(0, 800, "Top 5 Leaderboard", {
+            fontSize: "70px",
+            fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
+         })
+         .disableInteractive()
+         .on("pointerdown", () => this.drawTopFiveLeaderboard());
+
+      this.nearbyLeaderboard = this.add
+         .text(800, 800, "Leaderboard Near Me", {
             fontSize: "70px",
             fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
          })
          .setInteractive()
-         .on("pointerdown", () => this.getLeaderboard());
-*/
+         .setAlpha(0.5)
+         .on("pointerdown", () => this.drawLeaderboardNearPlayer());
+
       this.drawTopFiveLeaderboard();
+
+      // Draw player win details.
       this.add.text(
-         +this.sys.game.config.width / 3 + 1250,
+         +this.sys.game.config.width / 3 + 910,
          +this.sys.game.config.height - 1050,
          `Time: ${this.memorizationTime}`,
          {
@@ -125,18 +140,22 @@ export class WinScene extends Phaser.Scene {
       );
       this.input.keyboard.on("keydown", this.playerNameInputListener);
    }
-   async drawTopFiveLeaderboard() {
-      const result = await Nakama.getLeaderboard();
 
-      this.add.text(0, 800, "Leaderboard", {
-         fontSize: "70px",
-         fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
-      });
+   async drawTopFiveLeaderboard() {
+      this.nearbyLeaderboard.setAlpha(0.5).setInteractive();
+
+      const result = await Nakama.getTopFiveLeaderboard();
+      this.drawLeaderboardRows(result);
+      console.log("hey");
+      this.topFiveLeaderboard.setAlpha(1).disableInteractive();
+   }
+
+   private drawLeaderboardRows(result: any) {
       for (let index = 0; index < Math.min(5, result.records.length); index++) {
          this.add.text(
             0,
             1000 + index * 100,
-            `Rank: #${result.records[index].rank},Player: ${result.records[index].username}, Memorization Time: ${result.records[index].score / 1000}`,
+            `Rank: #${result.records[index].rank},Player: ${result.records[index].username}, Time: ${result.records[index].score / 1000}, Shuffle: ${result.records[index].metadata["Shuffle"]}`,
             {
                fontSize: "50px",
                fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
@@ -163,7 +182,8 @@ export class WinScene extends Phaser.Scene {
       } else if (
          (event.keyCode >= 65 && event.keyCode <= 90) ||
          (event.keyCode >= 48 && event.keyCode <= 57) ||
-         event.keyCode === 32
+         event.keyCode === 32 ||
+         event.keyCode === 173
       ) {
          processedPlayerName += event.key;
       }
@@ -196,5 +216,14 @@ export class WinScene extends Phaser.Scene {
       );
       this.addToLeaderboardButton.setText("Success!");
       this.addToLeaderboardButton.disableInteractive();
+   }
+
+   async drawLeaderboardNearPlayer() {
+      this.topFiveLeaderboard.setAlpha(0.5).setInteractive();
+
+      const result = await Nakama.getNearbyLeaderboard();
+      this.drawLeaderboardRows(result);
+
+      this.nearbyLeaderboard.setAlpha(1).disableInteractive();
    }
 }

@@ -5,20 +5,23 @@ import { LEADERBOARD_ID, LEADERBOARD_WRITE_RPC_ID } from "./constants";
 class Nakama {
    client: any;
    session: any;
-   socket: any;
-   matchID: any;
+   deviceId: string;
+   isAuthenticated: boolean;
 
    async authenticate() {
       this.client = new Client("defaultkey", "192.168.68.63", "7350", false);
-      let deviceId = localStorage.getItem("deviceId");
-      if (!deviceId) {
-         deviceId = uuidv4();
-         localStorage.setItem("deviceId", deviceId);
+      this.deviceId = localStorage.getItem("deviceId");
+      if (!this.deviceId) {
+         this.deviceId = uuidv4();
+         localStorage.setItem("deviceId", this.deviceId);
       }
       try {
-         this.session = await this.client.authenticateDevice(deviceId, true);
+         this.session = await this.client.authenticateDevice(
+            this.deviceId,
+            true,
+         );
          localStorage.setItem("user_id", this.session.user_id);
-         console.debug("Successfully authenticated user.");
+         this.isAuthenticated = true;
       } catch (err) {
          console.error(
             "Error authenticating device: %o:%o",
@@ -28,15 +31,36 @@ class Nakama {
       }
    }
 
-   async getLeaderboard(): Promise<any> {
-      if (this.session == null) {
-         console.error("No session exists.");
-         return;
+   async getTopFiveLeaderboard(): Promise<any> {
+      if (!this.isAuthenticated) {
+         console.error("Not authenticated.");
+         return null;
       }
       try {
          return this.client.listLeaderboardRecords(
             this.session,
             LEADERBOARD_ID,
+         );
+      } catch (err) {
+         console.error(
+            "Error fetching leaderboard: %o:%o",
+            err.statusCode,
+            err.message,
+         );
+      }
+   }
+
+   async getNearbyLeaderboard(): Promise<any> {
+      if (!this.isAuthenticated) {
+         console.error("Not authenticated.");
+         return;
+      }
+      try {
+         return this.client.listLeaderboardRecordsAroundOwner(
+            this.session,
+            LEADERBOARD_ID,
+            this.deviceId,
+            5,
          );
       } catch (err) {
          console.error(
