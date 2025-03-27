@@ -5,14 +5,13 @@ export class Card extends Phaser.GameObjects.Sprite {
    letter: string;
    positionX = 0;
    positionY = 0;
+   // Cards flying to the bottom right have longer animations.
    delay = 0;
 
    constructor(scene: Phaser.Scene, letter: string) {
       super(scene, 0, 0, "card_back");
       this.scene = scene;
       this.letter = letter;
-      //this.setScale(0.5);
-      this.setOrigin(0.5, 0.5);
       this.scene.add.existing(this);
    }
 
@@ -81,7 +80,7 @@ export class Deck {
       this.cards = [];
    }
 
-   scrambled(): string {
+   shuffle(): string {
       return this.cards.map((card) => card.letter).join("");
    }
    cards: Card[];
@@ -119,12 +118,10 @@ export function getCardsPosition(
    return positions;
 }
 
-
-
 export function getAnswerCardsPosition(
    gameWidth: number,
-   answer: string
-): { x: number; y: number; }[] {
+   answer: string,
+): { x: number; y: number }[] {
    const cardWidth = (CARD_SIZE + CARD_PADDING) / 2 + 50;
    const offsetX = (gameWidth - cardWidth * answer.length) / 2 + cardWidth / 2;
    const offsetY = 200;

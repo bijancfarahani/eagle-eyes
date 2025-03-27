@@ -11,3 +11,7 @@ export enum GameMode {
 
 export const FOUND_GUIDE_CARD_COLOR = 0x00d11c;
 export const ACTIVE_GUIDE_CARD_COLOR = 0xf5bb40;
+export const LOSING_CARD_COLOR = 0xd43d3d;
+
+export const LEADERBOARD_ID = "modern_mode";
+export const LEADERBOARD_WRITE_RPC_ID = "leaderboard_record_write_id";

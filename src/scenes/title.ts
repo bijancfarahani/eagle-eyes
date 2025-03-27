@@ -1,12 +1,13 @@
 import { EagleEyesConfig } from "../config";
 import { GameMode } from "../constants";
-import supabase from "../supabase";
+import Nakama from "../nakama";
 export class TitleScene extends Phaser.Scene {
    gameMode: GameMode;
    constructor() {
       super({
          key: "TitleScene",
       });
+      Nakama.authenticate();
    }
 
    preload() {
@@ -20,72 +21,86 @@ export class TitleScene extends Phaser.Scene {
       this.load.image("card_s", "cards/s.png");
    }
    create() {
-      this.add.text(0, 0, "Welcome to Eagle Eyes!", {
-         fontSize: "48px",
-         fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
-      });
-      const startClassicMode = this.add
-         .text(400, 400, "Classic Mode", {
-            fontSize: "70px",
-            fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
-         })
+      this.drawButtons();
+   }
+
+   drawButtons() {
+      this.add.text(
+         +this.sys.game.config.width / 2 - 600,
+         +this.sys.game.config.height / 100,
+         "Eagle Eyes",
+         {
+            fontSize: "296px",
+            fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
+         },
+      );
+      this.add
+         .text(
+            +this.sys.game.config.width / 3 + 570,
+            +this.sys.game.config.height / 4,
+            "Classic Mode",
+            {
+               fontSize: "150px",
+               fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
+            },
+         )
          .setInteractive()
          .on("pointerdown", () => this.startGame(GameMode.Classic));
-      const startModernMode = this.add
-         .text(1000, 400, "Modern Mode", {
-            fontSize: "70px",
-            fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
-         })
+      this.add
+         .text(
+            +this.sys.game.config.width / 3 + 660,
+            +this.sys.game.config.height / 3 + 50,
+            "Modern Mode",
+            {
+               fontSize: "150px",
+               fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
+            },
+         )
          .setInteractive()
          .on("pointerdown", () => this.startGame(GameMode.Modern));
-      /* const viewLeaderboard = this.add
-          .text(1000, 700, "View Leaderboard", {
-             fontSize: "70px",
-             fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
-          })
-          .setInteractive()
-          .on("pointerdown", () => this.viewLeaderboard());
-          const addLeaderboard = this.add
-             .text(400, 700, "Add Leaderboard", {
-                fontSize: "70px",
-                fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
-             })
-             .setInteractive()
-             .on("pointerdown", () => this.addToLeaderboard());*/
+
+      this.waitAnddrawLeaderboard();
    }
-   async viewLeaderboard() {
-      const { data, error } = await supabase
-         .from("Modern Mode Leaderboard")
-         .select()
-         .order("memorization_time");
-      if (error) {
-         console.log(`Error: ${error}`);
+   delay(ms: number): Promise<void> {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+   }
+
+   async delayedFunctionCall(func: () => Promise<any>, ms: number) {
+      await this.delay(ms); // Pause execution for 'ms' milliseconds
+      return func(); // Call the async function
+   }
+
+   async waitAnddrawLeaderboard() {
+      await this.delayedFunctionCall(() => this.drawLeaderboard(), 1000);
+   }
+
+   async drawLeaderboard() {
+      const result = await Nakama.getTopFiveLeaderboard();
+      if (result == null) {
+         this.add.text(0, 900, "Unable to fetch leaderboard ", {
+            fontSize: "70px",
+            fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
+         });
          return;
       }
-
-      this.add
-         .text(0, 800, "Leaderboard", {
-            fontSize: "70px",
-            fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
-         });
-      for (let rank = 0; rank < Math.min(10, data.length); rank++) {
-         this.add
-            .text(0, 1000 + (rank * 100), `Rank: #${rank}, Player: ${data[rank].player_name}, Memorization Time: ${data[rank].memorization_time / 1000}, Date: ${data[rank].created_at}`, {
+      this.add.text(0, 750, "Leaderboard", {
+         fontSize: "70px",
+         fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
+      });
+      for (let index = 0; index < Math.min(5, result.records.length); index++) {
+         const record = result.records[index];
+         this.add.text(
+            0,
+            850 + index * 100,
+            `Rank: #${record.rank},Player: ${record.username}, Memorization Time: ${record.score / 1000}, Scramble: ${record.metadata["Shuffle"]}`,
+            {
                fontSize: "50px",
-               fontFamily: "Georgia, 'Goudy Bookletter 1911', Times, serif",
-            });
+               fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
+            },
+         );
       }
    }
 
-   async addToLeaderboard() {
-      const player_name = "test_player_name";
-      const { error } = await supabase.from("Modern Mode Leaderboard").insert({
-         created_at: new Date(Date.now()).toISOString(),
-         memorization_time: 10,
-         player_name: player_name,
-         scrambled: "scrambled",
-      });
-   }
    startGame(gameMode: GameMode) {
       this.scene.start("GameplayScene", {
          gameMode: gameMode,

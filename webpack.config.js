@@ -2,7 +2,7 @@
 
 import path from "path"
 import "webpack-dev-server"
-
+import Dotenv from "dotenv-webpack"
 import CopyWebpackPlugin from "copy-webpack-plugin"
 import HtmlWebpackPlugin from "html-webpack-plugin"
 import { fileURLToPath } from "url"
@@ -28,7 +28,17 @@ const config = {
       ]
    },
    devServer: {
-      static: path.join(__dirname, "dist")
+      static: path.join(__dirname, "dist"),
+      port: 7354,
+      proxy:[
+         {
+            context: ['/nakama'],
+            target: "http://localhost:7350",
+            pathRewrite: {'^/nakama': ''},
+            secure: false,
+            changeOrigin: true,
+         }
+      ]
    },
    resolve: {
       extensions: [".ts", ".js"]
@@ -49,7 +59,8 @@ const config = {
          template: path.resolve(__dirname, "src/index.html"),
          title: "Eagle Eyes",
          inject: "head"
-      })
+      }),
+      new Dotenv()
    ]
 }
 
