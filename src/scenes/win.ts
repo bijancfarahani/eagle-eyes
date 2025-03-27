@@ -30,7 +30,7 @@ export class WinScene extends Phaser.Scene {
 
    create() {
       this.add.text(
-         +this.sys.game.config.width / 2 - 600,
+         +this.sys.game.config.width / 2,
          +this.sys.game.config.height / 100,
          "You won!!!",
          {
@@ -83,21 +83,21 @@ export class WinScene extends Phaser.Scene {
             fontSize: "70px",
             fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
          })
-         //.setInteractive()
          .disableInteractive()
          .setVisible(false)
          .on("pointerdown", () => this.addToLeaderboard());
-      this.add
+      /*this.add
          .text(800, 400, "View Leaderboard", {
             fontSize: "70px",
             fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
          })
          .setInteractive()
          .on("pointerdown", () => this.getLeaderboard());
-
+*/
+      this.drawTopFiveLeaderboard();
       this.add.text(
          +this.sys.game.config.width / 3 + 1250,
-         +this.sys.game.config.height - 950,
+         +this.sys.game.config.height - 1050,
          `Time: ${this.memorizationTime}`,
          {
             fontSize: "70px",
@@ -106,7 +106,7 @@ export class WinScene extends Phaser.Scene {
       );
       this.add.text(
          +this.sys.game.config.width / 3 + 700,
-         +this.sys.game.config.height - 850,
+         +this.sys.game.config.height - 950,
          `Deck Shuffle: ${this.shuffled}`,
          {
             fontSize: "70px",
@@ -116,7 +116,7 @@ export class WinScene extends Phaser.Scene {
 
       this.playerNameInput = this.add.text(
          +this.sys.game.config.width / 3 + 850,
-         +this.sys.game.config.height - 750,
+         +this.sys.game.config.height - 700,
          "<Enter player name>",
          {
             fontSize: "70px",
@@ -125,6 +125,26 @@ export class WinScene extends Phaser.Scene {
       );
       this.input.keyboard.on("keydown", this.playerNameInputListener);
    }
+   async drawTopFiveLeaderboard() {
+      const result = await Nakama.getLeaderboard();
+
+      this.add.text(0, 800, "Leaderboard", {
+         fontSize: "70px",
+         fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
+      });
+      for (let index = 0; index < Math.min(5, result.records.length); index++) {
+         this.add.text(
+            0,
+            1000 + index * 100,
+            `Rank: #${result.records[index].rank},Player: ${result.records[index].username}, Memorization Time: ${result.records[index].score / 1000}`,
+            {
+               fontSize: "50px",
+               fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
+            },
+         );
+      }
+   }
+
    playerNameInputListener(event: { key: string; keyCode: number }): void {
       var processedPlayerName = this.playerNameInput.text;
       if (processedPlayerName == "<Enter player name>") {
@@ -175,29 +195,6 @@ export class WinScene extends Phaser.Scene {
          this.shuffled,
       );
       this.addToLeaderboardButton.setText("Success!");
-   }
-
-   async getLeaderboard() {
-      const result = await Nakama.getLeaderboard();
-
-      this.add.text(0, 800, "Leaderboard", {
-         fontSize: "70px",
-         fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
-      });
-      for (
-         let index = 0;
-         index < Math.min(10, result.records.length);
-         index++
-      ) {
-         this.add.text(
-            0,
-            1000 + index * 100,
-            `Rank: #${result.records[index].rank},Player: ${result.records[index].username}, Memorization Time: ${result.records[index].score / 1000}`,
-            {
-               fontSize: "50px",
-               fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
-            },
-         );
-      }
+      this.addToLeaderboardButton.disableInteractive();
    }
 }
