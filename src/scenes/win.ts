@@ -146,7 +146,6 @@ export class WinScene extends Phaser.Scene {
 
       const result = await Nakama.getTopFiveLeaderboard();
       this.drawLeaderboardRows(result);
-      console.log("hey");
       this.topFiveLeaderboard.setAlpha(1).disableInteractive();
    }
 
