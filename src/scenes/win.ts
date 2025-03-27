@@ -4,60 +4,163 @@ import Nakama from "../nakama";
 export class WinScene extends Phaser.Scene {
    gameMode: GameMode;
    answer: string;
-   scrambled: string;
+   shuffled: string;
    memorizationTime: number;
+   playerNameInput: Phaser.GameObjects.Text;
+   addToLeaderboardButton: Phaser.GameObjects.Text;
 
    constructor() {
       super({
          key: "WinScene",
       });
+      this.playerNameInputListener = this.playerNameInputListener.bind(this); // Bind this
    }
 
    init(data: {
       gameMode: GameMode;
       answer: string;
-      scrambled: string;
+      shuffled: string;
       memorizationTime: number;
    }) {
       this.gameMode = data.gameMode;
       this.answer = data.answer;
-      this.scrambled = data.scrambled;
+      this.shuffled = data.shuffled;
       this.memorizationTime = data.memorizationTime;
    }
 
    create() {
-      this.add.text(0, 0, "You won!!!", {
-         fontSize: "48px",
-         fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
-      });
-      const card_sprite = this.add.sprite(400, 400, "card_back");
-      card_sprite.setInteractive().on(
-         "pointerdown",
-         function () {
-            this.scene.start("TitleScene");
+      this.add.text(
+         +this.sys.game.config.width / 2 - 600,
+         +this.sys.game.config.height / 100,
+         "You won!!!",
+         {
+            fontSize: "258px",
+            fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
          },
-         this,
       );
+
+      this.add
+         .text(
+            +this.sys.game.config.width / 3 + 1370,
+            +this.sys.game.config.height - 250,
+            "Replay",
+            {
+               fontSize: "75px",
+               fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
+            },
+         )
+         .setInteractive()
+         .on("pointerdown", () => {
+            this.scene.start("GameplayScene", {
+               gameMode: this.gameMode,
+               answer: this.answer,
+            });
+         });
+
+      this.add
+         .text(
+            +this.sys.game.config.width / 3 + 1100,
+            +this.sys.game.config.height - 150,
+            "Title Screen",
+            {
+               fontSize: "75px",
+               fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
+            },
+         )
+         .setInteractive()
+         .on("pointerdown", () => {
+            this.scene.start("TitleScene");
+         });
+
       if (this.gameMode == GameMode.Modern) {
-         const startClassicMode = this.add
-            .text(400, 1000, "Add to Leaderboard!", {
-               fontSize: "70px",
-               fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
-            })
-            .setInteractive()
-            .on("pointerdown", () => this.addToLeaderboard());
-         const startModernMode = this.add
-            .text(1000, 400, "View Leaderboard", {
-               fontSize: "70px",
-               fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
-            })
-            .setInteractive()
-            .on("pointerdown", () => this.getLeaderboard());
+         this.drawLeaderboard();
       }
    }
-   async addToLeaderboard() {
-      const player_name = "bj";
 
+   drawLeaderboard() {
+      this.addToLeaderboardButton = this.add
+         .text(1700, 800, "Add to Leaderboard!", {
+            fontSize: "70px",
+            fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
+         })
+         //.setInteractive()
+         .disableInteractive()
+         .setVisible(false)
+         .on("pointerdown", () => this.addToLeaderboard());
+      this.add
+         .text(800, 400, "View Leaderboard", {
+            fontSize: "70px",
+            fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
+         })
+         .setInteractive()
+         .on("pointerdown", () => this.getLeaderboard());
+
+      this.add.text(
+         +this.sys.game.config.width / 3 + 1250,
+         +this.sys.game.config.height - 950,
+         `Time: ${this.memorizationTime}`,
+         {
+            fontSize: "70px",
+            fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
+         },
+      );
+      this.add.text(
+         +this.sys.game.config.width / 3 + 700,
+         +this.sys.game.config.height - 850,
+         `Deck Shuffle: ${this.shuffled}`,
+         {
+            fontSize: "70px",
+            fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
+         },
+      );
+
+      this.playerNameInput = this.add.text(
+         +this.sys.game.config.width / 3 + 850,
+         +this.sys.game.config.height - 750,
+         "<Enter player name>",
+         {
+            fontSize: "70px",
+            fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
+         },
+      );
+      this.input.keyboard.on("keydown", this.playerNameInputListener);
+   }
+   playerNameInputListener(event: { key: string; keyCode: number }): void {
+      var processedPlayerName = this.playerNameInput.text;
+      if (processedPlayerName == "<Enter player name>") {
+         processedPlayerName = "";
+      }
+      if (event.keyCode == 8) {
+         if (processedPlayerName.length == 0) {
+            return;
+         }
+         processedPlayerName = processedPlayerName.slice(0, -1);
+         if (processedPlayerName.length == 0) {
+            processedPlayerName = "<Enter player name>";
+         }
+      } else if (processedPlayerName.length > 15) {
+         return;
+      } else if (
+         (event.keyCode >= 65 && event.keyCode <= 90) ||
+         (event.keyCode >= 48 && event.keyCode <= 57) ||
+         event.keyCode === 32
+      ) {
+         processedPlayerName += event.key;
+      }
+      if (
+         processedPlayerName != "<Enter player name>" &&
+         processedPlayerName.length > 0
+      ) {
+         this.addToLeaderboardButton.setVisible(true);
+         this.addToLeaderboardButton.setInteractive();
+      } else {
+         this.addToLeaderboardButton.setVisible(false);
+         this.addToLeaderboardButton.disableInteractive();
+      }
+      this.playerNameInput.setText(processedPlayerName);
+   }
+
+   async addToLeaderboard() {
       const numStr = String(this.memorizationTime);
       const [integerPart, decimalPart] = numStr.split(".");
       const [integer, decimal] = [
@@ -65,7 +168,13 @@ export class WinScene extends Phaser.Scene {
          parseInt(decimalPart || "0", 10),
       ];
 
-      Nakama.addToLeaderboard(integer, decimal, player_name, this.scrambled);
+      Nakama.addToLeaderboard(
+         integer,
+         decimal,
+         this.playerNameInput.text,
+         this.shuffled,
+      );
+      this.addToLeaderboardButton.setText("Success!");
    }
 
    async getLeaderboard() {

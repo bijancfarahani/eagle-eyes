@@ -13,6 +13,9 @@ export class GameplayScene extends Phaser.Scene {
    // Array of the deck of cards.
    deck: Deck;
 
+   // Array of images which spell out the answer with the players progression.
+   guideCards: Phaser.GameObjects.Image[];
+
    // The index into the answer string of the next correct letter to choose by flipping a card.
    target_index: number;
 
@@ -27,7 +30,6 @@ export class GameplayScene extends Phaser.Scene {
    timeText: Phaser.GameObjects.Text;
    memorizationRuntime: number;
    answer: string;
-   guideCards: Phaser.GameObjects.Image[];
 
    // Typescript needs an explicit key otherwise two scenes end up having the same (default) name.
    constructor() {
@@ -179,11 +181,11 @@ export class GameplayScene extends Phaser.Scene {
       ++this.target_index;
       // The last card was flipped and the player won the game.
       if (this.target_index == this.answer.length) {
-         const scrambled = this.deck.scrambled();
+         const shuffled = this.deck.shuffled();
          this.scene.start("WinScene", {
             gameMode: this.gameMode,
             answer: this.answer,
-            scrambled: scrambled,
+            shuffled: shuffled,
             memorizationTime: this.memorizationRuntime,
          });
       } else {
@@ -203,7 +205,7 @@ export class GameplayScene extends Phaser.Scene {
          card.setAlpha(0.3);
       });
 
-      const replayGame = this.add
+      this.add
          .text(
             +this.sys.game.config.width / 3 + 1150,
             +this.sys.game.config.height / 3 + 50,
@@ -216,7 +218,7 @@ export class GameplayScene extends Phaser.Scene {
          .setInteractive()
          .on("pointerdown", () => this.scene.restart());
 
-      const goToTitleScene = this.add
+      this.add
          .text(
             +this.sys.game.config.width / 3 + 600,
             +this.sys.game.config.height / 3 + 250,

@@ -34,7 +34,7 @@ export class TitleScene extends Phaser.Scene {
             fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
          },
       );
-      const startClassicMode = this.add
+      this.add
          .text(
             +this.sys.game.config.width / 3 + 570,
             +this.sys.game.config.height / 4,
@@ -46,7 +46,7 @@ export class TitleScene extends Phaser.Scene {
          )
          .setInteractive()
          .on("pointerdown", () => this.startGame(GameMode.Classic));
-      const startModernMode = this.add
+      this.add
          .text(
             +this.sys.game.config.width / 3 + 660,
             +this.sys.game.config.height / 3 + 50,
@@ -58,7 +58,7 @@ export class TitleScene extends Phaser.Scene {
          )
          .setInteractive()
          .on("pointerdown", () => this.startGame(GameMode.Modern));
-      const viewLeaderboard = this.add
+      this.add
          .text(1060, 750, "View Leaderboard", {
             fontSize: "150px",
             fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
@@ -88,7 +88,7 @@ export class TitleScene extends Phaser.Scene {
          this.add.text(
             0,
             1000 + index * 100,
-            `Rank: #${record.rank},Player: ${record.username}, Memorization Time: ${record.score / 1000}, Scramble: ${record.metadata.scrambled}`,
+            `Rank: #${record.rank},Player: ${record.username}, Memorization Time: ${record.score / 1000}, Scramble: ${record.metadata.shuffled}`,
             {
                fontSize: "50px",
                fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
@@ -98,9 +98,16 @@ export class TitleScene extends Phaser.Scene {
    }
 
    startGame(gameMode: GameMode) {
-      this.scene.start("GameplayScene", {
+      /*   this.scene.start("GameplayScene", {
          gameMode: gameMode,
          answer: EagleEyesConfig.answer,
+      });
+      */
+      this.scene.start("WinScene", {
+         gameMode: gameMode,
+         answer: "this.answer",
+         shuffled: "shuffled",
+         memorizationTime: 100,
       });
    }
 }

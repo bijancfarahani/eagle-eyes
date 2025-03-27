@@ -34,7 +34,10 @@ class Nakama {
          return;
       }
       try {
-        return this.client.listLeaderboardRecords(this.session, LEADERBOARD_ID);
+         return this.client.listLeaderboardRecords(
+            this.session,
+            LEADERBOARD_ID,
+         );
       } catch (err) {
          console.error(
             "Error fetching leaderboard: %o:%o",
@@ -48,14 +51,14 @@ class Nakama {
       score: number,
       subscore: number,
       username: string,
-      scrambled: string,
+      shuffled: string,
    ) {
       try {
          const payload = {
             score: score,
             subscore: subscore,
             username: username,
-            scrambled: scrambled,
+            shuffled: shuffled,
          };
          return await this.client.rpc(
             this.session,
