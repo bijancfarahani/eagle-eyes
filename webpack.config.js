@@ -29,6 +29,7 @@ const config = {
    },
    devServer: {
       static: path.join(__dirname, "dist"),
+      port: 7354,
       proxy:[
          {
             context: ['/nakama'],

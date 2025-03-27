@@ -52,7 +52,7 @@ export class WinScene extends Phaser.Scene {
                fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
             })
             .setInteractive()
-            .on("pointerdown", () => this.viewLeaderboard());
+            .on("pointerdown", () => this.getLeaderboard());
       }
    }
    async addToLeaderboard() {
@@ -68,8 +68,8 @@ export class WinScene extends Phaser.Scene {
       Nakama.addToLeaderboard(integer, decimal, player_name, this.scrambled);
    }
 
-   async viewLeaderboard() {
-      const result = await Nakama.viewLeaderboard();
+   async getLeaderboard() {
+      const result = await Nakama.getLeaderboard();
 
       this.add.text(0, 800, "Leaderboard", {
          fontSize: "70px",

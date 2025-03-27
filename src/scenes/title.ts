@@ -64,10 +64,10 @@ export class TitleScene extends Phaser.Scene {
             fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
          })
          .setInteractive()
-         .on("pointerdown", () => this.viewLeaderboard());
+         .on("pointerdown", () => this.drawLeaderboard());
    }
-   async viewLeaderboard() {
-      const result = await Nakama.viewLeaderboard();
+   async drawLeaderboard() {
+      const result = await Nakama.getLeaderboard();
       if (result == null) {
          this.add.text(0, 900, "Unable to fetch leaderboard ", {
             fontSize: "70px",

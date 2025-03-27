@@ -18,9 +18,9 @@ class Nakama {
       try {
          this.session = await this.client.authenticateDevice(deviceId, true);
          localStorage.setItem("user_id", this.session.user_id);
-         console.log("Successfully authenticated user.");
+         console.debug("Successfully authenticated user.");
       } catch (err) {
-         console.log(
+         console.error(
             "Error authenticating device: %o:%o",
             err.statusCode,
             err.message,
@@ -28,14 +28,15 @@ class Nakama {
       }
    }
 
-   async viewLeaderboard(): Promise<any> {
+   async getLeaderboard(): Promise<any> {
       if (this.session == null) {
+         console.error("No session exists.");
          return;
       }
       try {
-         this.client.listLeaderboardRecords(this.session, LEADERBOARD_ID);
+        return this.client.listLeaderboardRecords(this.session, LEADERBOARD_ID);
       } catch (err) {
-         console.log(
+         console.error(
             "Error fetching leaderboard: %o:%o",
             err.statusCode,
             err.message,
@@ -50,20 +51,19 @@ class Nakama {
       scrambled: string,
    ) {
       try {
-         var payload = {
+         const payload = {
             score: score,
             subscore: subscore,
             username: username,
             scrambled: scrambled,
          };
-         var response = await this.client.rpc(
+         return await this.client.rpc(
             this.session,
             LEADERBOARD_WRITE_RPC_ID,
             payload,
          );
-         return response;
       } catch (error) {
-         console.log("Error adding to leaderboard: %o", error.message);
+         console.error("Error adding to leaderboard: %o", error.message);
       }
    }
 }
