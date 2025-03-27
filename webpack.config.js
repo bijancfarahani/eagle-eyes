@@ -2,7 +2,7 @@
 
 import path from "path"
 import "webpack-dev-server"
-
+import Dotenv from "dotenv-webpack"
 import CopyWebpackPlugin from "copy-webpack-plugin"
 import HtmlWebpackPlugin from "html-webpack-plugin"
 import { fileURLToPath } from "url"
@@ -59,7 +59,8 @@ const config = {
          template: path.resolve(__dirname, "src/index.html"),
          title: "Eagle Eyes",
          inject: "head"
-      })
+      }),
+      new Dotenv()
    ]
 }
 

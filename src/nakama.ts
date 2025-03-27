@@ -9,7 +9,7 @@ class Nakama {
    isAuthenticated: boolean;
 
    async authenticate() {
-      this.client = new Client("defaultkey", "192.168.68.63", "7350", false);
+      this.client = new Client("defaultkey", process.env.NAKAMA_URL, process.env.NAKAMA_PORT, false);
       this.deviceId = localStorage.getItem("deviceId");
       if (!this.deviceId) {
          this.deviceId = uuidv4();
