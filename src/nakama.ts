@@ -76,7 +76,7 @@ class Nakama {
       subscore: number,
       username: string,
       shuffle: string,
-   ) {
+   ): Promise<boolean> {
       try {
          const payload = {
             score: score,
@@ -84,13 +84,11 @@ class Nakama {
             username: username,
             shuffle: shuffle,
          };
-         return await this.client.rpc(
-            this.session,
-            LEADERBOARD_WRITE_RPC_ID,
-            payload,
-         );
+         await this.client.rpc(this.session, LEADERBOARD_WRITE_RPC_ID, payload);
+         return true;
       } catch (error) {
          console.error("Error adding to leaderboard: %o", error.message);
+         return false;
       }
    }
 }

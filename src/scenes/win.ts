@@ -150,6 +150,9 @@ export class WinScene extends Phaser.Scene {
    }
 
    private drawLeaderboardRows(result: any) {
+      if (result == null) {
+         return;
+      }
       for (let index = 0; index < Math.min(5, result.records.length); index++) {
          this.add.text(
             0,
@@ -207,14 +210,18 @@ export class WinScene extends Phaser.Scene {
          parseInt(decimalPart || "0", 10),
       ];
 
-      Nakama.addToLeaderboard(
+      const isAddedToLeaderboard = await Nakama.addToLeaderboard(
          integer,
          decimal,
          this.playerNameInput.text,
          this.shuffle,
       );
-      this.addToLeaderboardButton.setText("Success!");
-      this.addToLeaderboardButton.disableInteractive();
+      if (isAddedToLeaderboard) {
+         this.addToLeaderboardButton.setText("Success!");
+         this.addToLeaderboardButton.disableInteractive();
+      } else {
+         this.addToLeaderboardButton.setText("Failed! Try again?");
+      }
    }
 
    async drawLeaderboardNearPlayer() {
