@@ -4,7 +4,7 @@ import Nakama from "../nakama";
 export class WinScene extends Phaser.Scene {
    gameMode: GameMode;
    answer: string;
-   shuffled: string;
+   shuffle: string;
    memorizationTime: number;
    playerNameInput: Phaser.GameObjects.Text;
    addToLeaderboardButton: Phaser.GameObjects.Text;
@@ -22,12 +22,12 @@ export class WinScene extends Phaser.Scene {
    init(data: {
       gameMode: GameMode;
       answer: string;
-      shuffled: string;
+      shuffle: string;
       memorizationTime: number;
    }) {
       this.gameMode = data.gameMode;
       this.answer = data.answer;
-      this.shuffled = data.shuffled;
+      this.shuffle = data.shuffle;
       this.memorizationTime = data.memorizationTime;
    }
 
@@ -122,7 +122,7 @@ export class WinScene extends Phaser.Scene {
       this.add.text(
          +this.sys.game.config.width / 3 + 700,
          +this.sys.game.config.height - 950,
-         `Deck Shuffle: ${this.shuffled}`,
+         `Deck Shuffle: ${this.shuffle}`,
          {
             fontSize: "70px",
             fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
@@ -211,7 +211,7 @@ export class WinScene extends Phaser.Scene {
          integer,
          decimal,
          this.playerNameInput.text,
-         this.shuffled,
+         this.shuffle,
       );
       this.addToLeaderboardButton.setText("Success!");
       this.addToLeaderboardButton.disableInteractive();

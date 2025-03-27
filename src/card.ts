@@ -80,7 +80,7 @@ export class Deck {
       this.cards = [];
    }
 
-   shuffled(): string {
+   shuffle(): string {
       return this.cards.map((card) => card.letter).join("");
    }
    cards: Card[];

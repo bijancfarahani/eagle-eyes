@@ -3,7 +3,7 @@ Eagle Eyes is a lightening-quick game that test your photo-memory.
 
 ## How to Play
 
-The game begins by dealing the player nine shuffled cards, each with a different letter of the phrase ***eagle eyes***.
+The game begins by dealing the player nine shuffle cards, each with a different letter of the phrase ***eagle eyes***.
 You need to quickly memorize the position of each card before they are all flipped face down.
 
  - Classic Mode, you're given a few seconds to quickly memorize the location of each card.

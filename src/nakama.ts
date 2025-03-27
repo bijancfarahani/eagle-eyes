@@ -75,14 +75,14 @@ class Nakama {
       score: number,
       subscore: number,
       username: string,
-      shuffled: string,
+      shuffle: string,
    ) {
       try {
          const payload = {
             score: score,
             subscore: subscore,
             username: username,
-            shuffled: shuffled,
+            shuffle: shuffle,
          };
          return await this.client.rpc(
             this.session,

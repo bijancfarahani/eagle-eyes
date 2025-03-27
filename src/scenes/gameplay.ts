@@ -181,11 +181,11 @@ export class GameplayScene extends Phaser.Scene {
       ++this.target_index;
       // The last card was flipped and the player won the game.
       if (this.target_index == this.answer.length) {
-         const shuffled = this.deck.shuffled();
+         const shuffle = this.deck.shuffle();
          this.scene.start("WinScene", {
             gameMode: this.gameMode,
             answer: this.answer,
-            shuffled: shuffled,
+            shuffle: shuffle,
             memorizationTime: this.memorizationRuntime,
          });
       } else {
