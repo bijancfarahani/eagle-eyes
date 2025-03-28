@@ -10,7 +10,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    environment: github-pages
     env:
       NAKAMA_KEY: ${{ secrets.NAKAMA_KEY }}
       NAKAMA_URL: ${{ vars.NAKAMA_URL }}
