@@ -10,6 +10,11 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    env:
+      NAKAMA_KEY: ${{ secrets.NAKAMA_KEY }}
+      NAKAMA_URL: ${{ secrets.NAKAMA_URL }}
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -21,9 +26,12 @@ jobs:
 
     - name: Inject Secrets to .env
       run: |
-        echo "NAKAMA_KEY=${{ secrets.NAKAMA_KEY }}" >> ./.env
-        echo "NAKAMA_URL=${{ secrets.NAKAMA_URL }}" >> ./.env
-        # Add more secrets as needed
+        echo "$GOOGLE_API_KEY" |  awk '$1=$1' FS= OFS=" "
+
+        touch .env
+        echo GOOGLE_API_KEY = $GOOGLE_API_KEY >> .env
+
+        cat .env | awk '$1=$1' FS= OFS=" "
 
     - name: Display .env (for debugging)
       run: cat ./.env
