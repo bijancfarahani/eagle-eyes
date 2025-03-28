@@ -26,13 +26,9 @@ jobs:
 
     - name: Inject Secrets to .env
       run: |
-        echo "${{env.NAKAMA_KEY}}" |  awk '$1=$1' FS= OFS=" "
-        echo "${{env.NAKAMA_URL}}" |  awk '$1=$1' FS= OFS=" "
         touch .env
         echo NAKAMA_KEY = ${{env.NAKAMA_KEY}} >> .env
         echo NAKAMA_URL = ${{env.NAKAMA_URL}} >> .env
-
-        cat .env | awk '$1=$1' FS= OFS=" "
 
     - name: Display .env (for debugging)
       run: cat ./.env
