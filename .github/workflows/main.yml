@@ -19,11 +19,14 @@ jobs:
       with:
         node-version: 22.x
 
-    - name: Make envfile
-      uses: SpicyPizza/create-envfile@v2.0
-      with:
-        envkey_NAKAMA_KEY: ${{ secrets.NAKAMA_KEY }}
-        envkey_NAKAMA_URL: ${{ vars.NAKAMA_URL }}
+    - name: Inject Secrets to .env
+      run: |
+        echo "NAKAMA_KEY=${{ secrets.NAKAMA_KEY }}" >> ./.env
+        echo "NAKAMA_URL=${{ secrets.NAKAMA_URL }}" >> ./.env
+        # Add more secrets as needed
+
+    - name: Display .env (for debugging)
+      run: cat ./.env
 
     - name: Build with Webpack
       run: |
