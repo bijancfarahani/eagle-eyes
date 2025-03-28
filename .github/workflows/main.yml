@@ -26,10 +26,11 @@ jobs:
 
     - name: Inject Secrets to .env
       run: |
-        echo "$GOOGLE_API_KEY" |  awk '$1=$1' FS= OFS=" "
-
+        echo "$NAKAMA_KEY" |  awk '$1=$1' FS= OFS=" "
+        echo "$NAKAMA_KEY" |  awk '$1=$1' FS= OFS=" "
         touch .env
-        echo GOOGLE_API_KEY = $GOOGLE_API_KEY >> .env
+        echo NAKAMA_KEY = $NAKAMA_KEY >> .env
+        echo NAKAMA_URL = $NAKAMA_URL >> .env
 
         cat .env | awk '$1=$1' FS= OFS=" "
 
