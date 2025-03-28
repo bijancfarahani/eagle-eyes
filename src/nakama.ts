@@ -9,7 +9,7 @@ class Nakama {
    isAuthenticated: boolean;
 
    async authenticate() {
-      this.client = new Client(process.env.NAKAMA_KEY, process.env.NAKAMA_URL, process.env.NAKAMA_PORT, false);
+      this.client = new Client(process.env.NAKAMA_KEY,  process.env.NAKAMA_URL,/*Cloudflare tunnel handles the port*/ "", false);
       this.deviceId = localStorage.getItem("deviceId");
       if (!this.deviceId) {
          this.deviceId = uuidv4();
