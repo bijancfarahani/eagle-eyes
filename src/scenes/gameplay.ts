@@ -220,7 +220,7 @@ export class GameplayScene extends Phaser.Scene {
 
       this.add
          .text(
-            +this.sys.game.config.width / 3 + 600,
+            +this.sys.game.config.width / 3 + 850,
             +this.sys.game.config.height / 3 + 250,
             "Title Screen",
             {

@@ -9,7 +9,12 @@ class Nakama {
    isAuthenticated: boolean;
 
    async authenticate() {
-      this.client = new Client(process.env.NAKAMA_KEY,  process.env.NAKAMA_URL,/*Cloudflare tunnel handles the port*/ "", true);
+      this.client = new Client(
+         process.env.NAKAMA_KEY,
+         process.env.NAKAMA_URL,
+         /*Reverse proxy handles the port*/ "",
+         true,
+      );
       this.deviceId = localStorage.getItem("deviceId");
       if (!this.deviceId) {
          this.deviceId = uuidv4();

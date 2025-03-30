@@ -62,7 +62,7 @@ export class WinScene extends Phaser.Scene {
 
       this.add
          .text(
-            +this.sys.game.config.width / 3 + 1100,
+            +this.sys.game.config.width / 3 + 1210,
             +this.sys.game.config.height - 150,
             "Title Screen",
             {
@@ -141,14 +141,6 @@ export class WinScene extends Phaser.Scene {
       this.input.keyboard.on("keydown", this.playerNameInputListener);
    }
 
-   async drawTopFiveLeaderboard() {
-      this.nearbyLeaderboard.setAlpha(0.5).setInteractive();
-
-      const result = await Nakama.getTopFiveLeaderboard();
-      this.drawLeaderboardRows(result);
-      this.topFiveLeaderboard.setAlpha(1).disableInteractive();
-   }
-
    private drawLeaderboardRows(result: any) {
       if (result == null) {
          return;
@@ -222,6 +214,14 @@ export class WinScene extends Phaser.Scene {
       } else {
          this.addToLeaderboardButton.setText("Failed! Try again?");
       }
+   }
+
+   async drawTopFiveLeaderboard() {
+      this.nearbyLeaderboard.setAlpha(0.5).setInteractive();
+
+      const result = await Nakama.getTopFiveLeaderboard();
+      this.drawLeaderboardRows(result);
+      this.topFiveLeaderboard.setAlpha(1).disableInteractive();
    }
 
    async drawLeaderboardNearPlayer() {
