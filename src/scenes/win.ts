@@ -114,31 +114,20 @@ export class WinScene extends Phaser.Scene {
       this.drawTopFiveLeaderboard();
 
       this.scrollLeftButton = this.add
-      .text(
-         200,
-         this.lastRecordHeight,
-         "<<",
-         {
+         .text(200, this.lastRecordHeight, "<<", {
             fontSize: "70px",
             fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
-         },
-      )
-      .setInteractive()
-      .on("pointerdown", () => this.scrollLeaderboard(0));
+         })
+         .setInteractive()
+         .on("pointerdown", () => this.scrollLeaderboard(0));
 
       this.scrollRightButton = this.add
-      .text(
-         350,
-         this.lastRecordHeight,
-         ">>",
-         {
+         .text(350, this.lastRecordHeight, ">>", {
             fontSize: "70px",
             fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
-         },
-      )
-      .setInteractive()
-      .on("pointerdown", () => this.scrollLeaderboard(1));
-
+         })
+         .setInteractive()
+         .on("pointerdown", () => this.scrollLeaderboard(1));
 
       // Draw player win details.
       this.add.text(
@@ -174,17 +163,19 @@ export class WinScene extends Phaser.Scene {
    async scrollLeaderboard(direction: number) {
       const result = await Nakama.getTopFiveLeaderboard();
       //const displayData = this.leaderboardResult.slice(this.leaderboardRecordPointer, 5);
-      if(direction === 0)  // left
-      {
+      if (direction === 0) {
+         // left
          this.leaderboardRecordPointer -= 5;
-      }
-      else // right
-      {
+      } // right
+      else {
          this.leaderboardRecordPointer += 5;
       }
       var lastRecordHeight = 850;
-      for (let index = Math.max(0, this.leaderboardRecordPointer); index < Math.min(5, result.records.length); index++) {
-
+      for (
+         let index = Math.max(0, this.leaderboardRecordPointer);
+         index < Math.min(5, result.records.length);
+         index++
+      ) {
          const record = result.records[index];
          const recordHeight = 850 + index * 100;
          lastRecordHeight = recordHeight + 100;

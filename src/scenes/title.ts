@@ -30,19 +30,17 @@ export class TitleScene extends Phaser.Scene {
       this.drawButtons();
 
       for (let index = 0; index < 5; index++) {
-
          const recordHeight = 850 + index * 100;
-         this.leaderboardRecords.push(this.add.text(
-            0,
-            recordHeight,
-            `Index: ${index}`,
-            {
-               fontSize: "50px",
-               fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
-            },
-         ).setVisible(false));
+         this.leaderboardRecords.push(
+            this.add
+               .text(0, recordHeight, `Index: ${index}`, {
+                  fontSize: "50px",
+                  fontFamily:
+                     "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
+               })
+               .setVisible(false),
+         );
       }
-
 
       this.add
          .text(
@@ -117,7 +115,7 @@ export class TitleScene extends Phaser.Scene {
          });
          return;
       }
-     // this.leaderboardResult = result;
+      // this.leaderboardResult = result;
       this.add.text(0, 750, "Leaderboard", {
          fontSize: "70px",
          fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
@@ -125,11 +123,12 @@ export class TitleScene extends Phaser.Scene {
       var lastRecordHeight = 850;
       this.leaderboardRecordPointer = 0;
       for (let index = 0; index < Math.min(5, result.records.length); index++) {
-
          const record = result.records[index];
          const recordHeight = 850 + index * 100;
          lastRecordHeight = recordHeight + 100;
-         this.leaderboardRecords[index].setText(`Rank: #${record.rank},Player: ${record.username}, Memorization Time: ${record.score / 1000}, Scramble: ${record.metadata["Shuffle"]}`);
+         this.leaderboardRecords[index].setText(
+            `Rank: #${record.rank},Player: ${record.username}, Memorization Time: ${record.score / 1000}, Scramble: ${record.metadata["Shuffle"]}`,
+         );
          this.leaderboardRecords[index].setVisible(true);
          /*  this.add.text(
             0,
@@ -143,53 +142,47 @@ export class TitleScene extends Phaser.Scene {
          */
       }
       this.scrollLeftButton = this.add
-      .text(
-         200,
-         lastRecordHeight,
-         "<<",
-         {
+         .text(200, lastRecordHeight, "<<", {
             fontSize: "70px",
             fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
-         },
-      )
-      .setInteractive()
-      .on("pointerdown", () => this.scrollLeaderboard(0));
+         })
+         .setInteractive()
+         .on("pointerdown", () => this.scrollLeaderboard(0));
 
       this.scrollRightButton = this.add
-      .text(
-         350,
-         lastRecordHeight,
-         ">>",
-         {
+         .text(350, lastRecordHeight, ">>", {
             fontSize: "70px",
             fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
-         },
-      )
-      .setInteractive()
-      .on("pointerdown", () => this.scrollLeaderboard(1));
+         })
+         .setInteractive()
+         .on("pointerdown", () => this.scrollLeaderboard(1));
    }
    async scrollLeaderboard(direction: number) {
       const result = await Nakama.getTopFiveLeaderboard();
       //const displayData = this.leaderboardResult.slice(this.leaderboardRecordPointer, 5);
-      if(direction === 0)  // left
-      {
-       //  if(this.leaderboardRecordPointer <= 0) {return;}
+      if (direction === 0) {
+         // left
+         //  if(this.leaderboardRecordPointer <= 0) {return;}
          this.leaderboardRecordPointer -= 5;
-      }
-      else // right
-      {
-        // if(this.leaderboardRecordPointer >= result.records.length) {return;}
+      } // right
+      else {
+         // if(this.leaderboardRecordPointer >= result.records.length) {return;}
          this.leaderboardRecordPointer += 5;
       }
       var lastRecordHeight = 850;
-      for (let index = Math.max(0, this.leaderboardRecordPointer); index < Math.min(5, result.records.length); index++) {
-
+      for (
+         let index = Math.max(0, this.leaderboardRecordPointer);
+         index < Math.min(5, result.records.length);
+         index++
+      ) {
          const record = result.records[index];
          const recordHeight = 850 + index * 100;
          lastRecordHeight = recordHeight + 100;
-         this.leaderboardRecords[index].setText(`Rank: #${record.rank},Player: ${record.username}, Memorization Time: ${record.score / 1000}, Scramble: ${record.metadata["Shuffle"]}`);
+         this.leaderboardRecords[index].setText(
+            `Rank: #${record.rank},Player: ${record.username}, Memorization Time: ${record.score / 1000}, Scramble: ${record.metadata["Shuffle"]}`,
+         );
          this.leaderboardRecords[index].setVisible(true);
-        /* this.add.text(
+         /* this.add.text(
             0,
             recordHeight,
             `Rank: #${record.rank}, Player: ${record.username}, Memorization Time: ${record.score / 1000}, Scramble: ${record.metadata["Shuffle"]}`,
@@ -202,7 +195,6 @@ export class TitleScene extends Phaser.Scene {
       }
       this.scrollLeftButton.setY(lastRecordHeight);
       this.scrollRightButton.setY(lastRecordHeight);
-
    }
 
    startGame(gameMode: GameMode) {
