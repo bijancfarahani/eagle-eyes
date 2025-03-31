@@ -127,19 +127,9 @@ export class TitleScene extends Phaser.Scene {
          const recordHeight = 850 + index * 100;
          lastRecordHeight = recordHeight + 100;
          this.leaderboardRecords[index].setText(
-            `Rank: #${record.rank},Player: ${record.username}, Memorization Time: ${record.score / 1000}, Scramble: ${record.metadata["Shuffle"]}`,
+            `Rank: #${record.rank}, Player: ${record.username}, Memorization Time: ${record.score / 1000}, Scramble: ${record.metadata["Shuffle"]}`,
          );
          this.leaderboardRecords[index].setVisible(true);
-         /*  this.add.text(
-            0,
-            recordHeight,
-            `Rank: #${record.rank},Player: ${record.username}, Memorization Time: ${record.score / 1000}, Scramble: ${record.metadata["Shuffle"]}`,
-            {
-               fontSize: "50px",
-               fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
-            },
-         );
-         */
       }
       this.scrollLeftButton = this.add
          .text(200, lastRecordHeight, "<<", {
@@ -166,35 +156,25 @@ export class TitleScene extends Phaser.Scene {
          this.leaderboardRecordPointer -= 5;
       } // right
       else {
-         // if(this.leaderboardRecordPointer >= result.records.length) {return;}
+         //if(this.leaderboardRecordPointer >= result.records.length) {return;}
          this.leaderboardRecordPointer += 5;
       }
       var lastRecordHeight = 850;
-      for (
-         let index = Math.max(0, this.leaderboardRecordPointer);
-         index < Math.min(5, result.records.length);
-         index++
-      ) {
-         const record = result.records[index];
-         const recordHeight = 850 + index * 100;
-         lastRecordHeight = recordHeight + 100;
-         this.leaderboardRecords[index].setText(
-            `Rank: #${record.rank},Player: ${record.username}, Memorization Time: ${record.score / 1000}, Scramble: ${record.metadata["Shuffle"]}`,
-         );
-         this.leaderboardRecords[index].setVisible(true);
-         /* this.add.text(
-            0,
-            recordHeight,
-            `Rank: #${record.rank}, Player: ${record.username}, Memorization Time: ${record.score / 1000}, Scramble: ${record.metadata["Shuffle"]}`,
-            {
-               fontSize: "50px",
-               fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
-            },
-         );
-         */
+      let index = Math.max(0, this.leaderboardRecordPointer);
+      if (index >= result.records.length) {
+      } else {
+         for (; index < Math.min(5, result.records.length); index++) {
+            const record = result.records[index];
+            const recordHeight = 850 + index * 100;
+            lastRecordHeight = recordHeight + 100;
+            this.leaderboardRecords[index].setText(
+               `Rank: #${record.rank}, Player: ${record.username}, Memorization Time: ${record.score / 1000}, Scramble: ${record.metadata["Shuffle"]}`,
+            );
+            this.leaderboardRecords[index].setVisible(true);
+         }
+         this.scrollLeftButton.setY(lastRecordHeight);
+         this.scrollRightButton.setY(lastRecordHeight);
       }
-      this.scrollLeftButton.setY(lastRecordHeight);
-      this.scrollRightButton.setY(lastRecordHeight);
    }
 
    startGame(gameMode: GameMode) {
