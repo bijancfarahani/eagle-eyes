@@ -61,7 +61,7 @@ class Nakama {
       }
    }
 
-   public async getNearbyLeaderboard(): Promise<any> {
+   public async getNearbyLeaderboard(): Promise<LeaderboardRecordList> {
       if (!this.isAuthenticated) {
          console.error("Not authenticated.");
          return;

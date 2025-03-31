@@ -80,15 +80,17 @@ export class GameplayScene extends Phaser.Scene {
                callbackScope: this,
                loop: false,
             });
-            this.timeText = this.add.text(
-               0,
-               30,
-               `Time Remaining: ${this.classicModeTimer.getRemainingSeconds() + 1}`,
-               {
-                  fontSize: "200px",
-                  fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
-               },
-            );
+            this.timeText = this.add
+               .text(
+                  +this.sys.game.config.width * 0.01,
+                  +this.sys.game.config.height * 0.15,
+                  `Time Remaining: ${this.classicModeTimer.getRemainingSeconds() + 1}`,
+                  {
+                     fontSize: "200px",
+                     fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
+                  },
+               )
+               .setOrigin(0, 0.5);
             break;
          }
          case GameMode.Modern: {
@@ -105,7 +107,7 @@ export class GameplayScene extends Phaser.Scene {
    }
 
    // Update the memorization time remaining or elapsed display.
-   update(time: number, _delta: number): void {
+   update(time: number): void {
       if (!this.isPlayerMemorizing) {
          return;
       }
@@ -210,28 +212,32 @@ export class GameplayScene extends Phaser.Scene {
 
       this.add
          .text(
-            +this.sys.game.config.width / 3 + 1150,
-            +this.sys.game.config.height / 3 + 50,
+            +this.sys.game.config.width * 0.99,
+            +this.sys.game.config.height * 0.6,
             "Replay",
             {
                fontSize: "150px",
                fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
+               align: "right",
             },
          )
+         .setOrigin(1, 0.5)
          .setInteractive()
          .on("pointerdown", () => this.scene.restart());
 
       this.add
          .text(
-            +this.sys.game.config.width / 3 + 850,
-            +this.sys.game.config.height / 3 + 250,
+            +this.sys.game.config.width * 0.99,
+            +this.sys.game.config.height * 0.7,
             "Title Screen",
             {
                fontSize: "150px",
                fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
+               align: "right",
             },
          )
          .setInteractive()
+         .setOrigin(1, 0.5)
          .on("pointerdown", () => {
             this.scene.start("TitleScene");
          });

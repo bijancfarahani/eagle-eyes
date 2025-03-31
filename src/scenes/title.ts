@@ -4,7 +4,6 @@ import Nakama from "../nakama";
 export class TitleScene extends Phaser.Scene {
    gameMode: GameMode;
    leaderboardRecordPointer: number;
-   leaderboardResult: any;
    scrollLeftButton: Phaser.GameObjects.Text;
    scrollRightButton: Phaser.GameObjects.Text;
    leaderboardRecords: Phaser.GameObjects.Text[];
@@ -30,45 +29,54 @@ export class TitleScene extends Phaser.Scene {
       this.drawButtons();
 
       for (let index = 0; index < 5; index++) {
-         const recordHeight = 850 + index * 100;
+         const recordHeight = +this.sys.game.config.height * 0.6 + index * 100;
          this.leaderboardRecords.push(
             this.add
-               .text(0, recordHeight, `Index: ${index}`, {
-                  fontSize: "50px",
-                  fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
-               })
+               .text(
+                  +this.sys.game.config.width * 0.01,
+                  recordHeight,
+                  `Index: ${index}`,
+                  {
+                     fontSize: "50px",
+                     fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
+                  },
+               )
                .setVisible(false),
          );
       }
 
       this.add
          .text(
-            0,
-            +this.sys.game.config.height / 4,
-            "The game begins by dealing the player nine shuffle cards, each with a different letter of the phrase 'eagle eyes'.\nYou need to quickly memorize the position of each card before they are all flipped face down.\n  -In Classic Mode, you're given a few seconds to quickly memorize the location of each card.\n  -In Modern Mode, you can take as much time as you like\n   and can compete by submitting your time to a leaderboard upon winning.\n\nOnce the cards are no longer visible, the objective is to flip them back over in an order which spells out eagle eyes.",
+            +this.sys.game.config.width * 0.005,
+            +this.sys.game.config.height * 0.2,
+            "The game begins by dealing the player nine shuffle cards,\neach with a different letter of the phrase 'eagle eyes'.\nYou need to quickly memorize the position of each card\nbefore they are flipped face down.\n   -In Classic Mode, you're given a few seconds to quickly\n   memorize the location of each card.\n   -In Modern Mode, you can take as much time as you like\n    and can compete by submitting your time to a leaderboard\n    upon winning.\nOnce the cards are no longer visible, the objective is to\nflip them back over in an order which spells out eagle eyes.",
             {
                fontSize: "31px",
                fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
             },
          )
          .setInteractive()
+         //.setOrigin(0, 0)
+         .setFixedSize(+this.sys.game.config.width * 0.53, 0)
          .on("pointerdown", () => this.startGame(GameMode.Classic));
    }
 
    drawButtons() {
-      this.add.text(
-         +this.sys.game.config.width / 2 - 600,
-         +this.sys.game.config.height / 100,
-         "Eagle Eyes",
-         {
-            fontSize: "296px",
-            fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
-         },
-      );
       this.add
          .text(
-            +this.sys.game.config.width / 3 + 700,
-            +this.sys.game.config.height / 4,
+            +this.sys.game.config.width * 0.5,
+            +this.sys.game.config.height * 0.1,
+            "Eagle Eyes",
+            {
+               fontSize: "250px",
+               fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
+            },
+         )
+         .setOrigin(0.5);
+      this.add
+         .text(
+            +this.sys.game.config.width * 0.99,
+            +this.sys.game.config.height * 0.25,
             "Classic Mode",
             {
                fontSize: "150px",
@@ -76,11 +84,12 @@ export class TitleScene extends Phaser.Scene {
             },
          )
          .setInteractive()
+         .setOrigin(1, 0.5)
          .on("pointerdown", () => this.startGame(GameMode.Classic));
       this.add
          .text(
-            +this.sys.game.config.width / 3 + 660,
-            +this.sys.game.config.height / 3 + 50,
+            +this.sys.game.config.width * 0.99,
+            +this.sys.game.config.height * 0.35,
             "Modern Mode",
             {
                fontSize: "150px",
@@ -88,6 +97,7 @@ export class TitleScene extends Phaser.Scene {
             },
          )
          .setInteractive()
+         .setOrigin(1, 0.5)
          .on("pointerdown", () => this.startGame(GameMode.Modern));
 
       this.drawLeaderboard();
@@ -96,22 +106,32 @@ export class TitleScene extends Phaser.Scene {
    async drawLeaderboard() {
       const result = await Nakama.getTopFiveLeaderboard();
       if (result == null) {
-         this.add.text(0, 900, "Unable to fetch leaderboard ", {
-            fontSize: "70px",
-            fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
-         });
+         this.add.text(
+            +this.sys.game.config.width * 0.1,
+            +this.sys.game.config.height * 0.5,
+            "Unable to fetch leaderboard ",
+            {
+               fontSize: "70px",
+               fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
+            },
+         );
          return;
       }
-      // this.leaderboardResult = result;
-      this.add.text(0, 750, "Leaderboard", {
-         fontSize: "70px",
-         fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
-      });
-      var lastRecordHeight = 850;
+
+      this.add.text(
+         +this.sys.game.config.width * 0.01,
+         +this.sys.game.config.height * 0.5,
+         "Leaderboard",
+         {
+            fontSize: "70px",
+            fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
+         },
+      );
+      var lastRecordHeight = +this.sys.game.config.height * 0.6;
       this.leaderboardRecordPointer = 0;
       for (let index = 0; index < Math.min(5, result.records.length); index++) {
          const record = result.records[index];
-         const recordHeight = 850 + index * 100;
+         const recordHeight = +this.sys.game.config.height * 0.6 + index * 100;
          lastRecordHeight = recordHeight + 100;
          this.leaderboardRecords[index].setText(
             `Rank: #${record.rank}, Player: ${record.username}, Memorization Time: ${record.score / 1000}, Scramble: ${record.metadata["Shuffle"]}`,
@@ -119,7 +139,7 @@ export class TitleScene extends Phaser.Scene {
          this.leaderboardRecords[index].setVisible(true);
       }
       this.scrollLeftButton = this.add
-         .text(200, lastRecordHeight, "<<", {
+         .text(+this.sys.game.config.width * 0.1, lastRecordHeight, "<<", {
             fontSize: "70px",
             fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
          })
@@ -127,7 +147,7 @@ export class TitleScene extends Phaser.Scene {
          .on("pointerdown", () => this.scrollLeaderboard(0));
 
       this.scrollRightButton = this.add
-         .text(350, lastRecordHeight, ">>", {
+         .text(+this.sys.game.config.width * 0.15, lastRecordHeight, ">>", {
             fontSize: "70px",
             fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
          })
@@ -136,7 +156,6 @@ export class TitleScene extends Phaser.Scene {
    }
    async scrollLeaderboard(direction: number) {
       const result = await Nakama.getTopFiveLeaderboard();
-      //const displayData = this.leaderboardResult.slice(this.leaderboardRecordPointer, 5);
       if (direction === 0) {
          // left
          //  if(this.leaderboardRecordPointer <= 0) {return;}
@@ -146,13 +165,13 @@ export class TitleScene extends Phaser.Scene {
          //if(this.leaderboardRecordPointer >= result.records.length) {return;}
          this.leaderboardRecordPointer += 5;
       }
-      var lastRecordHeight = 850;
+      var lastRecordHeight = +this.sys.game.config.height * 0.6;
       let index = Math.max(0, this.leaderboardRecordPointer);
       if (index >= result.records.length) {
       } else {
          for (; index < Math.min(5, result.records.length); index++) {
             const record = result.records[index];
-            const recordHeight = 850 + index * 100;
+            const recordHeight = +this.sys.game.config.height * 0.6 + index * 100;
             lastRecordHeight = recordHeight + 100;
             this.leaderboardRecords[index].setText(
                `Rank: #${record.rank}, Player: ${record.username}, Memorization Time: ${record.score / 1000}, Scramble: ${record.metadata["Shuffle"]}`,

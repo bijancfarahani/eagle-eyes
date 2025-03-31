@@ -50,15 +50,17 @@ export class WinScene extends Phaser.Scene {
 
       this.add
          .text(
-            +this.sys.game.config.width / 3 + 1370,
-            +this.sys.game.config.height - 250,
+            +this.sys.game.config.width * 0.99,
+            +this.sys.game.config.height * 0.6,
             "Replay",
             {
                fontSize: "75px",
                fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
+               align: "right",
             },
          )
          .setInteractive()
+         .setOrigin(1, 0.5)
          .on("pointerdown", () => {
             this.htmlUsernameInput.style.display = "none";
             this.scene.start("GameplayScene", {
@@ -69,15 +71,17 @@ export class WinScene extends Phaser.Scene {
 
       this.add
          .text(
-            +this.sys.game.config.width / 3 + 1210,
-            +this.sys.game.config.height - 150,
+            +this.sys.game.config.width * 0.99,
+            +this.sys.game.config.height * 0.7,
             "Title Screen",
             {
                fontSize: "75px",
                fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
+               align: "right",
             },
          )
          .setInteractive()
+         .setOrigin(1, 0.5)
          .on("pointerdown", () => {
             this.htmlUsernameInput.style.display = "none";
             this.scene.start("TitleScene");
@@ -147,24 +151,30 @@ export class WinScene extends Phaser.Scene {
          .on("pointerdown", () => this.scrollLeaderboard(1));
 
       // Draw player win details.
-      this.add.text(
-         +this.sys.game.config.width / 3 + 910,
-         +this.sys.game.config.height - 1050,
-         `Time: ${this.memorizationTime}`,
-         {
-            fontSize: "70px",
-            fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
-         },
-      );
-      this.add.text(
-         +this.sys.game.config.width / 3 + 700,
-         +this.sys.game.config.height - 950,
-         `Deck Shuffle: ${this.shuffle}`,
-         {
-            fontSize: "70px",
-            fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
-         },
-      );
+      this.add
+         .text(
+            +this.sys.game.config.width * 0.99,
+            +this.sys.game.config.height * 0.3,
+            `Time: ${this.memorizationTime}`,
+            {
+               fontSize: "70px",
+               fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
+               align: "right",
+            },
+         )
+         .setOrigin(1, 0.5);
+      this.add
+         .text(
+            +this.sys.game.config.width * 0.99,
+            +this.sys.game.config.height * 0.4,
+            `Deck Shuffle: ${this.shuffle}`,
+            {
+               fontSize: "70px",
+               fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
+               align: "right",
+            },
+         )
+         .setOrigin(1, 0.5);
 
       this.playerNameInput = this.add
          .text(
