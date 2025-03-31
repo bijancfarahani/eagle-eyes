@@ -4,7 +4,7 @@
    "version": "0.0.1",
    "description": "Eagle Eyes is a quick, easy-to-learn memorization game!",
    "author": "Bijan Farahani <bijancfarahani@gmail.com>",
-   "license": "MIT",
+   "copyright": "Bijan Farahani",
    "repository": {
       "type": "git",
       "url": "git+https://github.com/bijancfarahani/eagle-eyes.git"

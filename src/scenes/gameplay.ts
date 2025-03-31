@@ -86,8 +86,7 @@ export class GameplayScene extends Phaser.Scene {
                `Time Remaining: ${this.classicModeTimer.getRemainingSeconds() + 1}`,
                {
                   fontSize: "200px",
-                  fontFamily:
-                     "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
+                  fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
                },
             );
             break;
@@ -118,9 +117,7 @@ export class GameplayScene extends Phaser.Scene {
       switch (this.gameMode) {
          case GameMode.Classic: {
             timerText = "Time Remaining";
-            modeTimer = Math.floor(
-               this.classicModeTimer.getRemainingSeconds() + 1,
-            );
+            modeTimer = Math.floor(this.classicModeTimer.getRemainingSeconds() + 1);
             break;
          }
          case GameMode.Modern: {
@@ -158,7 +155,13 @@ export class GameplayScene extends Phaser.Scene {
          });
    }
 
-   onCardClicked(pointer: { x: number; y: number }, card: Card) {
+   onCardClicked(
+      pointer: {
+         x: number;
+         y: number;
+      },
+      card: Card,
+   ) {
       // NO-OP if the player tries to flip a card they already flipped.
       if (card.isOpened) {
          return false;
@@ -235,16 +238,9 @@ export class GameplayScene extends Phaser.Scene {
    }
 
    drawCardGuide() {
-      const positions = getAnswerCardsPosition(
-         +this.sys.game.config.width,
-         this.answer,
-      );
+      const positions = getAnswerCardsPosition(+this.sys.game.config.width, this.answer);
       this.guideCards = [];
-      for (
-         var letter_index = 0;
-         letter_index < this.answer.length;
-         ++letter_index
-      ) {
+      for (var letter_index = 0; letter_index < this.answer.length; ++letter_index) {
          var card = this.add.image(
             positions[letter_index].x,
             positions[letter_index].y,

@@ -89,7 +89,11 @@ export class Deck {
 export function getCardsPosition(
    gameWidth: number,
    gameHeight: number,
-): { x: number; y: number; delay: number }[] {
+): {
+   x: number;
+   y: number;
+   delay: number;
+}[] {
    const cardWidth = CARD_SIZE + CARD_PADDING;
    const cardHeight = CARD_SIZE + CARD_PADDING;
 
@@ -121,7 +125,10 @@ export function getCardsPosition(
 export function getAnswerCardsPosition(
    gameWidth: number,
    answer: string,
-): { x: number; y: number }[] {
+): {
+   x: number;
+   y: number;
+}[] {
    const cardWidth = (CARD_SIZE + CARD_PADDING) / 2 + 50;
    const offsetX = (gameWidth - cardWidth * answer.length) / 2 + cardWidth / 2;
    const offsetY = 200;

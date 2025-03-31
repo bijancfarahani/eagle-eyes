@@ -2,6 +2,7 @@
    "compilerOptions": {
        "target": "ES2022",
        "useDefineForClassFields": true,
+       "sourceMap": true,
        "module": "ESNext",
        "outDir": "./dist/",
        "lib": [

@@ -12,7 +12,7 @@ export class TitleScene extends Phaser.Scene {
       super({
          key: "TitleScene",
       });
-      Nakama.authenticate();
+      Nakama.authenticateDevice();
       this.leaderboardRecords = [];
    }
 
@@ -35,8 +35,7 @@ export class TitleScene extends Phaser.Scene {
             this.add
                .text(0, recordHeight, `Index: ${index}`, {
                   fontSize: "50px",
-                  fontFamily:
-                     "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
+                  fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
                })
                .setVisible(false),
          );
@@ -161,6 +160,7 @@ export class TitleScene extends Phaser.Scene {
       }
       var lastRecordHeight = 850;
       let index = Math.max(0, this.leaderboardRecordPointer);
+      console.log(result.records);
       if (index >= result.records.length) {
       } else {
          for (; index < Math.min(5, result.records.length); index++) {
