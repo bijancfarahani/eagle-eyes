@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import { LEADERBOARD_ID, LEADERBOARD_WRITE_RPC_ID } from "./constants";
 
 class Nakama {
-   client: any;
+   client: Client;
    session: Session;
    deviceId: string;
    isAuthenticated: boolean;
@@ -22,8 +22,8 @@ class Nakama {
    public async authenticateDevice() {
       if (!this.client) {
          this.client = new Client(
-            process.env.NAKAMA_KEY!,
-            process.env.NAKAMA_URL!,
+            process.env.NAKAMA_KEY,
+            process.env.NAKAMA_URL,
             "", // Reverse proxy handles the port
             true,
          );
@@ -46,9 +46,7 @@ class Nakama {
       cursor: string | null = null,
    ): Promise<LeaderboardRecordList> {
       if (!this.isAuthenticated) {
-         console.error("Not authenticated.");
-         //return null;
-         this.authenticateDevice();
+         await this.authenticateDevice();
       }
       try {
          return await this.client.listLeaderboardRecords(

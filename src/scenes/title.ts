@@ -9,10 +9,10 @@ export class TitleScene extends Phaser.Scene {
    scrollRightButton: Phaser.GameObjects.Text;
    leaderboardRecords: Phaser.GameObjects.Text[];
    constructor() {
+      Nakama.authenticateDevice();
       super({
          key: "TitleScene",
       });
-      Nakama.authenticateDevice();
       this.leaderboardRecords = [];
    }
 
@@ -90,19 +90,7 @@ export class TitleScene extends Phaser.Scene {
          .setInteractive()
          .on("pointerdown", () => this.startGame(GameMode.Modern));
 
-      this.waitAnddrawLeaderboard();
-   }
-   delay(ms: number): Promise<void> {
-      return new Promise((resolve) => setTimeout(resolve, ms));
-   }
-
-   async delayedFunctionCall(func: () => Promise<any>, ms: number) {
-      await this.delay(ms); // Pause execution for 'ms' milliseconds
-      return func(); // Call the async function
-   }
-
-   async waitAnddrawLeaderboard() {
-      await this.delayedFunctionCall(() => this.drawLeaderboard(), 1000);
+      this.drawLeaderboard();
    }
 
    async drawLeaderboard() {
@@ -160,7 +148,6 @@ export class TitleScene extends Phaser.Scene {
       }
       var lastRecordHeight = 850;
       let index = Math.max(0, this.leaderboardRecordPointer);
-      console.log(result.records);
       if (index >= result.records.length) {
       } else {
          for (; index < Math.min(5, result.records.length); index++) {
