@@ -1,13 +1,26 @@
 <!doctype html>
 <html lang="en">
-   <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1" />
-      <meta name="author" content="Bijan Farahani" />
-      <title><%= htmlWebpackPlugin.options.title %></title>
-   </head>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="Bijan Farahani" />
+    <title><%= htmlWebpackPlugin.options.title %></title>
+    <style>
+        #usernameInput {
+            position: absolute;
+            top: 40%;
+            right: 8%;
+            transform: translate(-50%, -50%);
+            z-index: 100;
+            padding: 10px;
+            font-size: 20px;
+            display: none; /* Initially hidden */
+        }
+    </style>
+</head>
 
-   <body>
-      <div id="game"></div>
-   </body>
+<body>
+    <div id="game"></div>
+    <input type="text" id="usernameInput" placeholder="Enter player name">
+</body>
 </html>
