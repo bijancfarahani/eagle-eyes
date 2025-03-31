@@ -5,11 +5,15 @@ export class TitleScene extends Phaser.Scene {
    gameMode: GameMode;
    leaderboardRecordPointer: number;
    leaderboardResult: any;
+   scrollLeftButton: Phaser.GameObjects.Text;
+   scrollRightButton: Phaser.GameObjects.Text;
+   leaderboardRecords: Phaser.GameObjects.Text[];
    constructor() {
       super({
          key: "TitleScene",
       });
       Nakama.authenticate();
+      this.leaderboardRecords = [];
    }
 
    preload() {
@@ -24,6 +28,21 @@ export class TitleScene extends Phaser.Scene {
    }
    create() {
       this.drawButtons();
+
+      for (let index = 0; index < 5; index++) {
+
+         const recordHeight = 850 + index * 100;
+         this.leaderboardRecords.push(this.add.text(
+            0,
+            recordHeight,
+            `Index: ${index}`,
+            {
+               fontSize: "50px",
+               fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
+            },
+         ).setVisible(false));
+      }
+
 
       this.add
          .text(
@@ -110,7 +129,9 @@ export class TitleScene extends Phaser.Scene {
          const record = result.records[index];
          const recordHeight = 850 + index * 100;
          lastRecordHeight = recordHeight + 100;
-         this.add.text(
+         this.leaderboardRecords[index].setText(`Rank: #${record.rank},Player: ${record.username}, Memorization Time: ${record.score / 1000}, Scramble: ${record.metadata["Shuffle"]}`);
+         this.leaderboardRecords[index].setVisible(true);
+         /*  this.add.text(
             0,
             recordHeight,
             `Rank: #${record.rank},Player: ${record.username}, Memorization Time: ${record.score / 1000}, Scramble: ${record.metadata["Shuffle"]}`,
@@ -119,8 +140,9 @@ export class TitleScene extends Phaser.Scene {
                fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
             },
          );
+         */
       }
-      this.add
+      this.scrollLeftButton = this.add
       .text(
          200,
          lastRecordHeight,
@@ -132,7 +154,8 @@ export class TitleScene extends Phaser.Scene {
       )
       .setInteractive()
       .on("pointerdown", () => this.scrollLeaderboard(0));
-      this.add
+
+      this.scrollRightButton = this.add
       .text(
          350,
          lastRecordHeight,
@@ -150,10 +173,12 @@ export class TitleScene extends Phaser.Scene {
       //const displayData = this.leaderboardResult.slice(this.leaderboardRecordPointer, 5);
       if(direction === 0)  // left
       {
+       //  if(this.leaderboardRecordPointer <= 0) {return;}
          this.leaderboardRecordPointer -= 5;
       }
       else // right
       {
+        // if(this.leaderboardRecordPointer >= result.records.length) {return;}
          this.leaderboardRecordPointer += 5;
       }
       var lastRecordHeight = 850;
@@ -162,7 +187,9 @@ export class TitleScene extends Phaser.Scene {
          const record = result.records[index];
          const recordHeight = 850 + index * 100;
          lastRecordHeight = recordHeight + 100;
-         this.add.text(
+         this.leaderboardRecords[index].setText(`Rank: #${record.rank},Player: ${record.username}, Memorization Time: ${record.score / 1000}, Scramble: ${record.metadata["Shuffle"]}`);
+         this.leaderboardRecords[index].setVisible(true);
+        /* this.add.text(
             0,
             recordHeight,
             `Rank: #${record.rank}, Player: ${record.username}, Memorization Time: ${record.score / 1000}, Scramble: ${record.metadata["Shuffle"]}`,
@@ -171,7 +198,10 @@ export class TitleScene extends Phaser.Scene {
                fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
             },
          );
+         */
       }
+      this.scrollLeftButton.setY(lastRecordHeight);
+      this.scrollRightButton.setY(lastRecordHeight);
 
    }
 

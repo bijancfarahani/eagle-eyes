@@ -11,6 +11,10 @@ export class WinScene extends Phaser.Scene {
 
    nearbyLeaderboard: Phaser.GameObjects.Text;
    topFiveLeaderboard: Phaser.GameObjects.Text;
+   scrollLeftButton: Phaser.GameObjects.Text;
+   scrollRightButton: Phaser.GameObjects.Text;
+   lastRecordHeight: number;
+   leaderboardRecordPointer: number;
 
    constructor() {
       super({
@@ -109,6 +113,33 @@ export class WinScene extends Phaser.Scene {
 
       this.drawTopFiveLeaderboard();
 
+      this.scrollLeftButton = this.add
+      .text(
+         200,
+         this.lastRecordHeight,
+         "<<",
+         {
+            fontSize: "70px",
+            fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
+         },
+      )
+      .setInteractive()
+      .on("pointerdown", () => this.scrollLeaderboard(0));
+
+      this.scrollRightButton = this.add
+      .text(
+         350,
+         this.lastRecordHeight,
+         ">>",
+         {
+            fontSize: "70px",
+            fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
+         },
+      )
+      .setInteractive()
+      .on("pointerdown", () => this.scrollLeaderboard(1));
+
+
       // Draw player win details.
       this.add.text(
          +this.sys.game.config.width / 3 + 910,
@@ -139,6 +170,36 @@ export class WinScene extends Phaser.Scene {
          },
       );
       this.input.keyboard.on("keydown", this.playerNameInputListener);
+   }
+   async scrollLeaderboard(direction: number) {
+      const result = await Nakama.getTopFiveLeaderboard();
+      //const displayData = this.leaderboardResult.slice(this.leaderboardRecordPointer, 5);
+      if(direction === 0)  // left
+      {
+         this.leaderboardRecordPointer -= 5;
+      }
+      else // right
+      {
+         this.leaderboardRecordPointer += 5;
+      }
+      var lastRecordHeight = 850;
+      for (let index = Math.max(0, this.leaderboardRecordPointer); index < Math.min(5, result.records.length); index++) {
+
+         const record = result.records[index];
+         const recordHeight = 850 + index * 100;
+         lastRecordHeight = recordHeight + 100;
+         this.add.text(
+            0,
+            recordHeight,
+            `Rank: #${record.rank}, Player: ${record.username}, Memorization Time: ${record.score / 1000}, Scramble: ${record.metadata["Shuffle"]}`,
+            {
+               fontSize: "50px",
+               fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
+            },
+         );
+      }
+      this.scrollLeftButton.setY(lastRecordHeight);
+      this.scrollRightButton.setY(lastRecordHeight);
    }
 
    private drawLeaderboardRows(result: any) {
