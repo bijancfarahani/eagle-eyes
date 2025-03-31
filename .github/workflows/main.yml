@@ -10,6 +10,11 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment: github-pages
+    env:
+      NAKAMA_KEY: ${{ secrets.NAKAMA_KEY }}
+      NAKAMA_URL: ${{ vars.NAKAMA_URL }}
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -19,14 +24,19 @@ jobs:
       with:
         node-version: 22.x
 
+    - name: Inject Secrets to .env
+      run: |
+        touch .env
+        echo NAKAMA_KEY = ${{env.NAKAMA_KEY}} >> .env
+        echo NAKAMA_URL = ${{env.NAKAMA_URL}} >> .env
+
+    - name: Display .env (for debugging)
+      run: cat ./.env
+
     - name: Build with Webpack
       run: |
         yarn install --frozen-lockfile
         yarn build-prod
-      env:
-        NAKAMA_URL: ${{ vars.NAKAMA_URL }}
-        NAKAMA_PORT: ${{ vars.NAKAMA_PORT }}
-        NAKAMA_KEY: ${{ secrets.NAKAMA_KEY }}
 
     - name: Upload generated files as artifact
       id: deployment
