@@ -15,12 +15,14 @@ export class WinScene extends Phaser.Scene {
    scrollRightButton: Phaser.GameObjects.Text;
    lastRecordHeight: number;
    leaderboardRecordPointer: number;
+   htmlUsernameInput: HTMLInputElement; // Add this line
+   username: string; // Add this line
 
    constructor() {
       super({
          key: "WinScene",
       });
-      this.playerNameInputListener = this.playerNameInputListener.bind(this); // Bind this
+      // this.playerNameInputListener = this.playerNameInputListener.bind(this); // Bind this
    }
 
    init(data: {
@@ -58,6 +60,7 @@ export class WinScene extends Phaser.Scene {
          )
          .setInteractive()
          .on("pointerdown", () => {
+            this.htmlUsernameInput.style.display = "none";
             this.scene.start("GameplayScene", {
                gameMode: this.gameMode,
                answer: this.answer,
@@ -76,11 +79,25 @@ export class WinScene extends Phaser.Scene {
          )
          .setInteractive()
          .on("pointerdown", () => {
+            this.htmlUsernameInput.style.display = "none";
             this.scene.start("TitleScene");
          });
 
       if (this.gameMode == GameMode.Modern) {
          this.drawLeaderboard();
+         this.htmlUsernameInput = document.getElementById(
+            "usernameInput",
+         ) as HTMLInputElement; // Add this line
+         this.htmlUsernameInput.style.display = "block"; //show the input
+         this.htmlUsernameInput.focus();
+         this.input.keyboard.on("keydown-ENTER", () => {
+            //this.playerNameInput(this.htmlUsernameInput.value);
+            this.username = this.htmlUsernameInput.value;
+            this.htmlUsernameInput.style.display = "none";
+            this.addToLeaderboard();
+            // this.addToLeaderboardButton.setVisible(true);
+            //this.addToLeaderboardButton.setInteractive();
+         });
       }
    }
 
@@ -149,16 +166,18 @@ export class WinScene extends Phaser.Scene {
          },
       );
 
-      this.playerNameInput = this.add.text(
-         +this.sys.game.config.width / 3 + 850,
-         +this.sys.game.config.height - 700,
-         "<Enter player name>",
-         {
-            fontSize: "70px",
-            fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
-         },
-      );
-      this.input.keyboard.on("keydown", this.playerNameInputListener);
+      this.playerNameInput = this.add
+         .text(
+            +this.sys.game.config.width / 3 + 850,
+            +this.sys.game.config.height - 700,
+            "<Enter player name>",
+            {
+               fontSize: "70px",
+               fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
+            },
+         )
+         .setVisible(false);
+      // this.input.keyboard.on("keydown", this.playerNameInputListener);
    }
    async scrollLeaderboard(direction: number) {
       const result = await Nakama.getTopFiveLeaderboard();
@@ -201,7 +220,7 @@ export class WinScene extends Phaser.Scene {
          this.add.text(
             0,
             1000 + index * 100,
-            `Rank: #${result.records[index].rank},Player: ${result.records[index].username}, Time: ${result.records[index].score / 1000}, Shuffle: ${result.records[index].metadata["Shuffle"]}`,
+            `Rank: #${result.records[index].rank}, Player: ${result.records[index].username}, Time: ${result.records[index].score / 1000}, Shuffle: ${result.records[index].metadata["Shuffle"]}`,
             {
                fontSize: "50px",
                fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
@@ -209,13 +228,15 @@ export class WinScene extends Phaser.Scene {
          );
       }
    }
-
+   /*
    playerNameInputListener(event: { key: string; keyCode: number }): void {
-      var processedPlayerName = this.playerNameInput.text;
+   //playerNameInputListener(playerNameTextInput: string): void{
+   //return;
+      var processedPlayerName = playerNameTextInput;
       if (processedPlayerName == "<Enter player name>") {
          processedPlayerName = "";
       }
-      if (event.keyCode == 8) {
+      /*if (event.keyCode == 8) {
          if (processedPlayerName.length == 0) {
             return;
          }
@@ -245,7 +266,7 @@ export class WinScene extends Phaser.Scene {
       }
       this.playerNameInput.setText(processedPlayerName);
    }
-
+*/
    async addToLeaderboard() {
       const numStr = String(this.memorizationTime);
       const [integerPart, decimalPart] = numStr.split(".");
@@ -257,7 +278,7 @@ export class WinScene extends Phaser.Scene {
       const isAddedToLeaderboard = await Nakama.addToLeaderboard(
          integer,
          decimal,
-         this.playerNameInput.text,
+         this.username,
          this.shuffle,
       );
       if (isAddedToLeaderboard) {
