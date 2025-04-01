@@ -1,32 +1,23 @@
 {
    "compilerOptions": {
-       "target": "ES2022",
-       "useDefineForClassFields": true,
-       "sourceMap": true,
-       "module": "ESNext",
-       "outDir": "./dist/",
-       "lib": [
-           "ES2020",
-           "DOM",
-           "DOM.Iterable"
-       ],
-       "skipLibCheck": true,
-       /* Bundler mode */
-       "moduleResolution": "bundler",
-       "resolveJsonModule": true,
-       "isolatedModules": true,
-       /* Linting */
-       "strict": false,
-       "strictPropertyInitialization": false,
-       "noUnusedLocals": false,
-       "noUnusedParameters": false,
-       "noFallthroughCasesInSwitch": true
+      "target": "ES2022",
+      "useDefineForClassFields": true,
+      "sourceMap": true,
+      "module": "ESNext",
+      "outDir": "./dist/",
+      "lib": ["ES2020", "DOM", "DOM.Iterable"],
+      "skipLibCheck": true,
+      /* Bundler mode */
+      "moduleResolution": "bundler",
+      "resolveJsonModule": true,
+      "isolatedModules": true,
+      /* Linting */
+      "strict": false,
+      "strictPropertyInitialization": false,
+      "noUnusedLocals": false,
+      "noUnusedParameters": false,
+      "noFallthroughCasesInSwitch": true
    },
-   "include": [
-       "src"
-   ],
-   "exclude": [
-       "node_modules",
-       "**/*.spec.ts"
-   ]
+   "include": ["src"],
+   "exclude": ["node_modules", "**/*.spec.ts"]
 }

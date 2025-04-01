@@ -37,9 +37,7 @@ class Nakama {
          this.session = await this.client.authenticateDevice(this.deviceId, true);
          localStorage.setItem("user_id", this.session.user_id);
          this.isAuthenticated = true;
-      } catch (err) {
-         console.error("Error authenticating device: %o:%o", err.statusCode, err.message);
-      }
+      } catch (error) {}
    }
 
    public async getTopFiveLeaderboard(
@@ -56,14 +54,11 @@ class Nakama {
             10,
             cursor,
          );
-      } catch (err) {
-         console.error("Error fetching leaderboard: %o:%o", err.statusCode, err.message);
-      }
+      } catch (error) {}
    }
 
    public async getNearbyLeaderboard(): Promise<LeaderboardRecordList> {
       if (!this.isAuthenticated) {
-         console.error("Not authenticated.");
          return;
       }
       try {
@@ -73,9 +68,7 @@ class Nakama {
             this.deviceId,
             5,
          );
-      } catch (err) {
-         console.error("Error fetching leaderboard: %o:%o", err.statusCode, err.message);
-      }
+      } catch (error) {}
    }
 
    public async addToLeaderboard(
@@ -94,7 +87,6 @@ class Nakama {
          await this.client.rpc(this.session, LEADERBOARD_WRITE_RPC_ID, payload);
          return true;
       } catch (error) {
-         console.error("Error adding to leaderboard: %o", error.message);
          return false;
       }
    }
