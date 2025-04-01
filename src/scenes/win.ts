@@ -102,6 +102,33 @@ export class WinScene extends Phaser.Scene {
             this.scene.start("TitleScene");
          });
 
+      // Draw player win details.
+      this.add
+         .text(
+            +this.sys.game.config.width * 0.99,
+            +this.sys.game.config.height * 0.3,
+            `Time: ${this.memorizationTime}`,
+            {
+               fontSize: "70px",
+               fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
+               align: "right",
+            },
+         )
+         .setOrigin(1, 0.5);
+      this.add
+         .text(
+            +this.sys.game.config.width * 0.99,
+            +this.sys.game.config.height * 0.4,
+            `Deck Shuffle: ${this.shuffle}`,
+            {
+               fontSize: "70px",
+               fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
+               align: "right",
+            },
+         )
+         .setOrigin(1, 0.5);
+
+      // Draw leaderboard details.
       if (this.gameMode == GameMode.Modern) {
          this.leaderboardContainer.drawLeaderboard();
          this.htmlUsernameInput = document.getElementById(

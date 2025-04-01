@@ -97,14 +97,6 @@ export class TitleScene extends Phaser.Scene {
    }
 
    startGame(gameMode: GameMode) {
-      this.scene.start("WinScene", {
-         gameMode: gameMode,
-         answer: EagleEyesConfig.answer,
-         shuffle: "myshuffle",
-         memorizationTime: 9999999,
-      });
-      return;
-
       this.scene.start("GameplayScene", {
          gameMode: gameMode,
          answer: EagleEyesConfig.answer,
