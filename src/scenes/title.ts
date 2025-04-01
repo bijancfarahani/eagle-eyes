@@ -104,8 +104,8 @@ export class TitleScene extends Phaser.Scene {
    }
 
    async drawLeaderboard() {
-      const result = await Nakama.getTopFiveLeaderboard();
-      if (result == null) {
+      const leaderboardRecords = await Nakama.getTopFiveLeaderboard();
+      if (leaderboardRecords == null) {
          this.add.text(
             +this.sys.game.config.width * 0.1,
             +this.sys.game.config.height * 0.5,
@@ -127,10 +127,14 @@ export class TitleScene extends Phaser.Scene {
             fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
          },
       );
-      var lastRecordHeight = +this.sys.game.config.height * 0.6;
+      let lastRecordHeight = +this.sys.game.config.height * 0.6;
       this.leaderboardRecordPointer = 0;
-      for (let index = 0; index < Math.min(5, result.records.length); index++) {
-         const record = result.records[index];
+      for (
+         let index = 0;
+         index < Math.min(5, leaderboardRecords.records.length);
+         index++
+      ) {
+         const record = leaderboardRecords.records[index];
          const recordHeight = +this.sys.game.config.height * 0.6 + index * 100;
          lastRecordHeight = recordHeight + 100;
          this.leaderboardRecords[index].setText(
@@ -155,32 +159,40 @@ export class TitleScene extends Phaser.Scene {
          .on("pointerdown", () => this.scrollLeaderboard(1));
    }
    async scrollLeaderboard(direction: number) {
-      const result = await Nakama.getTopFiveLeaderboard();
+      const leaderboardRecords = await Nakama.getTopFiveLeaderboard();
       if (direction === 0) {
-         // left
-         //  if(this.leaderboardRecordPointer <= 0) {return;}
-         this.leaderboardRecordPointer -= 5;
-      } // right
-      else {
-         //if(this.leaderboardRecordPointer >= result.records.length) {return;}
-         this.leaderboardRecordPointer += 5;
-      }
-      var lastRecordHeight = +this.sys.game.config.height * 0.6;
-      let index = Math.max(0, this.leaderboardRecordPointer);
-      if (index >= result.records.length) {
+         this.leaderboardRecordPointer = Math.max(0, this.leaderboardRecordPointer - 5);
       } else {
-         for (; index < Math.min(5, result.records.length); index++) {
-            const record = result.records[index];
-            const recordHeight = +this.sys.game.config.height * 0.6 + index * 100;
-            lastRecordHeight = recordHeight + 100;
-            this.leaderboardRecords[index].setText(
-               `Rank: #${record.rank}, Player: ${record.username}, Memorization Time: ${record.score / 1000}, Scramble: ${record.metadata["Shuffle"]}`,
-            );
-            this.leaderboardRecords[index].setVisible(true);
-         }
-         this.scrollLeftButton.setY(lastRecordHeight);
-         this.scrollRightButton.setY(lastRecordHeight);
+         this.leaderboardRecordPointer = Math.min(
+            leaderboardRecords.records.length - 1,
+            this.leaderboardRecordPointer + 5,
+         );
       }
+      let lastRecordHeight = +this.sys.game.config.height * 0.6;
+
+      const numRecordsToDraw = Math.min(
+         5,
+         leaderboardRecords.records.length - this.leaderboardRecordPointer,
+      );
+      if (numRecordsToDraw == 0) {
+         return;
+      }
+      for (let index = 0; index < numRecordsToDraw; index++) {
+         const record = leaderboardRecords.records[index + this.leaderboardRecordPointer];
+         const recordHeight = +this.sys.game.config.height * 0.6 + index * 100;
+         lastRecordHeight = recordHeight + 100;
+         this.leaderboardRecords[index].setText(
+            `Rank: #${record.rank}, Player: ${record.username}, Memorization Time: ${record.score / 1000}, Scramble: ${record.metadata["Shuffle"]}`,
+         );
+         this.leaderboardRecords[index].setVisible(true);
+      }
+      if (numRecordsToDraw > 0) {
+         for (let index = numRecordsToDraw; index < 5; index++) {
+            this.leaderboardRecords[index].setVisible(false);
+         }
+      }
+      this.scrollLeftButton.setY(lastRecordHeight);
+      this.scrollRightButton.setY(lastRecordHeight);
    }
 
    startGame(gameMode: GameMode) {
