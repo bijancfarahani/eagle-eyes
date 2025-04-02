@@ -75,7 +75,7 @@ export class LeaderboardContainer extends Phaser.GameObjects.Container {
       }
 
       this.topFiveLeaderboard = this.scene.add
-         .text(this.x, this.y, "Top 5 Leaderboard", {
+         .text(this.width * 0.05, this.y, "Top 5 Leaderboard", {
             fontSize: "70px",
             fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
          })
@@ -83,7 +83,7 @@ export class LeaderboardContainer extends Phaser.GameObjects.Container {
          .on("pointerup", () => this.drawTopFiveLeaderboard());
 
       this.nearbyLeaderboard = this.scene.add
-         .text(this.width * 0.6, this.y, "Leaderboard Near Me", {
+         .text(this.width * 0.75, this.y, "Leaderboard Near Me", {
             fontSize: "70px",
             fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
          })
