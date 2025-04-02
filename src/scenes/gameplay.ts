@@ -1,15 +1,14 @@
-import { Deck, Card, getCardsPosition, getAnswerCardsPosition } from "../card";
+import { Deck, Card, getCardsPosition, getAnswerCardsPosition, RowLayout } from "../card";
 import { EagleEyesConfig } from "../config";
 import {
    ACTIVE_GUIDE_CARD_COLOR,
+   CARD_OPEN_EVENT,
    FOUND_GUIDE_CARD_COLOR,
    GameMode,
    LOSING_CARD_COLOR,
 } from "../constants";
 
 export class GameplayScene extends Phaser.Scene {
-   gameMode: GameMode;
-
    // Array of the deck of cards.
    deck: Deck;
 
@@ -29,7 +28,8 @@ export class GameplayScene extends Phaser.Scene {
    // These are only used for Modern mode.
    timeText: Phaser.GameObjects.Text;
    memorizationRuntime: number;
-   answer: string;
+   layoutToggle: Phaser.GameObjects.Text;
+   private _sceneParams: { gameMode: GameMode; answer: string; deckLayout: RowLayout };
 
    // Typescript needs an explicit key otherwise two scenes end up having the same (default) name.
    constructor() {
@@ -39,14 +39,47 @@ export class GameplayScene extends Phaser.Scene {
       this.deck = new Deck();
    }
 
-   init(data: { gameMode: GameMode; answer: string }) {
-      this.gameMode = data.gameMode;
-      this.answer = data.answer;
+   init(data: { gameMode: GameMode; answer: string; deckLayout: RowLayout | null }) {
+      this._sceneParams = data;
+      const deckLayoutPreference = localStorage.getItem("deckLayoutPreference");
+      if (deckLayoutPreference == null) {
+         this._sceneParams.deckLayout = RowLayout.Double;
+      } else {
+         this._sceneParams.deckLayout = parseInt(deckLayoutPreference, 10);
+      }
    }
 
    create() {
       this.createCards();
+
+      this.layoutToggle = this.add
+         .text(
+            +this.sys.game.config.width * 0.99,
+            +this.sys.game.config.height * 0.1,
+            "Toggle Display",
+            {
+               fontSize: "75px",
+               fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
+               align: "right",
+            },
+         )
+         .setInteractive()
+         .setOrigin(1, 0.5)
+         .on("pointerup", () => this.onLayoutToggle());
+
       this.start();
+   }
+   onLayoutToggle() {
+      if (this._sceneParams.deckLayout == RowLayout.Single) {
+         this._sceneParams.deckLayout = RowLayout.Double;
+      } else {
+         this._sceneParams.deckLayout = RowLayout.Single;
+      }
+      localStorage.setItem(
+         "deckLayoutPreference",
+         this._sceneParams.deckLayout.valueOf().toString(),
+      );
+      this.scene.start("GameplayScene", { data: this._sceneParams });
    }
 
    showCards() {
@@ -72,7 +105,7 @@ export class GameplayScene extends Phaser.Scene {
       this.initCards();
       this.showCards();
 
-      switch (this.gameMode) {
+      switch (this._sceneParams.gameMode) {
          case GameMode.Classic: {
             this.classicModeTimer = this.time.addEvent({
                delay: EagleEyesConfig.memorizationTime * 1000, // ms
@@ -116,7 +149,7 @@ export class GameplayScene extends Phaser.Scene {
    updateClock(time: number) {
       var modeTimer: number;
       var timerText: string;
-      switch (this.gameMode) {
+      switch (this._sceneParams.gameMode) {
          case GameMode.Classic: {
             timerText = "Time Remaining";
             modeTimer = Math.floor(this.classicModeTimer.getRemainingSeconds() + 1);
@@ -136,16 +169,18 @@ export class GameplayScene extends Phaser.Scene {
       // Clear out cards from previous game attempts.
       this.deck.cards = [];
 
-      for (const letter of this.answer) {
-         this.deck.cards.push(new Card(this, letter));
+      for (const letter of this._sceneParams.answer) {
+         let card = new Card(this, letter);
+         card.on(CARD_OPEN_EVENT, this.onCardClicked, this);
+         this.deck.cards.push(card);
       }
-      this.input.on("gameobjectup", this.onCardClicked, this);
    }
 
    initCards() {
       const positions = getCardsPosition(
          +this.sys.game.config.width,
          +this.sys.game.config.height,
+         this._sceneParams.deckLayout,
       );
       this.deck.shuffleDeck();
       this.deck.cards
@@ -157,20 +192,8 @@ export class GameplayScene extends Phaser.Scene {
          });
    }
 
-   onCardClicked(
-      pointer: {
-         x: number;
-         y: number;
-      },
-      card: Card,
-   ) {
-      // NO-OP if the player tries to flip a card they already flipped.
-      if (card.isOpened) {
-         return false;
-      }
-      // Reveal the selected card.
-      card.openCard();
-      const target_letter = this.answer[this.target_index];
+   onCardClicked(card: Card) {
+      const target_letter = this._sceneParams.answer[this.target_index];
 
       // The player flipped over the wrong letter and lost the game.
       if (card.letter != target_letter) {
@@ -185,11 +208,11 @@ export class GameplayScene extends Phaser.Scene {
       setFoundGuideCard(this.guideCards[this.target_index]);
       ++this.target_index;
       // The last card was flipped and the player won the game.
-      if (this.target_index == this.answer.length) {
+      if (this.target_index == this._sceneParams.answer.length) {
          const shuffle = this.deck.shuffle();
          this.scene.start("WinScene", {
-            gameMode: this.gameMode,
-            answer: this.answer,
+            gameMode: this._sceneParams.gameMode,
+            answer: this._sceneParams.answer,
             shuffle: shuffle,
             memorizationTime: this.memorizationRuntime,
          });
@@ -203,7 +226,6 @@ export class GameplayScene extends Phaser.Scene {
       }
    }
    onPlayerLoss() {
-      this.input.off("gameobjectup", this.onCardClicked, this);
       this.deck.cards.forEach((card) => {
          card.disableInteractive();
          card.openCard();
@@ -244,13 +266,20 @@ export class GameplayScene extends Phaser.Scene {
    }
 
    drawCardGuide() {
-      const positions = getAnswerCardsPosition(+this.sys.game.config.width, this.answer);
+      const positions = getAnswerCardsPosition(
+         +this.sys.game.config.width,
+         this._sceneParams.answer,
+      );
       this.guideCards = [];
-      for (var letter_index = 0; letter_index < this.answer.length; ++letter_index) {
+      for (
+         var letter_index = 0;
+         letter_index < this._sceneParams.answer.length;
+         ++letter_index
+      ) {
          var card = this.add.image(
             positions[letter_index].x,
             positions[letter_index].y,
-            `card_${this.answer[letter_index]}`,
+            `card_${this._sceneParams.answer[letter_index]}`,
          );
          card.setScale(0.5);
          card.setAlpha(0.3);

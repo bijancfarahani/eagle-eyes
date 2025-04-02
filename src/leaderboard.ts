@@ -147,7 +147,6 @@ export class LeaderboardContainer extends Phaser.GameObjects.Container {
       this.topFiveLeaderboard.setAlpha(1).disableInteractive();
       const result = await Nakama.getTopFiveLeaderboard();
       this.drawLeaderboardRows(result);
-
    }
 
    async drawLeaderboardNearPlayer() {
@@ -155,7 +154,5 @@ export class LeaderboardContainer extends Phaser.GameObjects.Container {
       this.nearbyLeaderboard.setAlpha(1).disableInteractive();
       const result = await Nakama.getNearbyLeaderboard();
       this.drawLeaderboardRows(result);
-
-
    }
 }

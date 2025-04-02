@@ -1,4 +1,4 @@
-import { CARD_PADDING, CARD_SIZE, COLS, ROWS } from "./constants";
+import { CARD_OPEN_EVENT, CARD_PADDING, CARD_SIZE } from "./constants";
 
 export class Card extends Phaser.GameObjects.Sprite {
    isOpened: boolean = true;
@@ -13,6 +13,18 @@ export class Card extends Phaser.GameObjects.Sprite {
       this.scene = scene;
       this.letter = letter;
       this.scene.add.existing(this);
+      this.on("pointerup", this.onCardClicked, this);
+   }
+
+   onCardClicked() {
+      if (this.isOpened) {
+         return;
+      }
+
+      this.openCard();
+      // The gameplay scene will process this event and
+      // read/modify this card.
+      this.emit(CARD_OPEN_EVENT, this);
    }
 
    init(x: number, y: number, delay: number) {
@@ -86,9 +98,16 @@ export class Deck {
    cards: Card[];
 }
 
+export enum RowLayout {
+   None = 0,
+   Single = 1,
+   Double = 2,
+}
+
 export function getCardsPosition(
    gameWidth: number,
    gameHeight: number,
+   layout: RowLayout,
 ): {
    x: number;
    y: number;
@@ -97,12 +116,18 @@ export function getCardsPosition(
    const cardWidth = CARD_SIZE + CARD_PADDING;
    const cardHeight = CARD_SIZE + CARD_PADDING;
 
+   const COLS = [5, 4];
+   const ROWS = layout == RowLayout.Single ? 1 : 2;
+
    const positions = [];
 
-   const offsetX = [
-      (gameWidth - cardWidth * COLS[0]) / 2 + cardWidth / 2,
-      (gameWidth - cardWidth * COLS[1]) / 2 + cardWidth / 2,
-   ];
+   const offsetX: number | [number, number] =
+      layout == RowLayout.Single
+         ? (gameWidth - cardWidth * 9) / 2 + cardWidth / 2
+         : [
+              (gameWidth - cardWidth * COLS[0]) / 2 + cardWidth / 2,
+              (gameWidth - cardWidth * COLS[1]) / 2 + cardWidth / 2,
+           ];
 
    const offsetY = 150 + (gameHeight - cardHeight * ROWS) / 2 + cardHeight / 2;
 
