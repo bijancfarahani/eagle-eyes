@@ -23,7 +23,7 @@ export class GameplayScene extends Phaser.Scene {
    isPlayerMemorizing: boolean;
 
    // Timer for the length of time the player can look and memorization the cards before they are
-   // turned face down.
+   // turned face up.
    classicModeTimer: Phaser.Time.TimerEvent;
 
    // These are only used for Modern mode.
@@ -98,7 +98,7 @@ export class GameplayScene extends Phaser.Scene {
                fontSize: "150px",
                fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
             });
-            this.input.once("pointerdown", () => {
+            this.input.once("pointerup", () => {
                this.closeCards();
             });
             break;
@@ -139,7 +139,7 @@ export class GameplayScene extends Phaser.Scene {
       for (const letter of this.answer) {
          this.deck.cards.push(new Card(this, letter));
       }
-      this.input.on("gameobjectdown", this.onCardClicked, this);
+      this.input.on("gameobjectup", this.onCardClicked, this);
    }
 
    initCards() {
@@ -203,7 +203,7 @@ export class GameplayScene extends Phaser.Scene {
       }
    }
    onPlayerLoss() {
-      this.input.off("gameobjectdown", this.onCardClicked, this);
+      this.input.off("gameobjectup", this.onCardClicked, this);
       this.deck.cards.forEach((card) => {
          card.disableInteractive();
          card.openCard();
@@ -223,7 +223,7 @@ export class GameplayScene extends Phaser.Scene {
          )
          .setOrigin(1, 0.5)
          .setInteractive()
-         .on("pointerdown", () => this.scene.restart());
+         .on("pointerup", () => this.scene.restart());
 
       this.add
          .text(
@@ -238,7 +238,7 @@ export class GameplayScene extends Phaser.Scene {
          )
          .setInteractive()
          .setOrigin(1, 0.5)
-         .on("pointerdown", () => {
+         .on("pointerup", () => {
             this.scene.start("TitleScene");
          });
    }

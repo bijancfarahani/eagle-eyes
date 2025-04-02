@@ -80,7 +80,7 @@ export class LeaderboardContainer extends Phaser.GameObjects.Container {
             fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
          })
          .disableInteractive()
-         .on("pointerdown", () => this.drawTopFiveLeaderboard());
+         .on("pointerup", () => this.drawTopFiveLeaderboard());
 
       this.nearbyLeaderboard = this.scene.add
          .text(this.width * 0.6, this.y, "Leaderboard Near Me", {
@@ -89,7 +89,7 @@ export class LeaderboardContainer extends Phaser.GameObjects.Container {
          })
          .setInteractive()
          .setAlpha(0.5)
-         .on("pointerdown", () => this.drawLeaderboardNearPlayer());
+         .on("pointerup", () => this.drawLeaderboardNearPlayer());
 
       this.scrollLeftButton = this.scene.add
          .text(
@@ -102,7 +102,7 @@ export class LeaderboardContainer extends Phaser.GameObjects.Container {
             },
          )
          .setInteractive()
-         .on("pointerdown", () => this.scrollLeaderboard(0));
+         .on("pointerup", () => this.scrollLeaderboard(0));
 
       this.scrollRightButton = this.scene.add
          .text(
@@ -115,7 +115,7 @@ export class LeaderboardContainer extends Phaser.GameObjects.Container {
             },
          )
          .setInteractive()
-         .on("pointerdown", () => this.scrollLeaderboard(1));
+         .on("pointerup", () => this.scrollLeaderboard(1));
 
       this.drawLeaderboardRows(leaderboardRecords);
    }

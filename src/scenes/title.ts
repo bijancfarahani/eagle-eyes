@@ -52,7 +52,7 @@ export class TitleScene extends Phaser.Scene {
          .text(
             +this.sys.game.config.width * 0.005,
             +this.sys.game.config.height * 0.2,
-            "The game begins by dealing the player nine shuffle cards,\neach with a different letter of the phrase 'eagle eyes'.\nYou need to quickly memorize the position of each card\nbefore they are flipped face down.\n   -In Classic Mode, you're given a few seconds to quickly\n   memorize the location of each card.\n   -In Modern Mode, you can take as much time as you like\n    and can compete by submitting your time to a leaderboard\n    upon winning.\nOnce the cards are no longer visible, the objective is to\nflip them back over in an order which spells out eagle eyes.",
+            "The game begins by dealing the player nine shuffle cards,\neach with a different letter of the phrase 'eagle eyes'.\nYou need to quickly memorize the position of each card\nbefore they are flipped face up.\n   -In Classic Mode, you're given a few seconds to quickly\n   memorize the location of each card.\n   -In Modern Mode, you can take as much time as you like\n    and can compete by submitting your time to a leaderboard\n    upon winning.\nOnce the cards are no longer visible, the objective is to\nflip them back over in an order which spells out eagle eyes.",
             {
                fontSize: "31px",
                fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
@@ -77,7 +77,7 @@ export class TitleScene extends Phaser.Scene {
          )
          .setInteractive()
          .setOrigin(1, 0.5)
-         .on("pointerdown", () => this.startGame(GameMode.Classic));
+         .on("pointerup", () => this.startGame(GameMode.Classic));
 
       this.add
          .text(
@@ -91,7 +91,7 @@ export class TitleScene extends Phaser.Scene {
          )
          .setInteractive()
          .setOrigin(1, 0.5)
-         .on("pointerdown", () => this.startGame(GameMode.Modern));
+         .on("pointerup", () => this.startGame(GameMode.Modern));
 
       this.leaderboardContainer.drawLeaderboard();
    }

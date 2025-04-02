@@ -16,8 +16,10 @@ export class WinScene extends Phaser.Scene {
    scrollRightButton: Phaser.GameObjects.Text;
    lastRecordHeight: number;
    leaderboardRecordPointer: number;
-   htmlUsernameInput: HTMLInputElement; // Add this line
-   username: string; // Add this line
+
+   // Capture the player name via the devices keyboard.
+   htmlUsernameInput: HTMLInputElement;
+   username: string;
 
    leaderboardContainer: LeaderboardContainer;
 
@@ -25,6 +27,9 @@ export class WinScene extends Phaser.Scene {
       super({
          key: "WinScene",
       });
+      this.htmlUsernameInput = document.getElementById(
+         "usernameInput",
+      ) as HTMLInputElement;
    }
 
    preload() {
@@ -76,7 +81,7 @@ export class WinScene extends Phaser.Scene {
          )
          .setInteractive()
          .setOrigin(1, 0.5)
-         .on("pointerdown", () => {
+         .on("pointerup", () => {
             this.htmlUsernameInput.style.display = "none";
             this.scene.start("GameplayScene", {
                gameMode: this.gameMode,
@@ -97,24 +102,11 @@ export class WinScene extends Phaser.Scene {
          )
          .setInteractive()
          .setOrigin(1, 0.5)
-         .on("pointerdown", () => {
+         .on("pointerup", () => {
             this.htmlUsernameInput.style.display = "none";
             this.scene.start("TitleScene");
          });
 
-      // Draw player win details.
-      this.add
-         .text(
-            +this.sys.game.config.width * 0.99,
-            +this.sys.game.config.height * 0.3,
-            `Time: ${this.memorizationTime}`,
-            {
-               fontSize: "70px",
-               fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
-               align: "right",
-            },
-         )
-         .setOrigin(1, 0.5);
       this.add
          .text(
             +this.sys.game.config.width * 0.99,
@@ -128,15 +120,29 @@ export class WinScene extends Phaser.Scene {
          )
          .setOrigin(1, 0.5);
 
-      // Draw leaderboard details.
+      // Draw modern mode, leaderboard details.
       if (this.gameMode == GameMode.Modern) {
+         // Draw memorization time.
+         this.add
+            .text(
+               +this.sys.game.config.width * 0.99,
+               +this.sys.game.config.height * 0.3,
+               `Time: ${this.memorizationTime}`,
+               {
+                  fontSize: "70px",
+                  fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
+                  align: "right",
+               },
+            )
+            .setOrigin(1, 0.5);
+
          this.leaderboardContainer.drawLeaderboard();
-         this.htmlUsernameInput = document.getElementById(
-            "usernameInput",
-         ) as HTMLInputElement; // Add this line
-         this.htmlUsernameInput.style.display = "block"; //show the input
+
+         // Draw the HTML form.
+         // Show the input field.
+         this.htmlUsernameInput.style.display = "block";
          this.htmlUsernameInput.focus();
-         this.input.keyboard.on("keydown-ENTER", () => {
+         this.input.keyboard.on("keyup-ENTER", () => {
             this.username = this.htmlUsernameInput.value;
             this.htmlUsernameInput.style.display = "none";
             this.addToLeaderboard();
@@ -145,16 +151,8 @@ export class WinScene extends Phaser.Scene {
    }
 
    async addToLeaderboard() {
-      const numStr = String(this.memorizationTime);
-      const [integerPart, decimalPart] = numStr.split(".");
-      const [integer, decimal] = [
-         parseInt(integerPart, 10),
-         parseInt(decimalPart || "0", 10),
-      ];
-
       const isAddedToLeaderboard = await Nakama.addToLeaderboard(
-         integer,
-         decimal,
+         this.memorizationTime,
          this.username,
          this.shuffle,
       );

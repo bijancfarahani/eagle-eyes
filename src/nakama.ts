@@ -72,11 +72,17 @@ class Nakama {
    }
 
    public async addToLeaderboard(
-      score: number,
-      subscore: number,
+      memorizationTime: number,
       username: string,
       shuffle: string,
    ): Promise<boolean> {
+      const numStr = String(memorizationTime);
+      const [integerPart, decimalPart] = numStr.split(".");
+      const [score, subscore] = [
+         parseInt(integerPart, 10),
+         parseInt(decimalPart || "0", 10),
+      ];
+
       try {
          const payload = {
             score: score,
