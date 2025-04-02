@@ -144,18 +144,18 @@ export class LeaderboardContainer extends Phaser.GameObjects.Container {
 
    async drawTopFiveLeaderboard() {
       this.nearbyLeaderboard.setAlpha(0.5).setInteractive();
-
+      this.topFiveLeaderboard.setAlpha(1).disableInteractive();
       const result = await Nakama.getTopFiveLeaderboard();
       this.drawLeaderboardRows(result);
-      this.topFiveLeaderboard.setAlpha(1).disableInteractive();
+
    }
 
    async drawLeaderboardNearPlayer() {
       this.topFiveLeaderboard.setAlpha(0.5).setInteractive();
-
+      this.nearbyLeaderboard.setAlpha(1).disableInteractive();
       const result = await Nakama.getNearbyLeaderboard();
       this.drawLeaderboardRows(result);
 
-      this.nearbyLeaderboard.setAlpha(1).disableInteractive();
+
    }
 }
