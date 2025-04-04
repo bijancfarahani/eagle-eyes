@@ -1,6 +1,10 @@
 import { Client, Session, LeaderboardRecordList } from "@heroiclabs/nakama-js";
 import { v4 as uuidv4 } from "uuid";
-import { LEADERBOARD_ID, LEADERBOARD_WRITE_RPC_ID } from "./constants";
+import {
+   LEADERBOARD_ID,
+   LEADERBOARD_WRITE_RPC_ID,
+   MAX_PLAYERNAME_LENGTH,
+} from "./constants";
 
 class Nakama {
    client: Client;
@@ -51,7 +55,7 @@ class Nakama {
             this.session,
             LEADERBOARD_ID,
             null,
-            10,
+            5,
             cursor,
          );
       } catch (error) {}
@@ -82,6 +86,8 @@ class Nakama {
          parseInt(integerPart, 10),
          parseInt(decimalPart || "0", 10),
       ];
+      // Sanitize username input.
+      username = username.trim().substring(0, MAX_PLAYERNAME_LENGTH);
 
       try {
          const payload = {

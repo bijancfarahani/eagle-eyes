@@ -1,14 +1,15 @@
-import { LeaderboardRecordList } from "@heroiclabs/nakama-js";
-import { NUM_LEADERBOARD_ROWS } from "./constants";
+import { LeaderboardRecord } from "@heroiclabs/nakama-js";
+import { MAX_PLAYERNAME_LENGTH, NUM_LEADERBOARD_ROWS } from "./constants";
 import Nakama from "./nakama";
 
 export class LeaderboardContainer extends Phaser.GameObjects.Container {
-   leaderboardRecordPointer: number = 0;
    scrollLeftButton: Phaser.GameObjects.Text;
    scrollRightButton: Phaser.GameObjects.Text;
    nearbyLeaderboard: Phaser.GameObjects.Text;
    topFiveLeaderboard: Phaser.GameObjects.Text;
    leaderboardRecords: Phaser.GameObjects.Text[];
+   next_cursor: string;
+   prev_cursor: string;
 
    constructor(scene: Phaser.Scene, x: number, y: number, width: number, height: number) {
       super(scene, x, y);
@@ -29,22 +30,23 @@ export class LeaderboardContainer extends Phaser.GameObjects.Container {
       }
    }
 
-   drawLeaderboardRows(leaderboardRecords: LeaderboardRecordList) {
+   drawLeaderboardRows(leaderboardRecords: Array<LeaderboardRecord>) {
       let lastRecordHeight = +this.scene.sys.game.config.height * 0.6;
 
-      const numRecordsToDraw = Math.min(
-         NUM_LEADERBOARD_ROWS,
-         leaderboardRecords.records.length - this.leaderboardRecordPointer,
-      );
+      const numRecordsToDraw = Math.min(NUM_LEADERBOARD_ROWS, leaderboardRecords.length);
       if (numRecordsToDraw == 0) {
          return;
       }
       for (let index = 0; index < numRecordsToDraw; index++) {
-         const record = leaderboardRecords.records[index + this.leaderboardRecordPointer];
+         const record = leaderboardRecords[index];
          const recordHeight = +this.scene.sys.game.config.height * 0.6 + index * 100;
          lastRecordHeight = recordHeight + 100;
+         const displayScore = (
+            parseFloat(`${record.score.toString()}.${record.subscore.toString()}`) / 1000
+         ).toFixed(3);
+         const displayRank = `${record.rank}:`.padEnd(3);
          this.leaderboardRecords[index].setText(
-            `Rank: #${record.rank}, Player: ${record.username}, Memorization Time: ${record.score / 1000}, Scramble: ${record.metadata["Shuffle"]}`,
+            `#${displayRank} ${record.username.padEnd(MAX_PLAYERNAME_LENGTH - 1, " ")} Memorization Time: ${displayScore.padEnd(6)}    Shuffle: ${record.metadata["Shuffle"]}`,
          );
          this.leaderboardRecords[index].setVisible(true);
       }
@@ -65,8 +67,7 @@ export class LeaderboardContainer extends Phaser.GameObjects.Container {
    }
 
    async drawLeaderboard() {
-      const leaderboardRecords = await Nakama.getTopFiveLeaderboard();
-      if (leaderboardRecords == null) {
+      if (this.leaderboardRecords == null) {
          this.scene.add.text(this.x, this.y, "Unable to fetch leaderboard ", {
             fontSize: "70px",
             fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
@@ -74,6 +75,7 @@ export class LeaderboardContainer extends Phaser.GameObjects.Container {
          return;
       }
 
+      // Create UI objects to draw on.
       this.topFiveLeaderboard = this.scene.add
          .text(this.width * 0.05, this.y, "Top 5 Leaderboard", {
             fontSize: "70px",
@@ -87,8 +89,9 @@ export class LeaderboardContainer extends Phaser.GameObjects.Container {
             fontSize: "70px",
             fontFamily: "Andale Mono, 'Goudy Bookletter 1911', Times, serif",
          })
-         .setInteractive()
+         .disableInteractive()
          .setAlpha(0.5)
+         .setVisible(false)
          .on("pointerup", () => this.drawLeaderboardNearPlayer());
 
       this.scrollLeftButton = this.scene.add
@@ -102,7 +105,7 @@ export class LeaderboardContainer extends Phaser.GameObjects.Container {
             },
          )
          .setInteractive()
-         .on("pointerup", () => this.scrollLeaderboard(0));
+         .on("pointerup", () => this.scrollLeaderboard(-1));
 
       this.scrollRightButton = this.scene.add
          .text(
@@ -117,42 +120,66 @@ export class LeaderboardContainer extends Phaser.GameObjects.Container {
          .setInteractive()
          .on("pointerup", () => this.scrollLeaderboard(1));
 
-      this.drawLeaderboardRows(leaderboardRecords);
+      // Draw on the UI elements that were created above.
+      this.drawTopFiveLeaderboard();
    }
 
-   async scrollLeaderboard(direction: number) {
-      const leaderboardRecords = await Nakama.getTopFiveLeaderboard();
-      if (direction === 0) {
-         if (this.leaderboardRecordPointer === 0) {
+   private async scrollLeaderboard(direction: number) {
+      let leaderboardRecords = null;
+      switch (direction) {
+         case -1: {
+            if (this.prev_cursor == null) {
+               return;
+            }
+            leaderboardRecords = await Nakama.getTopFiveLeaderboard(this.prev_cursor);
+            break;
+         }
+         case 1: {
+            if (this.next_cursor == null) {
+               return;
+            }
+            leaderboardRecords = await Nakama.getTopFiveLeaderboard(this.next_cursor);
+            break;
+         }
+         default: {
             return;
          }
-         this.leaderboardRecordPointer = Math.max(
-            0,
-            this.leaderboardRecordPointer - NUM_LEADERBOARD_ROWS,
-         );
-      } else {
-         if (this.leaderboardRecordPointer === leaderboardRecords.records.length) {
-            return;
-         }
-         this.leaderboardRecordPointer = Math.min(
-            leaderboardRecords.records.length,
-            this.leaderboardRecordPointer + NUM_LEADERBOARD_ROWS,
-         );
       }
-      this.drawLeaderboardRows(leaderboardRecords);
+
+      if (leaderboardRecords == null) {
+         return;
+      }
+
+      this.prev_cursor = leaderboardRecords.prev_cursor;
+      this.next_cursor = leaderboardRecords.next_cursor;
+      this.drawLeaderboardRows(leaderboardRecords.records.slice());
    }
 
    async drawTopFiveLeaderboard() {
       this.nearbyLeaderboard.setAlpha(0.5).setInteractive();
       this.topFiveLeaderboard.setAlpha(1).disableInteractive();
+
       const result = await Nakama.getTopFiveLeaderboard();
-      this.drawLeaderboardRows(result);
+      if (result == null) {
+         return;
+      }
+
+      this.next_cursor = result.next_cursor;
+      this.drawLeaderboardRows(result.records.slice());
    }
 
    async drawLeaderboardNearPlayer() {
       this.topFiveLeaderboard.setAlpha(0.5).setInteractive();
       this.nearbyLeaderboard.setAlpha(1).disableInteractive();
+
       const result = await Nakama.getNearbyLeaderboard();
-      this.drawLeaderboardRows(result);
+      if (result == null) {
+         return;
+      }
+
+      this.prev_cursor = result.prev_cursor;
+      this.next_cursor = result.next_cursor;
+
+      this.drawLeaderboardRows(result.records.slice());
    }
 }
