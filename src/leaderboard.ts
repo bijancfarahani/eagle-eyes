@@ -132,6 +132,22 @@ export class LeaderboardContainer extends Phaser.GameObjects.Container {
                return;
             }
             leaderboardRecords = await Nakama.getTopFiveLeaderboard(this.prev_cursor);
+            function invertRanks(records: LeaderboardRecord[]): LeaderboardRecord[] {
+               const numRecords = records.length;
+               if (numRecords <= 1) {
+                  return records; // No need to invert if there are 0 or 1 records
+               }
+               const reversedRecords = [...records].reverse();
+               const invertedRecords: LeaderboardRecord[] = reversedRecords
+                  .map((record, index) => ({
+                     ...record,
+                     rank: numRecords - index,
+                  }))
+                  .reverse();
+
+               return invertedRecords;
+            }
+            leaderboardRecords.records = invertRanks(leaderboardRecords.records);
             break;
          }
          case 1: {
